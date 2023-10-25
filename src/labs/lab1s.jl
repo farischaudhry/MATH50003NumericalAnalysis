@@ -214,36 +214,40 @@ plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 N = 10_000
 trapruleerr = n -> trapeziumrule(exp,n)- (exp(1)-1)
 errs = [abs(trapruleerr(n)) for n=1:N]
-plot(1:N, errs; xscale=:log10, yscale=:log10, label="error") # label="error" labels the plot
+plot(1:N, errs; xscale=:log10, yscale=:log10, label="error", ylims=(10^(-17),10)) # label="error" labels the plot
 plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 
 ## We see that the error decays like C*n^{-2}
 
 ## END
 
-# **Exercise 2(b)** Estimate the convergence rate for `trapeziumrule` $f(x) = \exp(\cos(2πx))$, where you can
-# use `1.2660658777520084` as a high-accuracy value for the integral. 
-# Can you guess what property
-# of this function makes the convergence rate so fast?
-# Hint: plotting zeros with a log-scale plot is problematic. Instead of calling `abs` use the function `nanabs`
-# which we have provided which turns these values into plottable "not a numbers".
+# **Exercise 2(b)** Estimate the convergence rate for `trapeziumrule` $f(x) = 1/(25\cos(2πx)^2+1)$, where you can
+# use `0.19611613513818404` as a high-accuracy value for the integral, by plotting the error for `n = 1:2000`.
+# Can you guess what property of this function makes the convergence rate so fast?
+# Does the error actually tend to zero?
+# Hint: plotting zeros with a log-scaled plot is problematic. Instead of calling `abs` use the function `nanabs`
+# provided here which turns these values into "not a number"s, which are omitted in plots.
 
+## nanabs(x) returns either abs(x) if it is greater than 0 or NaN
 function nanabs(x)
-    if iszero(x)
+    if x == 0
         NaN
     else
-        x
+        abs(x)
     end
 end
 
-## TODO: Plot the absolute-value of the error of trapeziumrule with f = x -> exp(cos(2π*x)) for n = 1:10_000 and deduce the convergence rate
+## TODO: Plot the absolute-value of the error of trapeziumrule with f = x -> 1/(25cos(2π*x)^2+1) for n = 1:2000.
 ## SOLUTION
 
-N = 20
-f = x -> exp(cos(2π*x-π))
-trapruleerr = n -> trapeziumrule(f,n)- 1.2660658777520084
-errs = [nanabs(trapruleerr(n)) for n=1:N]
-plot(1:N, errs; xscale=:log10, yscale=:log10, label="error", yticks=10.0 .^ (-17:0)) # label="error" labels the plot
+N = 2000
+f = x -> 1/(25cos(2π*x)^2+1)
+trapruleerr = n -> trapeziumrule(f,n) - 0.19611613513818404
+errs = [nanabs(trapruleerr(n)) for n=2:N]
+plot(2:N, errs; xscale=:log10, yscale=:log10, label="error") # label="error" labels the plot
+
+## We see that it actually decays faster than any algebraic convergence rate (it is exponential).
+## We also see that the error stops decaying around 1E-15.
 
 ## END
 
@@ -325,11 +329,29 @@ plot(0:20, errs; yscale=:log10, label="error") # scale only the y-axis
 #   f''(x) ≈ {f(x+h) - 2f(x) + f(x-h) \over h^2}
 # $$
 # Implement this approximation in a function `seconddifferences(f, x, h)`
-# and plot the error.
+# and plot the error for $f(x) = \exp x$ with `h = 1,0.1,…,10^(-10)`.
+
+## TODO: implement `seconddifferences(f,x,h)` and plot the error for `h = 1,0.1,…,10^(-10)`.
+## SOLUTION
+
+function seconddifferences(f, x, h)
+    ## TODO: return an implementation of central differences
+    ## SOLUTION
+    (f(x+h)-2f(x) + f(x-h))/(h^2)
+    ## END
+end
+
+errs = [abs(seconddifferences(exp, 1, 10.0^(-k))-exp(1)) for k = 0:10] 
+plot(0:10, errs; yscale=:log10, label="error") # scale only the y-axis
+
+## We see the method begins to converge but then the error grows catastrophically.
+
+
+## END
 
 
 
-# **Problem 3(d)** Use forward differences, central differences, and second-order divided differences to approximate to 5-digits the first and second
+# **Problem 3(d)** Use central differences to approximate to 5-digits the first and second
 # derivatives to the following functions
 # at the point $x = 0.1$:
 # $$
@@ -346,3 +368,43 @@ plot(0:20, errs; yscale=:log10, label="error") # scale only the y-axis
 # Hint: the challenge here is being confident that we have achieved 5 digits, even though
 # the question doesn't require a proof. If we vary `h` and the first 5 digits do not change
 # that gives pretty good evidence of accuracy.
+
+
+## SOLUTION 
+## We define the three functions:
+f = x -> exp(exp(x)cos(x) + sin(x))
+function g(x)
+    ret = 1.0
+    for k = 1:1000
+        ret = ret * (x / k -1)
+    end
+    ret
+end
+function cont(n, x)
+    ret = 2.0
+    for k = 1:n-1
+        ret = 2 + (x-1)/ret
+    end
+    1 + (x-1)/ret
+end
+
+
+## The following is less than 1E-10
+centraldifferences(f, 0.1, 0.000001) - centraldifferences(f, 0.1, 0.00001)
+## Hence we expect 
+centraldifferences(f, 0.1, 0.000001) == 6.5847725547740765
+## is accurate to 5 digits.
+
+## The following is less than 1E-8
+centraldifferences(g, 0.1, 0.000001) - centraldifferences(g, 0.1, 0.00001)
+## Hence we expect 
+centraldifferences(g, 0.1, 0.000001) == -3.593826512965359
+## is accurate to 5 digits.
+
+## The following is less than 1E-8
+centraldifferences(x -> cont(1000, x), 0.1, 0.000001) - centraldifferences(x -> cont(1000, x), 0.1, 0.00001)
+## Hence we expect 
+centraldifferences(x -> cont(1000, x), 0.1, 0.000001) == 1.5811388301423257
+## is accurate to 5 digits.
+
+## END
