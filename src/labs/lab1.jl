@@ -91,13 +91,7 @@ using Test # Loads the testing packages
 
 function rightrectangularrule(f, n)
     ## TODO: return (1/n) * ∑_{k=1}^n f(k/n) computed using a for-loop
-    ## SOLUTION
-    ret = 0.0
-    for k = 1:n # k runs from 1 to n instead of 0 to n-1
-        ret = ret + f(k/n)
-    end           
-    ret/n   # the last line of a function is returned
-    ## END
+    
 end
 
 @test rightrectangularrule(exp, 1000) ≈ exp(1) - 1 atol=1E-3 # tests that the approximation is accurate to 3 digits after the decimal point
@@ -112,17 +106,7 @@ end
 # Do you think it is more or less accurate than the rectangular rules?
 
 ## TODO: write  a function trapeziumrule(f, n) which returns the n-point trapezium rule approximation
-## SOLUTION
-function trapeziumrule(f, n)
-    ret = f(0)/2
-    for k = 1:n-1 # k skips first and lest point
-        ret = ret + f(k/n) 
-    end     
-    ret = ret + f(1)/2
-    ret/n
-end
-## This appears to be more accurate, based on the test below where we achieve 6 digits.
-## END
+
 @test trapeziumrule(exp, 1000) ≈ exp(1) - 1 atol=1E-6
 
 # **Exercise 1(c)** Compare `rightrectangularrule` and `trapeziumrule`
@@ -132,30 +116,7 @@ end
 # type out `pi`.
 
 ## TODO: test the three functions with varying `n`
-## SOLUTION
 
-trapeziumrule(x -> cos(2π*x), 1)
-trapeziumrule(x -> cos(2π*x), 3) # less than 1E-16
-trapeziumrule(x -> cos(2π*x), 5) # less than 1E-16
-
-rightrectangularrule(x -> cos(2π*x), 1)
-rightrectangularrule(x -> cos(2π*x), 3) # exact as trapeziumrule
-rightrectangularrule(x -> cos(2π*x), 5) # exact as trapeziumrule
-
-
-trapeziumrule(x -> sin(4π*x), 1) # less than 1E-15
-trapeziumrule(x -> sin(4π*x), 3) # less than 1E-15
-trapeziumrule(x -> sin(4π*x), 5) # less than 1E-16
-
-rightrectangularrule(x -> sin(4π*x), 1) # close but not exactly the same as trapeziumrule
-rightrectangularrule(x -> sin(4π*x), 3) # close but not exactly the same as trapeziumrule
-rightrectangularrule(x -> sin(4π*x), 5) # close but not exactly the same as trapeziumrule
-
-trapeziumrule(x -> sin(4π*x), 10_000) # not any more accurate
-
-## Each rule is less than a very small number but does not become smaller by increasing n.
-
-## END
 
 # ------
 
@@ -209,17 +170,7 @@ plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 # error where the $x$- and $y$-axis are scaled logarithmically.
 
 ## TODO: Plot the absolute-value of the error of trapeziumrule for n = 1:10_000 and deduce the convergence rate
-## SOLUTION
 
-N = 10_000
-trapruleerr = n -> trapeziumrule(exp,n)- (exp(1)-1)
-errs = [abs(trapruleerr(n)) for n=1:N]
-plot(1:N, errs; xscale=:log10, yscale=:log10, label="error", ylims=(10^(-17),10)) # label="error" labels the plot
-plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
-
-## We see that the error decays like C*n^{-2}
-
-## END
 
 # **Exercise 2(b)** Estimate the convergence rate for `trapeziumrule` $f(x) = 1/(25\cos(2πx)^2+1)$, where you can
 # use `0.19611613513818404` as a high-accuracy value for the integral, by plotting the error for `n = 1:2000`.
@@ -238,18 +189,7 @@ function nanabs(x)
 end
 
 ## TODO: Plot the absolute-value of the error of trapeziumrule with f = x -> 1/(25cos(2π*x)^2+1) for n = 1:2000.
-## SOLUTION
 
-N = 2000
-f = x -> 1/(25cos(2π*x)^2+1)
-trapruleerr = n -> trapeziumrule(f,n) - 0.19611613513818404
-errs = [nanabs(trapruleerr(n)) for n=2:N]
-plot(2:N, errs; xscale=:log10, yscale=:log10, label="error") # label="error" labels the plot
-
-## We see that it actually decays faster than any algebraic convergence rate (it is exponential).
-## We also see that the error stops decaying around 1E-15.
-
-## END
 
 # -------
 
@@ -306,9 +246,7 @@ plot(0:20, errs; yscale=:log10, label="error") # scale only the y-axis
 
 function centraldifferences(f, x, h)
     ## TODO: return an implementation of central differences
-    ## SOLUTION
-    (f(x+h)-f(x-h))/(2h)
-    ## END
+    
 end
 
 @test centraldifferences(exp, 1, 0.00001) ≈ exp(1) atol=1E-10
@@ -318,10 +256,7 @@ end
 # Which achieves better accuracy: `rightdifferences` or `centraldifferences`?
 
 ## TODO: Plot the errors of centraldifferences
-## SOLUTION
-errs = [abs(centraldifferences(exp, 1, 10.0^(-k))-exp(1)) for k = 0:20] 
-plot(0:20, errs; yscale=:log10, label="error") # scale only the y-axis
-## END
+
 
 # **Problem 3(c)** Applying central differences to itself we get an approximation to
 # second derivatives of the form:
@@ -332,18 +267,7 @@ plot(0:20, errs; yscale=:log10, label="error") # scale only the y-axis
 # and plot the error for $f(x) = \exp x$ with `h = 1,0.1,…,10^(-10)`.
 
 ## TODO: implement `seconddifferences(f,x,h)` and plot the error for `h = 1,0.1,…,10^(-10)`.
-## SOLUTION
 
-function seconddifferences(f, x, h)
-    (f(x+h)-2f(x) + f(x-h))/(h^2)
-end
-
-errs = [abs(seconddifferences(exp, 1, 10.0^(-k))-exp(1)) for k = 0:10] 
-plot(0:10, errs; yscale=:log10, label="error") # scale only the y-axis
-
-## We see the method begins to converge but then the error grows catastrophically.
-
-## END
 
 
 
@@ -367,40 +291,4 @@ plot(0:10, errs; yscale=:log10, label="error") # scale only the y-axis
 
 
 ## TODO: 
-## SOLUTION
-## We define the three functions:
-f = x -> exp(exp(x)cos(x) + sin(x))
-function g(x)
-    ret = 1.0
-    for k = 1:1000
-        ret = ret * (x / k -1)
-    end
-    ret
-end
-function cont(n, x)
-    ret = 2.0
-    for k = 1:n-1
-        ret = 2 + (x-1)/ret
-    end
-    1 + (x-1)/ret
-end
 
-## The following is less than 1E-10
-centraldifferences(f, 0.1, 0.000001) - centraldifferences(f, 0.1, 0.00001)
-## Hence we expect 
-centraldifferences(f, 0.1, 0.000001) == 6.5847725547740765
-## is accurate to 5 digits.
-
-## The following is less than 1E-8
-centraldifferences(g, 0.1, 0.000001) - centraldifferences(g, 0.1, 0.00001)
-## Hence we expect 
-centraldifferences(g, 0.1, 0.000001) == -3.593826512965359
-## is accurate to 5 digits.
-
-## The following is less than 1E-8
-centraldifferences(x -> cont(1000, x), 0.1, 0.000001) - centraldifferences(x -> cont(1000, x), 0.1, 0.00001)
-## Hence we expect 
-centraldifferences(x -> cont(1000, x), 0.1, 0.000001) == 1.5811388301423257
-## is accurate to 5 digits.
-
-## END
