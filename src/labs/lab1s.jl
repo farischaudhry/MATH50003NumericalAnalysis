@@ -45,6 +45,24 @@
 # preparation for the computer-based exam later this term. Note each exercise comes with
 # unit-tests: if when run they don't throw an error that gives evidence (but no guarantee!)
 # that the exercise solution is correct. 
+#
+# **Learning Outcomes**
+#
+# Mathematical knowledge:
+#
+# 1. Approximating integrals using rectangular and trapezium rules.
+# 2. Approximating (first) derivatives using divided differences and central differences.
+# 3. Approximating second derivatives using second-order divided differences. 
+# 4. Understanding that there are artificial errors introduced by numerical implementations of algorithms.
+#
+# Coding knowledge:
+#
+# 1. Turning a sum into a for-loop.
+# 2. Making a function 3 ways: (1) a named function beginning `function f(x)`, an
+# (2) an anonymous function of the form `x -> ...` and (3) a named function but one one line via `f(x) = ...`
+# 3. Ploting errors of a numerical approximation with log-scaled axes.
+# 4. Interpreting a log-log plot to estimate the algebraic convergence rate of an approximation.
+
 
 # ------
 
@@ -55,7 +73,7 @@
 #   ∫_0^1 f(x) {\rm d}x = \lim_{n → ∞} {1 \over n} ∑_{k=0}^{n-1} f(k/n).
 # $$
 # This suggests an algorithm known as the _(left-sided) rectangular rule_
-# for approximating an integral: choose $n$ large and then
+# for approximating an integral: choose $n$ large so that
 # $$
 #   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{k=0}^{n-1} f(k/n).
 # $$
@@ -98,9 +116,9 @@ leftrectangularrule(squared, 10_000) # approximates 1/3 to 3 digits
 
 leftrectangularrule(x -> cos(x^2), 10_000) # No nice formula! But I claim we got 4 digits
 
-# **Remark** Note the difference between "named" and "anonymous" functions can bve confusing at first.
+# **Remark** Note the difference between "named" and "anonymous" functions can be confusing at first.
 # For example, writing `f = x -> cos(x^2)` creates an anonymous function and assigns it to the
-# variable `f`, which then behaves a lot like a named function in that we can call it a la `f(0.1)`.
+# variable `f`, which then behaves a lot like a named function in that we can call it _a la_ `f(0.1)`.
 # We can alternatively make a named function using the short-hand `g(x) = cos(x)^2`.
 # We will see later named functions have two special properties: (1) they behave like "constants",
 # and (2) named functions can have multiple definitions depending on the "type" of the input.
@@ -151,8 +169,8 @@ end
 ## END
 @test trapeziumrule(exp, 1000) ≈ exp(1) - 1 atol=1E-6
 
-# **Exercise 1(c)** Compare `rightrectangularrule` and `trapeziumrule`
-# for $f(x)$ equal to $cos(2πx)$ and $sin(4πx)$ for $n = 1, 3, 5$. Mathematically,
+# **Exercise 1(d)** Compare `rightrectangularrule` and `trapeziumrule`
+# for $f(x)$ equal to $\cos(2πx)$ and $\sin(4πx)$ for $n = 1, 3, 5$. Mathematically,
 # should they return the same result? Do they in practice? Does the accuracy improve if we make `n = 10_000`?
 # Hint: It is possible to type `π` by typing `\pi` and then hitting the tab key. Otherwise one can just
 # type out `pi`.
@@ -194,7 +212,7 @@ trapeziumrule(x -> sin(4π*x), 10_000) # not any more accurate
 #   |\hbox{Error}| ≤ C n^{-α}
 #   $$
 #  It is possible to prove convergence rates
-# (something we will come back to later in the module) but it is often easier and more informative
+# (something we will come back to throughout the module) but it is often easier and more informative
 # to plot the error and deduce the convergence rate experimentally. 
 
 # Let's try with the `leftrectangularrule` routine. First we see how we can plot functions:
@@ -206,7 +224,7 @@ x = range(0, 1; length=m) # makes a vector of a 100 points between 0 and 1
 y = [exp(x[k]) for k=1:m] # Make a vector of `exp` evaluated at each point `x`.
 plot(x, y) # plot lines throw the specified x and y coordinates
 
-# We now plot the absolute value of the intgral approximated
+# We now plot the absolute value of the integral approximated
 # by the left-hand rule compared to the "true" answer `exp(1)-1` as $n$ increases:
 
 N = 10_000 # total number of points
@@ -217,7 +235,7 @@ plot(1:N, errs; label="left-rule error") # label="..." labels the plot in the le
 # This plot is very uninformative: we can see that the error tends to zero but its
 # hard to understand at what rate. We can get more information by scaling both the $x$- and $y$-axis logarithmically:
 
-plot(1:N, errs; xscale=:log10, yscale=:log10, label="error")
+plot(1:N, errs; xscale=:log10, yscale=:log10, label="left-rule error", yticks=10.0 .^ (-10:1)) # yticks specifies the ticks used on the y-axis
 
 # We see with 10,000 points we get about $10^{-4}$ errors.
 # We can add to this plot reference curves corresponding to $n^{-1}$ and $n^{-2}$
@@ -227,7 +245,7 @@ plot!(1:N, (1:N) .^ (-1); linestyle=:dash, label="n^-1") # exclamation point mea
 plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 
 # Since the error decays at the same rate as $n^{-1}$ we conclude that we can likely bound the error by
-# $C n^{-1}$ for some constant $C$. 
+# $C n^{-1}$ for some constant $C$.  
 
 # ------
 
@@ -240,7 +258,7 @@ plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 N = 10_000
 trapruleerr = n -> trapeziumrule(exp,n)- (exp(1)-1)
 errs = [abs(trapruleerr(n)) for n=1:N]
-plot(1:N, errs; xscale=:log10, yscale=:log10, label="error", ylims=(10^(-17),10)) # label="error" labels the plot
+plot(1:N, errs; xscale=:log10, yscale=:log10, label="error", yticks=10.0 .^ (-10:1))
 plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 
 ## We see that the error decays like C*n^{-2}
@@ -269,8 +287,8 @@ end
 N = 2000
 f = x -> 1/(25cos(2π*x)^2+1)
 trapruleerr = n -> trapeziumrule(f,n) - 0.19611613513818404
-errs = [nanabs(trapruleerr(n)) for n=2:N]
-plot(2:N, errs; xscale=:log10, yscale=:log10, label="error") # label="error" labels the plot
+errs = [nanabs(trapruleerr(n)) for n=1:N]
+plot(1:N, errs; xscale=:log10, yscale=:log10, label="error", yticks=10.0 .^ (-16:1)) # label="error" labels the plot
 
 ## We see that it actually decays faster than any algebraic convergence rate (it is exponential).
 ## We also see that the error stops decaying around 1E-15.
@@ -288,7 +306,7 @@ plot(2:N, errs; xscale=:log10, yscale=:log10, label="error") # label="error" lab
 # This suggests an algorithm known as the _(right-sided) divided difference_
 # for approximating a derivative: choose $h$ small and then
 # $$
-#   f'(x ≈ {f(x + h) - f(x) \over h}.
+#   f'(x) ≈ {f(x + h) - f(x) \over h}.
 # $$
 # We can implement this easily as a simple function. This
 # function is so simple we write it as a single line (using a special
@@ -297,12 +315,12 @@ plot(2:N, errs; xscale=:log10, yscale=:log10, label="error") # label="error" lab
 rightdifferences(f, x, h) = (f(x+h) - f(x))/h
 rightdifferences(exp, 1, 0.00001)
 
-# We have computed `ℯ = 2.71828...` to 5 digits. This suggests an idea:
-# we can just set `h = 0`:
+# We have computed `ℯ = 2.71828...` to 5 digits. One might be tempted to compute the integral by
+# just setting `h = 0`:
 
 rightdifferences(exp, 1, 0)
 
-# Oh no! It returned `NaN`: this means "Not a Number". Now let's try making `h`
+# Oh no! It returned `NaN`: this means "Not a Number", a place-holder when a calculation fails. Instead, let's try making `h`
 # very small:
 
 rightdifferences(exp, 1, 10.0^(-15))
@@ -311,12 +329,12 @@ rightdifferences(exp, 1, 10.0^(-15))
 
 ## Create  vector of errors in divided difference for h = 1,0.1,0.01,…,10^(-20)
 errs = [abs(rightdifferences(exp, 1, 10.0^(-k))-exp(1)) for k = 0:20] 
-plot(0:20, errs; yscale=:log10, label="error") # scale only the y-axis
+plot(0:20, errs; yscale=:log10, label="error", legend=:bottomright) # scale only the y-axis, move the legend to bottom right to get out of the way
 
 # This raises a couple of mysteries:
 # 1. Why does our numerical version of divided differences diverges
 # even though theoretically it's guaranteed to converge?
-# 2. Why is the optimal choice $h ≈ 10^{-8}$ (or more suggestively $h ≈ 2^{-25}$)?
+# 2. Why is the optimal choice $h ≈ 10^{-8}$ (or more suggestively $h ≈ 2^{-26}$)?
 # In order to answer these mysteries we will need to understand how numbers work on a computer,
 # a topic we will come back to in the next few weeks.
 
@@ -339,7 +357,8 @@ end
 
 @test centraldifferences(exp, 1, 0.00001) ≈ exp(1) atol=1E-10
 
-# **Problem 3(b)** Plot the errors of central differences for `h = 1,0.1,…,10^(-20)`.
+# **Problem 3(b)** Plot the errors of central differences for computing $f'(1)$
+# for $f(x) = \exp x$ for `h = 1,0.1,…,10^(-20)`.
 # Does it converge? If not, approximately which value of $h$ gives the best approximation?
 # Which achieves better accuracy: `rightdifferences` or `centraldifferences`?
 
@@ -347,6 +366,8 @@ end
 ## SOLUTION
 errs = [abs(centraldifferences(exp, 1, 10.0^(-k))-exp(1)) for k = 0:20] 
 plot(0:20, errs; yscale=:log10, label="error") # scale only the y-axis
+## It still diverges but achieves much better accuracy. The optimal choice of $h$ is now
+# $≈ 10^{-5}$.
 ## END
 
 # **Problem 3(c)** Applying central differences to itself we get an approximation to
@@ -355,7 +376,7 @@ plot(0:20, errs; yscale=:log10, label="error") # scale only the y-axis
 #   f''(x) ≈ {f(x+h) - 2f(x) + f(x-h) \over h^2}
 # $$
 # Implement this approximation in a function `seconddifferences(f, x, h)`
-# and plot the error for $f(x) = \exp x$ with `h = 1,0.1,…,10^(-10)`.
+# and plot the error in approximating $f''(1)$, for $f(x) = \exp x$ with `h = 1,0.1,…,10^(-10)`.
 
 ## TODO: implement `seconddifferences(f,x,h)` and plot the error for `h = 1,0.1,…,10^(-10)`.
 ## SOLUTION
