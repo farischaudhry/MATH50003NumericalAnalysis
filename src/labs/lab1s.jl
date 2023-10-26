@@ -2,12 +2,38 @@
 # # Lab 1: Integration and Differentiation
 
 # Numerical analysis primarily studies the mathematical construction and analysis of algorithms
-# for solving continuous problems like computing integrals or solving differential equations.
+# for approximating solutions to continuous problems like computing integrals or solving differential equations.
 # It is fundamental to the area to also understand how to implement such algorithms
 # in software. In year 1 you learned basic programming concepts such as loops, conditions,
 # functions, etc. and in this first lab we will employ these concepts in the implementation
-# of some basic algorithms you have already seen. In particular, we will look at implementing
-# the rectangular and triangular rules for approximating integrals. 
+# of some basic approximations you have already seen in the guise of analysis.
+# In particular, we will look at the following:
+
+# 1. Integeration via the rectangular rule:  integrals are defined by
+# approximating a function by rectangles and taking the limit as the number of rectangles becomes
+# infinite. If we use a finite number of rectangles this gives an approximation to the integral.
+# 2. Differentiation via divided differences: derivatives are defined by taking the limit of
+# the difference of a function evaluated at two nearby points and dividing by the
+# distance of these points, where in the limit the distance goes to zero. If we fix the 
+# distance to be small but nonzero we get an approximation to the derivative.
+#
+# An important component to numerical analysis is studying the _convergence  rate_:
+# how fast do these approximations tend to the true value? We explore this question
+# here experimentally, leaving rigorous analysis to the notes.
+#
+# However, things do not go quite according to plan: our numerical implementation
+# does not quite follow the convergence results in analysis. 
+# We run into a couple mysteries:
+# 
+# 1. Numerical integration appears to converge but in some examples the error gets stuck at
+# a vey small value, less than $10^{-15}$ or so.
+# 2. Numerical differentiation appears to converges as $h → 0$ achieving around
+# 5 digits or so. However, it starts becoming extremely inaccurate when $h$ falls below $10^{-8}$ or so,
+# eventually giving no digits of accuracy!
+#
+# In the next lab we will look at a work-around for mystery (2). And in the next few weeks
+# we will build an understanding of how computers work with numbers so that we can understand
+# why our algorithms "failed".
 #
 # We will use the Julia programming language which is in some ways similar to Python.
 # Julia is a _compiled language_ whereas Python is interpreted. It is also more adapted to the
