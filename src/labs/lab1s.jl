@@ -175,7 +175,7 @@ end
 # Hint: It is possible to type `π` by typing `\pi` and then hitting the tab key. Otherwise one can just
 # type out `pi`.
 
-## TODO: test the three functions with varying `n`
+## TODO: test the three functions defined above with varying `n`
 ## SOLUTION
 
 trapeziumrule(x -> cos(2π*x), 1)
