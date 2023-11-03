@@ -41,10 +41,10 @@
 # Being a compiled language means it will help us later on in the module understand exactly how
 # the computer functions when performing numerical calculations.
 #
-# We have included exercises interspersed with the material which are highly recommended for
+# We have included problems interspersed with the material which are highly recommended for
 # preparation for the computer-based exam later this term. Note each exercise comes with
 # unit-tests: if when run they don't throw an error that gives evidence (but no guarantee!)
-# that the exercise solution is correct. 
+# that the problem solution is correct. 
 #
 # **Learning Outcomes**
 #
@@ -70,12 +70,12 @@
 
 # One possible definition for an integral is the limit of a Riemann sum, for example:
 # $$
-#   ∫_0^1 f(x) {\rm d}x = \lim_{n → ∞} {1 \over n} ∑_{k=0}^{n-1} f(k/n).
+#   ∫_0^1 f(x) {\rm d}x = \lim_{n → ∞} {1 \over n} ∑_{k=1}^n f(k/n).
 # $$
-# This suggests an algorithm known as the _(left-sided) rectangular rule_
+# This suggests an algorithm known as the _(right-sided) rectangular rule_
 # for approximating an integral: choose $n$ large so that
 # $$
-#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{k=0}^{n-1} f(k/n).
+#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{k=1}^n f(k/n).
 # $$
 # To implement this approximation in code we need to turn the sum into a for-loop.
 # Let's take as an example $f(x) = \exp(x)$. We can write:
@@ -84,23 +84,23 @@ n = 10000     # the number of terms in the summation
 ret = 0.0     # ret will store the result, accumulated one argument at a time.
               ## The .0 makes it a "real" rather than an "integer".
               ## Understanding the "type" will be important later on.
-for k = 0:n-1 # k will be equal to 0,1,…,n-1
-    ret = ret + exp(k/n) # add exp(k/n) to the result. Now ret = ∑_{j=0}^k f(j/n).
+for k = 1:n   # k will be set to 1,2,…,n in sequence
+    ret = ret + exp(k/n) # add exp(k/n) to the result. Now ret = ∑_{j=1}^k f(j/n).
 end           # in Julia for-loops are finished with an end
 ret/n         # approximates the true answer exp(1) - exp(0) = ℯ-1 = 1.71828… to 4 digits
 
 # It is convenient to wrap this in a function that takes in `f` and `n` and returns
-# the left-sided rectangular rule approximation. We can adapt the above routine into a function as follows:
+# the right-sided rectangular rule approximation. We can adapt the above routine into a function as follows:
 
-function leftrectangularrule(f, n) # create a function named "leftrectangularrule" that takes in two arguments
+function rightrectangularrule(f, n) # create a function named "rightrectangularrule" that takes in two arguments
     ret = 0.0
-    for k = 0:n-1
+    for k = 1:n
         ret = ret + f(k/n) # now `f` is the input function
     end           
     ret/n   # the last line of a function is returned
 end # like for-loops, functions are finished with an end
 
-leftrectangularrule(exp, 100_000_000) # Use n = 100 million points to get an approximation accurate to 8 digits.
+rightrectangularrule(exp, 100_000_000) # Use n = 100 million points to get an approximation accurate to 8 digits.
                                       ## The underscores in numbers are like commas and are ignored.
 
 # Note it is now easy to approximate other functions. For example, the following code computes the
@@ -109,12 +109,12 @@ leftrectangularrule(exp, 100_000_000) # Use n = 100 million points to get an app
 function squared(x)
     x^2 # carets ^ mean "to the power of". This is actually a function that just calls x*x.
 end
-leftrectangularrule(squared, 10_000) # approximates 1/3 to 3 digits
+rightrectangularrule(squared, 10_000) # approximates 1/3 to 3 digits
 
 # It is often inconvenient to name a function, and so we might want to integrate a function like $\cos(x^2)$
 # by making a so-called anonymous function:
 
-leftrectangularrule(x -> cos(x^2), 10_000) # No nice formula! But I claim we got 4 digits
+rightrectangularrule(x -> cos(x^2), 10_000) # No nice formula! But I claim we got 4 digits
 
 # **Remark** Note the difference between "named" and "anonymous" functions can be confusing at first.
 # For example, writing `f = x -> cos(x^2)` creates an anonymous function and assigns it to the
@@ -125,29 +125,29 @@ leftrectangularrule(x -> cos(x^2), 10_000) # No nice formula! But I claim we got
 
 # ------
 
-# **Exercise 1(a)** Complete the following function `rightrectangularrule(f, n)` That approximates
-# an integral using the right-sided rectangular rule:
+# **Problem 1(a)** Complete the following function `leftrectangularrule(f, n)` That approximates
+# an integral using the left-sided rectangular rule:
 # $$
-#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{k=1}^n f(k/n).
+#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{k=0}^{n-1} f(k/n).
 # $$
 
 using Test # Loads the testing packages
 
-function rightrectangularrule(f, n)
-    ## TODO: return (1/n) * ∑_{k=1}^n f(k/n) computed using a for-loop
+function leftrectangularrule(f, n)
+    ## TODO: return (1/n) * ∑_{k=0}^{n-1} f(k/n) computed using a for-loop
     ## SOLUTION
     ret = 0.0
-    for k = 1:n # k runs from 1 to n instead of 0 to n-1
+    for k = 0:n-1 # k runs from 0 to n-1 instead of 1 to n
         ret = ret + f(k/n)
     end           
     ret/n   # the last line of a function is returned
     ## END
 end
 
-@test rightrectangularrule(exp, 1000) ≈ exp(1) - 1 atol=1E-3 # tests that the approximation is accurate to 3 digits after the decimal point
+@test leftrectangularrule(exp, 1000) ≈ exp(1) - 1 atol=1E-3 # tests that the approximation is accurate to 3 digits after the decimal point
 @test leftrectangularrule(exp, 1000) < exp(1) - 1 < rightrectangularrule(exp, 1000) # These two routines bound the true answer. Why is this?
 
-# **Exercise 1(b)** If we approximate integrals by _trapeziums_ instead of rectangles we arrive
+# **Problem 1(b)** If we approximate integrals by _trapeziums_ instead of rectangles we arrive
 # at an approximation to an integral using the $(n+1)$-point trapezium rule:
 # $$
 #   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} \left[ f(0)/2 + ∑_{k=1}^{n-1} f(k/n) + f(1)/2 \right]
@@ -169,7 +169,7 @@ end
 ## END
 @test trapeziumrule(exp, 1000) ≈ exp(1) - 1 atol=1E-6
 
-# **Exercise 1(d)** Compare `rightrectangularrule` and `trapeziumrule`
+# **Problem 1(c)** Compare `rightrectangularrule` and `trapeziumrule`
 # for $f(x)$ equal to $\cos(2πx)$ and $\sin(4πx)$ for $n = 1, 3, 5$. Mathematically,
 # should they return the same result? Do they in practice? Does the accuracy improve if we make `n = 10_000`?
 # Hint: It is possible to type `π` by typing `\pi` and then hitting the tab key. Otherwise one can just
@@ -249,7 +249,7 @@ plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 
 # ------
 
-# **Exercise 2(a)** Estimate the convergence rate for `trapeziumrule` for $f(x) = \exp x$ by plotting the
+# **Problem 2(a)** Estimate the convergence rate for `trapeziumrule` for $f(x) = \exp x$ by plotting the
 # error where the $x$- and $y$-axis are scaled logarithmically.
 
 ## TODO: Plot the absolute-value of the error of trapeziumrule for n = 1:10_000 and deduce the convergence rate
@@ -265,7 +265,7 @@ plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 
 ## END
 
-# **Exercise 2(b)** Estimate the convergence rate for `trapeziumrule` $f(x) = 1/(25\cos(2πx)^2+1)$, where you can
+# **Problem 2(b)** Estimate the convergence rate for `trapeziumrule` $f(x) = 1/(25\cos(2πx)^2+1)$, where you can
 # use `0.19611613513818404` as a high-accuracy value for the integral, by plotting the error for `n = 1:2000`.
 # Can you guess what property of this function makes the convergence rate so fast?
 # Does the error actually tend to zero?
@@ -394,8 +394,8 @@ plot(0:10, errs; yscale=:log10, label="error") # scale only the y-axis
 
 
 
-# **Problem 3(d)** Use central differences to approximate to 5-digits the first and second
-# derivatives to the following functions
+# **Problem 3(d)** Use central differences to approximate to 5-digits the first
+# derivative to the following functions
 # at the point $x = 0.1$:
 # $$
 # \exp(\exp x \cos x + \sin x), ∏_{k=1}^{1000} \left({x \over k}-1\right), \hbox{ and } f^{\rm s}_{1000}(x)
@@ -413,7 +413,8 @@ plot(0:10, errs; yscale=:log10, label="error") # scale only the y-axis
 # that gives pretty good evidence of accuracy.
 
 
-## TODO: 
+## TODO: Define each function in the statement of the problem and apply central differences
+## to approximate their derivatives.
 ## SOLUTION
 ## We define the three functions:
 f = x -> exp(exp(x)cos(x) + sin(x))
