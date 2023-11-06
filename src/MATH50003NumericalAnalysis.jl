@@ -10,12 +10,21 @@ function replacetheorem(path, thrm, Thrm)
     str = replace(str, Regex("\\\\textbf{$Thrm \\(([^}]*)\\)}(.*?)\\\\textbf{Proof}", "s") => SubstitutionString("\\\\begin{$thrm}[\\1]\\2\\\\end{$thrm}\\n\\\\textbf{Proof}"))
     write(path, str)
 end
+
+function replacedefinition(path, thrm, Thrm)
+    str = read(path, String)
+    str = replace(str, Regex("\\\\textbf{$Thrm \\(([^}]*)\\)}(.*?)\\\\ensuremath{\\\\QED}", "s") => SubstitutionString("\\\\begin{$thrm}[\\1]\\2\\\\end{$thrm}"))
+    write(path, str)
+end
+
 function compilenotes(filename)
     weave("src/notes/$filename.jmd"; out_path="notes/", doctype="md2tex", template="src/notes/template.tpl")
     path = "notes/$filename.tex"
     replacetheorem(path, "theorem", "Theorem")
     replacetheorem(path, "lemma", "Lemma")
     replacetheorem(path, "proposition", "Proposition")
+    replacedefinition(path, "example", "Example")
+    replacedefinition(path, "definition", "Definition")
     # work around double newline before equation
     write(path, replace(read(path, String), "\n\n\\[" => "\n\\["))
     # work around meeq 
@@ -24,6 +33,7 @@ end
 
 compilenotes("I.1.RectangularRule")
 compilenotes("I.2.DividedDifferences")
+compilenotes("I.3.DualNumbers")
 
 #####
 # labs

@@ -7,9 +7,11 @@
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{hyperref}
+\usepackage{amsthm}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
 \let\QED=\blacksquare
+\def\bbD{{\mathbb D}}
 
 \hypersetup
        {   pdfauthor = { {{Sheehan Olver}} },
@@ -27,6 +29,9 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
 
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
 
 \author{ Sheehan Olver }
 \renewcommand{\thechapter}{\Roman{chapter}}
@@ -62,6 +67,7 @@ In this chapter we discuss:
 
 \input{I.1.RectangularRule.tex}
 \input{I.2.DividedDifferences.tex}
+\input{I.3.DualNumbers.tex}
 
 
 \end{document}
