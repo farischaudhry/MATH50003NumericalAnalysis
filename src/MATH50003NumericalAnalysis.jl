@@ -19,7 +19,7 @@ function compilenotes(filename)
     write(path, replace(read(path, String), "\n\n\\[" => "\n\\["))
 end
 
-compilenotes("I.1.Integration")
+compilenotes("I.1.RectangularRule")
 
 #####
 # labs
