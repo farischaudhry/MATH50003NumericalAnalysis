@@ -15,11 +15,15 @@ function compilenotes(filename)
     path = "notes/$filename.tex"
     replacetheorem(path, "theorem", "Theorem")
     replacetheorem(path, "lemma", "Lemma")
+    replacetheorem(path, "proposition", "Proposition")
     # work around double newline before equation
     write(path, replace(read(path, String), "\n\n\\[" => "\n\\["))
+    # work around meeq 
+    write(path, replace(read(path, String), r"\\\[\n\\meeq\{(.*?)\}\n\\\]"s => s"\\meeq{\1}"))
 end
 
 compilenotes("I.1.RectangularRule")
+compilenotes("I.2.DividedDifferences")
 
 #####
 # labs

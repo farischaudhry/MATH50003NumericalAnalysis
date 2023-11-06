@@ -26,17 +26,17 @@ where $|\ensuremath{\delta}| \ensuremath{\leq} M (b-a)^2$ for $M = \sup_{a \ensu
 
 \end{lemma}
 \textbf{Proof} We write
-\[
-\ensuremath{\int}_a^b f(x) {\rm d}x = \ensuremath{\int}_a^b (x-a)' f(x)  {\rm d}x = [(x-a) f(x)]_a^b - \ensuremath{\int}_a^b (x-a) f'(x) {\rm d} x
-= (b-a) f(b) + \underbrace{\left(-\ensuremath{\int}_a^b (x-a) f'(x) {\rm d} x \right)}_{\ensuremath{\delta}}.
-\]
+\meeq{
+\ensuremath{\int}_a^b f(x) {\rm d}x = \ensuremath{\int}_a^b (x-a)' f(x)  {\rm d}x = [(x-a) f(x)]_a^b - \ensuremath{\int}_a^b (x-a) f'(x) {\rm d} x \ccr
+= (b-a) f(b) + \underbrace{\left(-\ensuremath{\int}_a^b (x-a) f'(x) {\rm d} x \right)}_\ensuremath{\delta}.
+}
 Recall that we can bound the absolute value of an integral by the sepremum of the integrand times the width of the integration interval:
 \[
-|\ensuremath{\int}_a^b g(x) {\rm d} x| \ensuremath{\leq} (b-a) \sup_{a \ensuremath{\leq} x \ensuremath{\leq} b}|g(x)|.
+\abs{\ensuremath{\int}_a^b g(x) {\rm d} x} \ensuremath{\leq} (b-a) \sup_{a \ensuremath{\leq} x \ensuremath{\leq} b}|g(x)|.
 \]
 The lemma thus follows since
 \[
-|\ensuremath{\int}_a^b (x-a) f'(x) {\rm d} x| \ensuremath{\leq} (b-a) \sup_{a \ensuremath{\leq} x \ensuremath{\leq} b}|(x-a) f'(x)| \ensuremath{\leq} M (b-a)^2.
+\abs{\ensuremath{\int}_a^b (x-a) f'(x) {\rm d} x} \ensuremath{\leq} (b-a) \sup_{a \ensuremath{\leq} x \ensuremath{\leq} b}|(x-a) f'(x)| \ensuremath{\leq} M (b-a)^2.
 \]
 \ensuremath{\QED}
 
@@ -49,7 +49,7 @@ Now summing up the errors in each panel gives us the error of using the Rectangu
 where $|\ensuremath{\delta}| \ensuremath{\leq} M (b-a) h$ for $M = \sup_{a \ensuremath{\leq} x \ensuremath{\leq} b}|f'(x)|$, $h = (b-a)/n$ and $x_k = a + kh$. 
 
 \end{theorem}
-\textbf{Proof} We split the integral into a sum of smaller integrals and :
+\textbf{Proof} We split the integral into a sum of smaller integrals:
 \[
 \ensuremath{\int}_a^b f(x) {\rm d}x = \ensuremath{\sum}_{k=1}^n  \ensuremath{\int}_{x_{k-1}}^{x_k} f(x) {\rm d}x =
 \ensuremath{\sum}_{k=1}^n  \br[(x_k - x_{k-1}) f(x_k) + \ensuremath{\delta}_k] =  h \ensuremath{\sum}_{k=1}^n f(x_k) +  \underbrace{\ensuremath{\sum}_{k=1}^n \ensuremath{\delta}_k}_\ensuremath{\delta}

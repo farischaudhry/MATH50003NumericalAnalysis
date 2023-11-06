@@ -39,17 +39,19 @@ where $|δ| ≤ M (b-a)^2$ for $M = \sup_{a ≤ x ≤ b}|f'(x)|$.
 **Proof**
 We write
 $$
-∫_a^b f(x) {\rm d}x = ∫_a^b (x-a)' f(x)  {\rm d}x = [(x-a) f(x)]_a^b - ∫_a^b (x-a) f'(x) {\rm d} x
-= (b-a) f(b) + \underbrace{\left(-∫_a^b (x-a) f'(x) {\rm d} x \right)}_{δ}.
+\meeq{
+∫_a^b f(x) {\rm d}x = ∫_a^b (x-a)' f(x)  {\rm d}x = [(x-a) f(x)]_a^b - ∫_a^b (x-a) f'(x) {\rm d} x \ccr
+= (b-a) f(b) + \underbrace{\left(-∫_a^b (x-a) f'(x) {\rm d} x \right)}_δ.
+}
 $$
 Recall that we can bound the absolute value of an integral by the sepremum of the integrand
 times the width of the integration interval:
 $$
-|∫_a^b g(x) {\rm d} x| ≤ (b-a) \sup_{a ≤ x ≤ b}|g(x)|.
+\abs{∫_a^b g(x) {\rm d} x} ≤ (b-a) \sup_{a ≤ x ≤ b}|g(x)|.
 $$
 The lemma thus follows since
 $$
-|∫_a^b (x-a) f'(x) {\rm d} x| ≤ (b-a) \sup_{a ≤ x ≤ b}|(x-a) f'(x)| ≤ M (b-a)^2.
+\abs{∫_a^b (x-a) f'(x) {\rm d} x} ≤ (b-a) \sup_{a ≤ x ≤ b}|(x-a) f'(x)| ≤ M (b-a)^2.
 $$
 ∎
 
@@ -63,7 +65,7 @@ $$
 where $|δ| ≤ M (b-a) h$ for $M = \sup_{a ≤ x ≤ b}|f'(x)|$, $h = (b-a)/n$ and $x_k = a + kh$. 
 
 **Proof**
-We split the integral into a sum of smaller integrals and :
+We split the integral into a sum of smaller integrals:
 $$
 ∫_a^b f(x) {\rm d}x = ∑_{k=1}^n  ∫_{x_{k-1}}^{x_k} f(x) {\rm d}x =
 ∑_{k=1}^n  \br[(x_k - x_{k-1}) f(x_k) + δ_k] =  h ∑_{k=1}^n f(x_k) +  \underbrace{∑_{k=1}^n δ_k}_δ
