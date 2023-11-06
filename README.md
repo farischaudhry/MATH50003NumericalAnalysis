@@ -14,11 +14,10 @@ Office hour: Mondays 11am, Huxley 6M40
 
 ## Assessment
 
-1. [Practice computer-based exam](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/exams/practice.ipynb)
-2. [2021–22 Computer-based exam](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/exams/computerexam2122.ipynb)
+1. [2021–22 Computer-based exam](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/exams/computerexam2122.ipynb)
 2. [2022–23 Computer-based exam](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/exams/computerexam2223.ipynb)
-3. Practice final exam: TBA
-3. Final exam (pen-and-paper): TBA
+3. Practice computer-based exam: TBA
+4. Final exam (pen-and-paper): TBA
 
 
 ## Reading List
