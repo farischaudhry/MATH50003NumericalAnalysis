@@ -1,0 +1,55 @@
+\documentclass[12pt,a4paper]{book}
+
+\usepackage[a4paper,text={16.5cm,25.2cm},centering]{geometry}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.2ex}
+\let\QED=\blacksquare
+
+\hypersetup
+       {   pdfauthor = { {{Sheehan Olver}} },
+           pdftitle={ {{MATH50003 Numerical Analysis}} },
+           colorlinks=TRUE,
+           linkcolor=black,
+           citecolor=blue,
+           urlcolor=blue
+       }
+
+\title{ MATH50003 Numerical Analysis }
+
+
+\newtheorem{lemma}{Lemma}
+
+
+\author{ Sheehan Olver }
+\renewcommand{\thechapter}{\Roman{chapter}}
+
+\begin{document}
+
+\maketitle
+
+
+\chapter{Computing with Numbers}
+
+In this first chapter we explore the basics of mathematical computing and numerical analysis.
+In particular we investigate the following mathematical problems which can not in general be solved exactly:
+
+\begin{enumerate}
+\item Integration: in general integrals have no closed form expressions. Can we use a computer to approximate their values?
+\item Differentiation: while differentiating a formula is usually algorithmic, it is often needed to compute derivatives without access to an underlying formula. A very important application is in Machine Learning, where there is a need to compute gradients to determine the "right" weights in a neural network.
+\item Root finding: while there's a quadratic formula for finding roots of quadratics, there is no general formula for quintics or indeed general functions. Can we compute roots of general functions using a computer?
+\end{enumerate}
+
+We begin this chapter by reviewing some  methods known in A-levels (rectangular rule for integration, divided differences for derivatives, Newton's method for root finding) whilst observing some unexpected challenges when doing so in practice. We also introduce some new ideas (dual numbers for differentiation) to overcome these challenges.
+
+To understand the challenges in numerical computing we need 
+
+\input{I.1.Integration.tex}
+
+
+\end{document}
