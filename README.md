@@ -5,7 +5,7 @@ Lecturer: [Dr Sheehan Olver](https://www.ma.imperial.ac.uk/~solver/)
 
 Office hour: Mondays 11am, Huxley 6M40
 
-**[Notes](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes.pdf)** (up to Week 1)
+## [Notes](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/notes.pdf) (up to Week 1)
 
 ## Weekly Material
 
