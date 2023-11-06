@@ -1,5 +1,5 @@
 # # MATH50003 (2023–24)
-# # Lab 1: Integration and Differentiation
+# # Lab 1: I.1 Rectangular Rule and I.2 Divided Differences
 
 # Numerical analysis primarily studies the mathematical construction and analysis of algorithms
 # for approximating solutions to continuous problems like computing integrals or solving differential equations.
@@ -66,7 +66,7 @@
 
 # ------
 
-# ## 1. Integration via rectangular rules
+# ## I.1 Integration via rectangular rules
 
 # One possible definition for an integral is the limit of a Riemann sum, for example:
 # $$
@@ -203,7 +203,7 @@ trapeziumrule(x -> sin(4π*x), 10_000) # not any more accurate
 
 # ------
 
-# ## 2. Plotting errors in approximations
+# ### I.1.2 Plotting errors in approximations
 
 # We have seen that the rectangular and trapezium rules are a convenient way to approximate values of
 # integrals. We can ask the question: which method is the most accurate? A natural way to address this
@@ -297,7 +297,7 @@ plot(1:N, errs; xscale=:log10, yscale=:log10, label="error", yticks=10.0 .^ (-16
 
 # -------
 
-# ## 3. Differentiation via divided differences
+# ## I.2 Differentiation via divided differences
 #
 # One possible definition for a derivative is the limit of a _divided difference_:
 # $$
