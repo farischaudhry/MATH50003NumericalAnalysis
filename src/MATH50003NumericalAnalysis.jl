@@ -41,6 +41,13 @@ compilenotes("I.3.DualNumbers")
 
 import Literate
 
-write("src/labs/lab1.jl", replace(replace(read("src/labs/lab1s.jl", String), r"## SOLUTION(.*?)## END"s => "")))
-Literate.notebook("src/labs/lab1.jl", "labs/"; execute=false)
-Literate.notebook("src/labs/lab1s.jl", "labs/"; execute=false)
+# Make Labs
+for k = 1:2
+    write("src/labs/lab$k.jl", replace(replace(read("src/labs/lab$(k)s.jl", String), r"## SOLUTION(.*?)## END"s => "")))
+    Literate.notebook("src/labs/lab$k.jl", "labs/"; execute=false)
+end
+
+
+# Make Solutions
+# Literate.notebook("src/labs/lab1s.jl", "labs/"; execute=false)
+
