@@ -22,7 +22,7 @@
 # Coding knowledge:
 #
 # 1. The notion of a type and how to make your own type.
-# 2. Defining functions for specific types.
+# 2. Defining functions whose arguments are restricted to specific types.
 # 3. Overloading functions like `+`, `*`, and `exp` for a custom type.
 
 
@@ -44,15 +44,15 @@ nanabs(x) = x == 0 ? NaN : abs(x)
 # ## Types in Julia
 
 
-# In Julia everything has a "type". The function `typeof` can be used to determine the type of,
+# In compile languages like Julia everything has a "type". The function `typeof` can be used to determine the type of,
 # for example, a number.
-# By default when we write an Int (e.g. `-123`) it is of type `Int`:
+# By default when we write an integer (e.g. `-123`) it is of type `Int`:
 
 typeof(5)
 
 # On a 64-bit machine this will print `Int64`, where the `64` indicates it is using precisely 64 bits
 # to represent the number (a topic we will come back to next lab). If we write something with
-# a decimal point it represents a "real" number, but the actual type is `Float64`:
+# a decimal point it represents a "real" number, whose storage is of type `Float64`:
 
 typeof(5.3)
 
