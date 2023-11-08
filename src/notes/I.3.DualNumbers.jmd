@@ -1,8 +1,8 @@
 # Dual Numbers
 
 In this chapter we introduce a mathematically beautiful  alternative to divided differences for computing
-derivatives: _dual numbers_. As we shall see, these are a commutative ring that _exactly_ compute derivatives,
-which when implemented in floating point give very high-accuracy approximations to derivatives. They
+derivatives: _dual numbers_. These are a commutative ring that _exactly_ compute derivatives,
+which when implemented on a computer gives very high-accuracy approximations to derivatives. They
 underpin forward-mode [automatic differentation](https://en.wikipedia.org/wiki/Automatic_differentiation).
 Automatic differentiation  is a basic tool in Machine Learning for computing gradients necessary
 for training neural networks.
@@ -26,7 +26,9 @@ we can view $ℝ ⊂ 𝔻$ by equating $a ∈ ℝ$ with $a + 0{\rm ϵ} ∈ 𝔻$
 
 ## Differentiating polynomials
 
-Applying a polynomial to a dual number $a + b ϵ$ tells us the derivative at $a$:
+Polynomials evaluated on dual numbers are well-defined as
+they depend only on the operations $+$ and $*$. From the formula for multiplication of dual numbers
+we deduce that evaluating a polynomial at a dual number $a + b ϵ$ tells us the derivative of the polynomial at $a$:
 
 **Theorem (polynomials on dual numbers)** Suppose $p$ is a polynomial. Then
 $$
@@ -35,10 +37,19 @@ $$
 
 **Proof**
 
-It suffices to consider $p(x) = x^n$ for $n ≥ 1$ as other polynomials follow from linearity. We proceed by induction:
-The case $n = 1$ is trivial. For $n > 1$ we have 
+First consider $p(x) = x^n$ for $n ≥ 0$. 
+The cases $n = 0$ and $n = 1$ are immediate. For $n > 1$ we have by induction:
 $$
 (a + b ϵ)^n = (a + b ϵ) (a + b ϵ)^{n-1} = (a + b ϵ) (a^{n-1} + (n-1) b a^{n-2} ϵ) = a^n + b n a^{n-1} ϵ.
+$$
+For a more general polynomial
+$$
+p(x) = ∑_{k=0}^n c_k x^k
+$$
+the result follows from linearity:
+$$
+p(a + b ε) = ∑_{k=0}^n c_k (a+bϵ)^k = c_0 + ∑_{k=1}^n c_k (a^k +k b a^{k-1}ϵ)
+= ∑_{k=0}^n c_k a^k + b ∑_{k=1}^n c_k k a^{k-1}ϵ = p(a) + b p'(a) ϵ.
 $$
 
 ∎
@@ -47,7 +58,7 @@ $$
 $$
 p(x) = (x-1)(x-2) + x^2.
 $$
-We can use Dual numbers to differentiating, avoiding expanding in monomials
+We can use dual numbers to differentiating, avoiding expanding in monomials
 or rules of differentiating:
 $$
 p(2+ϵ) = (1+ϵ)ϵ + (2+ϵ)^2 = ϵ + 4 + 4ϵ = 4 + \underbrace{5}_{p'(2)}ϵ
@@ -102,7 +113,7 @@ If $f$ and $g$ are dual extensions at $a$ then
 $r(x) := f(x) g(x)$ is also dual extensions at $a$. In other words:
 $$
 \meeq{
-q(a+b ϵ) = q(a) + b q'(a) ϵ \\
+q(a+b ϵ) = q(a) + b q'(a) ϵ \ccr
 r(a+b ϵ) = r(a) + b r'(a) ϵ
 }
 $$
@@ -118,7 +129,7 @@ $$
 For $r$ we have
 $$
 \meeq{
-r(a + b ϵ) = f(a+b ϵ )g(a+b ϵ )= (f(a) + b f'(a) ϵ)(g(a) + b g'(a) ϵ) \\
+r(a + b ϵ) = f(a+b ϵ )g(a+b ϵ )= (f(a) + b f'(a) ϵ)(g(a) + b g'(a) ϵ) \ccr
 = f(a)g(a) + b (f'(a)g(a) + f(a)g'(a)) ϵ = r(a) +b r'(a) ϵ.
 }
 $$
@@ -140,3 +151,4 @@ f'(1) = \exp(1 + \E) (2 + \E).
 $$
 
 ∎
+

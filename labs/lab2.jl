@@ -1,5 +1,5 @@
 # # MATH50003 (2023–24)
-# # Lab 2: I.3 Dual Numbers and I.4 Newton's Method
+# # Lab 2: I.3 Dual Numbers (and Newton's Method)
 
 # In this lab we explore an alternative approach to computing derivatives:
 # using _dual numbers_. This is a special mathematical object akin to complex numbers
@@ -393,18 +393,29 @@ x = 0.1
 
 
 # ------
-# ## I.4 Newton's method
+# ## Newton's method
 
-# Newton's method is a simple algorithm for finding roots of a function.
-# Given any initial guess $x_0$ we construct a sequence via:
+# Newton's method is a simple algorithmic approach for computing roots (or zeros)
+# of functions that you may have seen before in A-levels. The basic idea is given an initial guess $x_0$,
+# find the first-order Taylor approximation $p(x)$ (i.e., fine the line that matches the slope of the function at the point)
+# $$
+# f(x) ≈ \underbrace{f(x_0) + f'(x_0) (x- x_0)}_{p(x)}.
+# $$
+# We can then solve the root finding problem for $p(x)$ exactly:
+# $$
+# p(x) = 0 ⇔ x = x_0 - {f(x_0) \over f'(x_0)}
+# $$
+# We take this root of $p(x)$ as the new initial guess and repeat. In other words, we have a simple sequence
+# defined by
 # $$
 # x_{k+1} = x_k - {f(x_k) \over f'(x_k)}
 # $$
 # If the initial guess is "close enough" to a root $r$ of $f$ (ie $f(r) = 0$)
-# then we know that $x_k → r$. Thus $x_N ≈ r$. Note the notion of "close enough"
-# is a complicated and rich theory, actually connecting to [Mandelbrot sets](https://en.wikipedia.org/wiki/Mandelbrot_set).
-# We can use `Dual` as a tool to compute derivatives and get a simple implementation
-# of Newton's method:
+# then it is known that $x_k → r$. Thus for large $N$ we have $x_N ≈ r$. Note the notion of "close enough"
+# is a complicated and rich theory beyond the scope of this module, and connects to the theory of [Mandelbrot sets](https://en.wikipedia.org/wiki/Mandelbrot_set).
+
+# Dual numbers as implemented by `Dual` gives us a powerful tool to compute derivatives and get a simple implementation
+# of Newton's method working:
 
 
 # derivative(f, x) computes the derivative at a point x using Dual

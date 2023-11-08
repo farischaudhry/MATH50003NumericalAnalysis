@@ -43,8 +43,8 @@ import Literate
 
 # Make Labs
 for k = 1:2
-    write("src/labs/lab$k.jl", replace(replace(read("src/labs/lab$(k)s.jl", String), r"## SOLUTION(.*?)## END"s => "")))
-    Literate.notebook("src/labs/lab$k.jl", "labs/"; execute=false)
+    write("labs/lab$k.jl", replace(replace(read("src/labs/lab$(k)s.jl", String), r"## SOLUTION(.*?)## END"s => "")))
+    Literate.notebook("labs/lab$k.jl", "labs/"; execute=false)
 end
 
 
