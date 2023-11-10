@@ -51,6 +51,7 @@ function compilesheet(filename)
 end
 
 compilesheet("sheet1")
+compilesheet("sheet2")
 
 # notebook("sheets/sheet1.jmd"; pkwds...)
 # notebook("src/sheets/sheet1s.jmd"; pkwds...)

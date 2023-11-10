@@ -37,6 +37,8 @@
 {{ :highlight }}
 
 \def\endash{–}
+\def\bbD{ {\mathbb D} }
+
 \input{somacros}
 
 \begin{document}
