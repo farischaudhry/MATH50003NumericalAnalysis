@@ -5,11 +5,106 @@
 
 -----
 
-**Problem 1(a)** Prove the left-point Rectangular rule error
+**Problem 1(a)** Assuming $f$ is differentiable, prove the left-point Rectangular rule error formula
+$$
+∫_a^b f(x) {\rm d}x =  h ∑_{k=0}^{n-1} f(x_k) +  δ
+$$
+where $|δ| ≤ M (b-a) h$ for $M = \sup_{a ≤ x ≤ b}|f'(x)|$, $h = (b-a)/n$ and $x_k = a + kh$. 
+
+**SOLUTION**
+
+This proof is very similar to the right-point rule, the only
+difference is we use a different constant in the indefinite integration in
+the integration-by-parts. First we need to adapt **Lemma 1 (Rect. rule error on one panel)**:
+$$
+\meeq{
+∫_a^b f(x) {\rm d}x = ∫_a^b (x-b)' f(x)  {\rm d}x = [(x-b) f(x)]_a^b - ∫_a^b (x-b) f'(x) {\rm d} x \ccr
+= (b-a) f(a) + \underbrace{\left(-∫_a^b (x-b) f'(x) {\rm d} x \right)}_ε.
+}
+$$
+where 
+$$
+\abs{ε} ≤ (b-a) \sup_{a ≤ x ≤ b}|(x-b) f'(x)| ≤ M (b-a)^2
+$$
+Applying this result on $[x_{k-1},x_k]$ we het
+$$
+∫_{x_{k-1}}^{x_k} f(x) {\rm d}x = h f(x_{k-1}) + δ_k
+$$
+where $|δ_k| ≤ M h^2$. 
+Splitting the integral into a sum of smaller integrals:
+$$
+∫_a^b f(x) {\rm d}x = ∑_{k=1}^n  ∫_{x_{k-1}}^{x_k} f(x) {\rm d}x =
+h ∑_{k=1}^n f(x_{k-1}) +  \underbrace{∑_{k=1}^n δ_k}_δ
+$$
+where using the triangular inequality we have 
+$$
+|δ| = \abs{ ∑_{k=1}^n δ_k} ≤ ∑_{k=1}^n |δ_k| ≤ M n h^2 = M(b-a)h.
+$$
+
+**END**
 
 
-**Problem 1(b)** Prove the Trapezium rule error
+**Problem 1(b)**  Assuming $f$ is twice-differentiable, prove a one-panel Trapezium rule error bound:
+$$
+∫_a^b f(x) {\rm d}x = (b-a) {f(a) + f(b) \over 2} +  δ
+$$
+where
+$
+|δ| ≤ M (b-a)^3
+$ 
+for $M = \sup_{a ≤ x ≤ b}|f''(x)|$.  
 
+_Hint_: Recall from the notes
+$$
+∫_a^b {(b-x) f(a) + (x-a) f(b) \over b-a} \dx= (b-a) {f(a) + f(b) \over 2}
+$$
+and use **Proposition 1 (divided differences error)**. Note that the bound is
+not sharp and so you may arrive at something sharper like $|δ| ≤ (b-a)^3 M*3/4$.
+The sharpest bound is $|δ| ≤ (b-a)^3 M/12$ but this will be a significant challenge to show!
+
+**SOLUTION**
+
+
+Recall from the notes:
+$$
+∫_a^b {(b-x) f(a) + (x-a) f(b) \over b-a} \dx = (b-a) {f(a) + f(b) \over 2}
+$$
+Thus we can find by integration by parts twice (noting that the integrand vanishes at $a$ and $b$):
+$$
+δ = ∫_a^b \br[f(x) - {(b-x) f(a) + (x-a) f(b) \over b-a}] {\rm d}x
+ = -∫_a^b (x-b) \br[f'(x) - {f(b)-f(a) \over b-a}] {\rm d}x = 
+    {(b-a)^2 \over 2} \br[f'(a) - {f(b)-f(a) \over b-a}] + ∫_a^b {(x-b)^2 \over 2} f''(x) {\rm d}x 
+$$
+Applying **Proposition 1** we know 
+$$
+\abs{f'(a) - {f(b)-f(a) \over b-a}} ≤ M (b-a)/2
+$$
+Further we have
+$$
+\abs{∫_a^b {(x-b)^2 \over 2} f''(x) {\rm d}x } ≤ {(b-a)^3 \over 2} M
+$$
+Thus we have the bound
+$$
+|δ| ≤ {(b-a)^2 \over 2} M (b-a)/2 + {(b-a)^3 \over 2} M ≤ {3 (b-a)^3 \over 4} M ≤ (b-a)^3 M.
+$$
+For the sharper $1/12$ constant check out the [Euler–Maclaurin formula](https://en.wikipedia.org/wiki/Euler–Maclaurin_formula).
+
+**END**
+
+
+**Problem 1(c)** Assuming $f$ is twice-differentiable, prove a bound for the Trapezium rule error:
+$$
+∫_a^b f(x) {\rm d}x = (b-a) {f(a) + f(b) \over 2} +  δ
+$$
+where
+$
+|δ| ≤ M (b-a)^3
+$ 
+for $M = \sup_{a ≤ x ≤ b}|f''(x)|$.  
+
+**SOLUTION**
+
+**END**
 
 ------
 
@@ -79,149 +174,3 @@ $$
 $$
 
 
-------
-
-**Problem 3** 
-Show that dual numbers $𝔻$ are a _commutative ring_, that is, for all $a,b,c ∈ 𝔻$ the following are satisfied:
-1. _additive associativity_: $(a + b) + c = a + (b + c)$
-2. _additive commutativity_: $a + b = b + a$
-3. _additive identity_: There exists $0 ∈ 𝔻$ such that $a + 0 = a$.
-4. _additive inverse_: There exists $-a$ such that $(-a) + a = 0$.
-5. _multiplicative associativity_: $(ab)c = a(bc)$
-6. _multiplictive commutativity_: $ab = ba$
-7. _multiplictive identity_: There exists $1 ∈ 𝔻$ such that $1a= a$.
-8. _distributive_: $a(b+c) = ab + ac$
-
-**SOLUTION**
-In what follows we write $a = a_r + a_d ϵ$ and likewise for $b,c ∈ 𝔻$.
-
-Additive associativity and commutativity and existence of additive inverse are both 
-immediate results of dual number addition reducing to element-wise real number addition. 
-Furthermore, by definition of addition on $𝔻$ the dual number $0+0 ϵ$ acts as the additive 
-identity since
-$$
-(a_r+a_dϵ)+(0+0ϵ) = (a_r+a_dϵ ).
-$$
-We explicitly prove multiplicative commutativity
-$$
-ab = (a_r+a_dϵ )(b_r+b_d ϵ ) = a_r b_r+(a_r b_d+a_d b_r)ϵ = b_r a_r+(b_r a_d+b_d a_r)ϵ = ba.
-$$
-We also explicitly prove multiplicative associativity:
-$$
-(ab)c = ((a_r b_r+(a_r b_d+a_d b_r) ϵ ) c = 
-a_r b_r c_r + ((a_r b_d + a_d b_r) c_r  + a_r b_r c_d) ϵ = 
-a_r b_r c_r + (a_r b_d c_r + a_d b_r c_r  + a_r b_r c_d) ϵ
-$$
-and
-$$
-a(bc) = a ((b_r c_r+(b_r c_d+b_d c_r) ϵ ) = a_r b_r c_r + (a_r b_d c_r + a_d b_r c_r  + a_r b_r c_d) ϵ.
-$$
-The number $1+0ϵ$ serves as the multiplicative identity. Note that for any dual number $a$, we have
-$$
-(1+0ϵ )(a_r + a_d ϵ ) = 1 a_r + (a_r 0 + 1 a_d) ϵ = a_r+a_d ϵ = a.
-$$
-Finally we show distributivity of multiplication:
-$$
-a(b+c) = a (b_r+c_r + (b_d+c_d)ϵ) = (a_r b_r + a_r c_r) + (a_r b_d+a_r c_d+ a_d b_r + a_d c_r) ϵ,
-$$
-$$
-ab + ac = a_r b_r + (a_d b_r + a_r b_d) ϵ + a_r c_r + (a_d c_r + a_r c_d) ϵ = (a_r b_r + a_r c_r) + (a_r b_d+a_r c_d+ a_d b_r + a_d c_r) ϵ.
-$$
-
-**END**
-
-
--------
-
-**Problem 4(a)** What should the following functions applied to dual numbers return for $x = a+b ϵ$:
-$$
-f(x) = x^10 + 1, g(x) = 1/x, h(x) = \tan x
-$$
-State  the domain where these definitions are valid.
-
-
-**Problem 4(b)** What is the correct definition of division on dual numbers, i.e.,
-$$
-(a + b ϵ )/(c + d ϵ ) = s + t ϵ
-$$
-for what choice of $s$ and $t$? 
-
-**SOLUTION**
-
-As with complex numbers, division is easiest to understand by first multiplying with the conjugate, that is:
-$$
-\frac{a+bϵ}{c+dϵ} = \frac{(a+bϵ)(c-dϵ)}{(c+dϵ)(c-dϵ)}.
-$$
-Expanding the products and dropping terms with $ϵ^2$ then leaves us with the definition of division for dual numbers (where the denominator must have non-zero real part):
-$$
-\frac{a}{c} + \frac{bc - ad}{c^2}ϵ.
-$$
-Thus we have $s = \frac{a}{c}$ and $t = \frac{bc - ad}{c^2}$.
-
-
-
-
-**END**
-
-**Problem 4(c)** A _field_ is a commutative ring such that $0 ≠ 1$ and all nonzero elements have a multiplicative inverse, i.e.,
-there exists $a^{-1}$ such that $a a^{-1} = 1$. Can we use Problem 4(b) to define $a^{-1} := 1/a$ to make $𝔻$ a field? Why or why not?
-
-**SOLUTION**
-
-Fields require that all nonzero elements have a unique multiplicative inverse. However, this is not the case for dual numbers. To give an explicit counter example, we show that there is no dual number $z$ which is the inverse of $0+ϵ$, i.e. a dual number $z$ such that
-$$
-\frac{(0+ϵ)}{(z_r+z_d ϵ)} = 1 + 0 ϵ.
-$$
-By appropriate multiplication with the conjugate we show that
-$$
-\frac{(0+ϵ)(z_r-z_d ϵ)}{(z_r+z_d ϵ)(z_r-z_d ϵ)} = \frac{z_r ϵ}{z_r^2} = \frac{ϵ}{z_r}.
-$$
-This proves that no choice of real part $z_r$ can reach the multiplicative identity $1+0 ϵ$ when starting from the number $0+ϵ$. More general results for zero real part dual numbers can also be proved.
-
-**END**
- 
-
-------
-**Problem 5** Use dual numbers to compute the derivative of the following functions at $x = 0.1$:
-$$
-\exp(\exp x \cos x + \sin x), \prod_{k=1}^3 \left({x \over k}-1\right),\hbox{ and } f^{\rm s}_2(x) = {1 + {x - 1 \over 2 + {x-1 \over 2}}}
-$$
-
-**SOLUTION**
-
-
-We now compute the derivatives of the three functions by evaluating for $x = 0.1 + ϵ$. For the first function we have:
-$$
-\begin{align*}
-\exp(\exp(0.1 + ϵ)\cos(0.1+ϵ) + \sin(0.1+ϵ)) &=
-\exp((\exp(0.1) + ϵ\exp(0.1))(\cos(0.1)-\sin(0.1)ϵ) + \sin(0.1)+\cos(0.1)ϵ) \\
-&= \exp(\exp(0.1)\cos(0.1)+ \sin(0.1) + (\exp(0.1)(\cos(0.1)-\sin(0.1))+\cos(0.1))ϵ) \\
-&= \exp(\exp(0.1)\cos(0.1)+ \sin(0.1)) + \exp(\exp(0.1)\cos(0.1)+ \sin(0.1))\exp(0.1)(\cos(0.1)-\sin(0.1))+\cos(0.1))ϵ 
-\end{align*}
-$$
-therefore the derivative is the dual part
-$$
-\exp(\exp(0.1)\cos(0.1)+ \sin(0.1))(\exp(0.1)(\cos(0.1)-\sin(0.1))+\cos(0.1))
-$$
-
-For the second function we have:
-$$
-\begin{align*}
- \left(0.1+ϵ-1\right) \left({0.1 + ϵ \over 2}-1\right)\left({0.1 + ϵ \over 3}-1\right)
- &=\left(-0.9+ϵ\right) \left(-0.95 + ϵ/2\right)\left(-29/30 + ϵ/3\right) \\
-&=\left(171/200 -1.4ϵ\right)\left(-29/30 + ϵ/3\right)  \\
-&= -1653/2000 + 983ϵ/600
-\end{align*}
-$$
-Thus the derivative is $983/600$.
-
-For the third function we have:
-$$
-\begin{align*}
-{1 + {0.1+ϵ - 1 \over 2 + {0.1+ϵ-1 \over 2}}} &=  {1 + {-0.9+ϵ \over 1.55 + ϵ/2}}\\
-&= 1 -18/31 + 2ϵ/1.55^2
-\end{align*}
-$$
-Thus the derivative is $2/1.55^2$.
-
-**END**
