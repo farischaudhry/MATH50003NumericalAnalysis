@@ -1,11 +1,10 @@
-# MATH50003 (2022–23)
-# Problem Sheet 1
+**Numerical Analysis MATH50003 (2022–23) Problem Sheet 1**
 
 
 
------
+------
 
-**Problem 1(a)** Assuming $f$ is differentiable, prove the left-point Rectangular rule error formula
+**Problem 1** Assuming $f$ is differentiable, prove the left-point Rectangular rule error formula
 $$
 ∫_a^b f(x) {\rm d}x =  h ∑_{k=0}^{n-1} f(x_k) +  δ
 $$
@@ -26,11 +25,11 @@ where
 $$
 \abs{ε} ≤ (b-a) \sup_{a ≤ x ≤ b}|(x-b) f'(x)| ≤ M (b-a)^2
 $$
-Applying this result on $[x_{k-1},x_k]$ we het
+Applying this result on $[x_{k-1},x_k]$ we get
 $$
 ∫_{x_{k-1}}^{x_k} f(x) {\rm d}x = h f(x_{k-1}) + δ_k
 $$
-where $|δ_k| ≤ M h^2$. 
+where $|δ_k| ≤ M h^2$. 
 Splitting the integral into a sum of smaller integrals:
 $$
 ∫_a^b f(x) {\rm d}x = ∑_{k=1}^n  ∫_{x_{k-1}}^{x_k} f(x) {\rm d}x =
@@ -44,23 +43,21 @@ $$
 **END**
 
 
-**Problem 1(b)**  Assuming $f$ is twice-differentiable, prove a one-panel Trapezium rule error bound:
+
+
+
+**Problem 2(a)**  Assuming $f$ is twice-differentiable, prove a one-panel Trapezium rule error bound:
 $$
 ∫_a^b f(x) {\rm d}x = (b-a) {f(a) + f(b) \over 2} +  δ
 $$
-where
-$
-|δ| ≤ M (b-a)^3
-$ 
-for $M = \sup_{a ≤ x ≤ b}|f''(x)|$.  
+where $|δ| ≤ M (b-a)^3$ for $M = \sup_{a ≤ x ≤ b}|f''(x)|$.  
 
 _Hint_: Recall from the notes
 $$
-∫_a^b {(b-x) f(a) + (x-a) f(b) \over b-a} \dx= (b-a) {f(a) + f(b) \over 2}
+∫_a^b {(b-x) f(a) + (x-a) f(b) \over b-a} \dx = (b-a) {f(a) + f(b) \over 2}
 $$
-and use **Proposition 1 (divided differences error)**. Note that the bound is
-not sharp and so you may arrive at something sharper like $|δ| ≤ (b-a)^3 M*3/4$.
-The sharpest bound is $|δ| ≤ (b-a)^3 M/12$ but this will be a significant challenge to show!
+and you may need to use Taylor's theorem. Note that the bound is not sharp and so you may arrive at something sharper like $|δ| ≤ 3(b-a)^3 M/4$.
+The sharpest bound is $|δ| ≤ (b-a)^3 M/12$ but that would be a significantly harder challenge to show!
 
 **SOLUTION**
 
@@ -92,39 +89,60 @@ For the sharper $1/12$ constant check out the [Euler–Maclaurin formula](https:
 **END**
 
 
-**Problem 1(c)** Assuming $f$ is twice-differentiable, prove a bound for the Trapezium rule error:
+**Problem 2(b)** Assuming $f$ is twice-differentiable, prove a bound for the Trapezium rule error:
 $$
-∫_a^b f(x) {\rm d}x = (b-a) {f(a) + f(b) \over 2} +  δ
+∫_a^b f(x) {\rm d}x = h \br[{f(a) \over 2} + ∑_{j=1}^{n-1} f(x_k) + {f(b) \over 2}] +  δ
 $$
-where
-$
-|δ| ≤ M (b-a)^3
-$ 
-for $M = \sup_{a ≤ x ≤ b}|f''(x)|$.  
+where $|δ| ≤ M (b-a) h^2$ for $M = \sup_{a ≤ x ≤ b}|f''(x)|$.  
 
 **SOLUTION**
 
+This is very simple to the rectangular rules: applying the preceding result on $[x_{k-1},x_k]$ we get
+$$
+∫_{x_{k-1}}^{x_k} f(x) {\rm d}x = h {f(x_{k-1}) + f(x_k) \over 2} + δ_k
+$$
+where $|δ_k| ≤ M h^3$. 
+Splitting the integral into a sum of smaller integrals:
+$$
+∫_a^b f(x) {\rm d}x = ∑_{k=1}^n  ∫_{x_{k-1}}^{x_k} f(x) {\rm d}x =
+h \br[{f(a) \over 2} + ∑_{j=1}^{n-1} f(x_k) + {f(b) \over 2}] +  \underbrace{∑_{k=1}^n δ_k}_δ
+$$
+where using the triangular inequality we have 
+$$
+|δ| = \abs{ ∑_{k=1}^n δ_k} ≤ ∑_{k=1}^n |δ_k| ≤ M n h^3 = M(b-a) h^2.
+$$
+
+
+
 **END**
 
-------
 
-**Problem 2(a)** For the left divided differences approximation 
+-----
+
+**Problem 3** Assuming $f$ is twice-differentiable,
+for the left difference approximation
+$$
+f'(x) = {f(x) - f(x - h) \over h} + δ,
+$$
+show that $|δ| ≤ Mh/2$ for $M = \sup_{x ≤ t ≤ x+h}\abs{f''(t)}$.
 
 
-**Problem 2(b)** For the central differences approximation
+
+
+**Problem 4** Assuming $f$ is thrice-differentiable,
+for the central differences approximation
 $$
-f'(x) = {f(x + h) - f(x - h) \over 2h} + δ_{x,h}^{\rm T},
+f'(x) = {f(x + h) - f(x - h) \over 2h} + δ,
 $$
-bound the absolute error $|δ_{x,h}^{\rm T}|$ in terms of 
-$$
-M = \max_{y ∈ [x-h,x+h]}\left| f'''(y)\right|.
-$$
+show that $|δ| ≤ Mh^2/6$ for $M = \sup_{x-h ≤ t ≤ x+h}\abs{f'''(t)}$.
 
 **SOLUTION**
 
 
 By Taylor's theorem, the approximation around $x+h$ is
-$$f(x+h) = f(x) + f'(x)h + \frac{f''(x)}{2}h^2 + \frac{f'''(z_1)}{6}h^3,$$
+$$
+f(x+h) = f(x) + f'(x)h + \frac{f''(x)}{2}h^2 + \frac{f'''(z_1)}{6}h^3,
+$$
 for some $z_1 ∈ (x, x+h)$ and similarly
 $$f(x-h) = f(x) + f'(x)(-h) + \frac{f''(x)}{2}h^2 - \frac{f'''(z_2)}{6}h^3,$$
 for some $z_2 ∈ (x-h, x)$.
@@ -134,25 +152,23 @@ $$f(x+h)-f(x-h) = f'(x)(2h) + \frac{f'''(z_1)+f'''(z_2)}{6}h^3.$$
 Hence,
 
 $$
-\frac{f(x+h)-f(x-h)}{2h} = f'(x)  + \underbrace{\frac{f'''(z_1)+f'''(z_2)}{12}h^2}_{δ_{x,h}^{\rm T}}.
+\frac{f(x+h)-f(x-h)}{2h} = f'(x)  + \underbrace{\frac{f'''(z_1)+f'''(z_2)}{12}h^2}_{δ}.
 $$
 
 Thus, the error can be bounded by
-$$\left|δ_{x,h}^{\rm T}\right| ≤ {M \over 6} h^2.$$
+$$\left|δ\right| ≤ {M \over 6} h^2.$$
 
 **END**
 
 
 
 
-**Problem 2(c)**  For the second-order derivative approximation
+**Problem 5**  Assuming $f$ is thrice-differentiable,
+for the second-order derivative approximation
 $$
-{f(x+h) - 2f(x) + f(x-h) \over h^2} = f''(x) + δ_{x,h}^{\rm T}
+{f(x+h) - 2f(x) + f(x-h) \over h^2} = f''(x) + δ
 $$
-bound the absolute error $|δ_{x,h}^{\rm T}|$ in terms of 
-$$
-M = \max_{y∈[x-h,x+h]}\left|f'''(y)\right|.
-$$
+show that $|δ| ≤ Mh/3$ for $M = \sup_{x-h ≤ t ≤ x+h}\abs{f'''(t)}$.
 
 **SOLUTION**
 Using the same two formulas as in 1.1 we have
@@ -170,7 +186,8 @@ $$f''(x) = \frac{f(x+h) - 2f(x) + f(x-h)}{h^2} + \frac{f'''(z_2) - f'''(z_1)}{6}
 
 Hence, the error is 
 $$
-|δ_{x,h}^{\rm T}| = \left|f''(x) - {f(x+h) - 2f(x) + f(x-h) \over h^2} \right| = \left|\frac{f'''(z_2) - f'''(z_1)}{6}h\right|≤ {Mh \over 3}.
+|δ| = \left|f''(x) - {f(x+h) - 2f(x) + f(x-h) \over h^2} \right| = \left|\frac{f'''(z_2) - f'''(z_1)}{6}h\right|≤ {Mh \over 3}.
 $$
 
 
+**END**
