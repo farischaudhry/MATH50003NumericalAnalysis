@@ -83,14 +83,15 @@ $$
 Note a consequence of this lemma is that the approximation converges as $n → 0$. In the labs and problem
 sheets we will consider the left-sided rule:
 $$
-∫_a^b f(x) {\rm d}x ≈  h ∑_{k=0}^{n-1} f(x_k)
+∫_a^b f(x) {\rm d}x ≈  h ∑_{k=0}^{n-1} f(x_k).
 $$
-and the _Trapezium rule_, where we approximate the integral in each panel by an affine function:
+We also consider the _Trapezium rule_. Here we approximate an integral  by an affine function:
 $$
-∫_{x_{k-1}}^{x_k} f(x) {\rm d} x ≈ ∫_{x_{k-1}}^{x_k} \br[f(x_{k-1}) + (x-x_{k-1})/(x_k - x_{k-1}) f(x_k)] {\rm d} x
-= {h \over 2} \br[f(x_{k-1}) + f(x_k)]
+∫_a^b f(x) {\rm d} x ≈ ∫_a^b {(b-x)f(a) + (x-a)f(b) \over b-a} \dx
+= {b-a \over 2} \br[f(a) + f(b)].
 $$
-leading to the approximation
+Subdividing an interval $a = x_0 < x_1 < … < x_n = b$ and applying this approximation separately on
+each subinterval $[x_{k-1},x_k]$, where $h = (b-a)/n$ and $x_k = a + kh$, leads to the approximation
 $$
 ∫_a^b f(x) {\rm d}x ≈  {h \over 2} f(a) + h ∑_{k=1}^{n-1} f(x_k) + {h \over 2} f(b)
 $$

@@ -35,6 +35,27 @@ compilenotes("I.1.RectangularRule")
 compilenotes("I.2.DividedDifferences")
 compilenotes("I.3.DualNumbers")
 
+
+###
+# sheets
+###
+
+function compilesheet(filename)
+    write("sheets/$filename.jmd", replace(read("src/sheets/$(filename)s.jmd", String), r"\*\*SOLUTION\*\*(.*?)\*\*END\*\*"s => ""))
+    weave("sheets/$filename.jmd"; out_path="sheets/", doctype="md2tex", template="src/sheets/template.tpl")
+    path = "sheets/$filename.tex"
+    # work around double newline before equation
+    write(path, replace(read(path, String), "\n\n\\[" => "\n\\["))
+    # work around meeq 
+    write(path, replace(read(path, String), r"\\\[\n\\meeq\{(.*?)\}\n\\\]"s => s"\\meeq{\1}"))
+end
+
+compilesheet("sheet1")
+
+# notebook("sheets/sheet1.jmd"; pkwds...)
+# notebook("src/sheets/sheet1s.jmd"; pkwds...)
+
+
 #####
 # labs
 #####

@@ -1,6 +1,6 @@
 # Divided Differences
 
-given a function, how can we approximate its derivative at a
+Given a function, how can we approximate its derivative at a
 point? We consider an intuitive approach to this problem using _(Right-sided) Divided Differences_: 
 $$
 f'(x) ≈ {f(x+h) - f(x) \over h}
@@ -14,7 +14,7 @@ Now in the previous section I mentioned there are three basic tools in analysis:
 or (3) Taylor series. In this case we use (3):
 
 **Proposition (divided differences error)**
-Suppose that $f$ is twice differrentable on the interval $(x,x+h)$.
+Suppose that $f$ is twice-differentiable on the interval $[x,x+h]$.
 The error in approximating the derivative using divided differences is
 $$
 f'(x) = {f(x+h) - f(x) \over h} + δ

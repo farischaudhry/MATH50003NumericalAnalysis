@@ -66,14 +66,14 @@ Thus using the triangular inequality we have
 
 Note a consequence of this lemma is that the approximation converges as $n \ensuremath{\rightarrow} 0$. In the labs and problem sheets we will consider the left-sided rule:
 \[
-\ensuremath{\int}_a^b f(x) {\rm d}x \ensuremath{\approx}  h \ensuremath{\sum}_{k=0}^{n-1} f(x_k)
+\ensuremath{\int}_a^b f(x) {\rm d}x \ensuremath{\approx}  h \ensuremath{\sum}_{k=0}^{n-1} f(x_k).
 \]
-and the \emph{Trapezium rule}, where we approximate the integral in each panel by an affine function:
+We also consider the \emph{Trapezium rule}. Here we approximate an integral  by an affine function:
 \[
-\ensuremath{\int}_{x_{k-1}}^{x_k} f(x) {\rm d} x \ensuremath{\approx} \ensuremath{\int}_{x_{k-1}}^{x_k} \br[f(x_{k-1}) + (x-x_{k-1})/(x_k - x_{k-1}) f(x_k)] {\rm d} x
-= {h \over 2} \br[f(x_{k-1}) + f(x_k)]
+\ensuremath{\int}_a^b f(x) {\rm d} x \ensuremath{\approx} \ensuremath{\int}_a^b {(b-x)f(a) + (x-a)f(b) \over b-a} \dx
+= {b-a \over 2} \br[f(a) + f(b)].
 \]
-leading to the approximation
+Subdividing an interval $a = x_0 < x_1 < \ensuremath{\ldots} < x_n = b$ and applying this approximation separately on each subinterval $[x_{k-1},x_k]$, where $h = (b-a)/n$ and $x_k = a + kh$, leads to the approximation
 \[
 \ensuremath{\int}_a^b f(x) {\rm d}x \ensuremath{\approx}  {h \over 2} f(a) + h \ensuremath{\sum}_{k=1}^{n-1} f(x_k) + {h \over 2} f(b)
 \]
