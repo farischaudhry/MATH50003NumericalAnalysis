@@ -1,4 +1,4 @@
-**Numerical Analysis MATH50003 (2022–23) Problem Sheet 2**
+**Numerical Analysis MATH50003 (2023–24) Problem Sheet 2**
 
 
 
@@ -20,7 +20,7 @@ Show that dual numbers $𝔻$ are a _commutative ring_, that is, for all $a,b,c 
 
 **Problem 2** What should the following functions applied to dual numbers return for $x = a+b ϵ$:
 $$
-f(x) = x^{10} + 1, g(x) = 1/x, h(x) = \tan x
+f(x) = x^{10}    + 1, g(x) = 1/x, h(x) = \tan x
 $$
 State  the domain where these definitions are valid.
 
