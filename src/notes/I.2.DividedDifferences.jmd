@@ -1,6 +1,6 @@
 # Divided Differences
 
-given a function, how can we approximate its derivative at a
+Given a function, how can we approximate its derivative at a
 point? We consider an intuitive approach to this problem using _(Right-sided) Divided Differences_: 
 $$
 f'(x) ≈ {f(x+h) - f(x) \over h}
