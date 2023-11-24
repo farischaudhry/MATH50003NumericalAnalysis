@@ -429,9 +429,13 @@ x = 0.1
 
 
 # **Problem 4(b)** Use dual numbers to compute the derivatives to
+# 1. $\exp(\exp x \cos x + \sin x)$
+# 2. $∏_{k=1}^{1000} \left({x \over k}-1\right)$
+# 3. $f^{\rm s}_{1000}(x)$ where $f^{\rm s}_n(x)$ corresponds to $n$-terms of the following continued fraction:
 # $$
-# \exp(\exp x \cos x + \sin x), ∏_{k=1}^{1000} \left({x \over k}-1\right), \hbox{ and } f^{\rm s}_{1000}(x).
+# 1 + {x-1 \over 2 + {x-1 \over 2 + {x-1 \over 2 + ⋱}}},
 # $$
+#
 # Compare with divided differences to give evidence that your implementation is correct.
 
 ## TODO: Use dual numbers to compute the derivatives of the 3 functions above.
@@ -466,7 +470,7 @@ contdual.b
 # ## Newton's method
 
 # Newton's method is a simple algorithmic approach for computing roots (or zeros)
-# of functions that you may have seen before in A-levels. The basic idea is given an initial guess $x_0$,
+# of functions that you may have seen before in school. The basic idea is given an initial guess $x_0$,
 # find the first-order Taylor approximation $p(x)$ (i.e., find the line that matches the slope of the function at the point)
 # $$
 # f(x) ≈ \underbrace{f(x_0) + f'(x_0) (x- x_0)}_{p(x)}.

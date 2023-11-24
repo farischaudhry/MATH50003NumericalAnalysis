@@ -244,7 +244,7 @@ end
 
 # ## I.3 Dual Numbers
 # 
-# We now consider implementing a type `Dual` to represent the dual number $a + bε$,
+# We now consider implementing a type `Dual` to represent the dual number $a + bϵ$,
 # in a way similar to `Complex` or `Rat`. For simplicity we don't restrict the types of `a` and `b`
 # but for us they will usually be `Float64`. We create this type very similar to `Rat` above:
 
@@ -255,20 +255,20 @@ end
 
 # We can easily support addition of dual numbers as in `Rat` using the formula
 # $$
-# (a+bε) + (c+dε) = (a+c) + (b+d)ε
+# (a+bϵ) + (c+dϵ) = (a+c) + (b+d)ϵ
 # $$
 
 function +(x::Dual, y::Dual)
-    a,b = x.a, x.b # x == a+bε. This gets out a and b
-    c,d = y.a, y.b # y == c+dε. This gets out c and d
+    a,b = x.a, x.b # x == a+bϵ. This gets out a and b
+    c,d = y.a, y.b # y == c+dϵ. This gets out c and d
     Dual(a+c, b+d)
 end
 
 Dual(1,2) + Dual(3,4) # just adds each argument
 
-# For multiplication we used the fact that $ε^2 = 0$ to derive the formula
+# For multiplication we used the fact that $ϵ^2 = 0$ to derive the formula
 # $$
-# (a+bε)*(c+dε) = ac +(bc+ad)ε.
+# (a+bϵ)*(c+dϵ) = ac +(bc+ad)ϵ.
 # $$
 # Here we support this operation by overloading `*` when the inputs are both
 # `Dual`:
@@ -276,22 +276,22 @@ Dual(1,2) + Dual(3,4) # just adds each argument
 import Base: * # we want to also overload *
 
 function *(x::Dual, y::Dual) 
-    a,b = x.a, x.b # x == a+bε. This gets out a and b
-    c,d = y.a, y.b # y == c+dε. This gets out c and d
+    a,b = x.a, x.b # x == a+bϵ. This gets out a and b
+    c,d = y.a, y.b # y == c+dϵ. This gets out c and d
     Dual(a*c, b*c + a*d)
 end
 
 # Dual numbers allow us to differentiate functions provided they are composed of
 # operations overloaded for `Dual`. In particular, we have that
 # $$
-# f(x + b ε) = f(x) + bf'(x)ε
+# f(x + b ϵ) = f(x) + bf'(x)ϵ
 # $$
 # and thus if we set `b = 1` the "dual part" is equal to the derivative.
 # We can use this fact to differentiate simple polynomials that only use `+`
 # and `*`:
 
 f = x -> x*x*x + x
-f(Dual(2,1)) # (2^3 + 2) + (3*2^2+1)*ε
+f(Dual(2,1)) # (2^3 + 2) + (3*2^2+1)*ϵ
 
 # A polynomial like `x^3 + 1` is not yet supported.
 # To support this we need to add addition of `Dual` with `Int` or `Float64`.
@@ -301,7 +301,7 @@ f(Dual(2,1)) # (2^3 + 2) + (3*2^2+1)*ε
 
 import Base: ^
 
-Dual(a::Real) = Dual(a, 0) # converts a real number to a dual number with no ε
+Dual(a::Real) = Dual(a, 0) # converts a real number to a dual number with no ϵ
 
 +(x::Real, y::Dual) = Dual(x) + y
 +(x::Dual, y::Real) = x + Dual(y)
@@ -323,12 +323,12 @@ function ^(x::Dual, n::Int)
 end
 
 f = x -> x^3 + 1
-f(Dual(2,1))  # 2^3+1 + 3*2^2*ε
+f(Dual(2,1))  # 2^3+1 + 3*2^2*ϵ
 
 
 
 # We can also overload functions like `exp` so that they satisfy the rules of
-# a _dual extension_, that is, are consistent with the formula $f(a+bε) = f(a) + bf'(a)ε$
+# a _dual extension_, that is, are consistent with the formula $f(a+bϵ) = f(a) + bf'(a)ϵ$
 # as follows:
 
 import Base: exp
@@ -354,7 +354,7 @@ f(1 + ϵ)
 
 import Base: -, cos, sin, /
 
-## The following supports negation -(a+bε)
+## The following supports negation -(a+bϵ)
 -(x::Dual) = Dual(-x.a, -x.b)
 
 ## TODO: implement -(::Dual, ::Dual)
@@ -382,9 +382,13 @@ x = 0.1
 
 
 # **Problem 4(b)** Use dual numbers to compute the derivatives to
+# 1. $\exp(\exp x \cos x + \sin x)$
+# 2. $∏_{k=1}^{1000} \left({x \over k}-1\right)$
+# 3. $f^{\rm s}_{1000}(x)$ where $f^{\rm s}_n(x)$ corresponds to $n$-terms of the following continued fraction:
 # $$
-# \exp(\exp x \cos x + \sin x), ∏_{k=1}^{1000} \left({x \over k}-1\right), \hbox{ and } f^{\rm s}_{1000}(x).
+# 1 + {x-1 \over 2 + {x-1 \over 2 + {x-1 \over 2 + ⋱}}},
 # $$
+#
 # Compare with divided differences to give evidence that your implementation is correct.
 
 ## TODO: Use dual numbers to compute the derivatives of the 3 functions above.
@@ -396,8 +400,8 @@ x = 0.1
 # ## Newton's method
 
 # Newton's method is a simple algorithmic approach for computing roots (or zeros)
-# of functions that you may have seen before in A-levels. The basic idea is given an initial guess $x_0$,
-# find the first-order Taylor approximation $p(x)$ (i.e., fine the line that matches the slope of the function at the point)
+# of functions that you may have seen before in school. The basic idea is given an initial guess $x_0$,
+# find the first-order Taylor approximation $p(x)$ (i.e., find the line that matches the slope of the function at the point)
 # $$
 # f(x) ≈ \underbrace{f(x_0) + f'(x_0) (x- x_0)}_{p(x)}.
 # $$
