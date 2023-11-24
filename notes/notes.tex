@@ -1,0 +1,72 @@
+\documentclass[12pt,a4paper]{book}
+
+\usepackage[a4paper,text={16.5cm,25.2cm},centering]{geometry}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.2ex}
+\let\QED=\blacksquare
+\def\bbD{{\mathbb D}}
+
+\hypersetup
+       {   pdfauthor = { {{Sheehan Olver}} },
+           pdftitle={ {{MATH50003 Numerical Analysis}} },
+           colorlinks=TRUE,
+           linkcolor=black,
+           citecolor=blue,
+           urlcolor=blue
+       }
+
+\title{ MATH50003 Numerical Analysis }
+
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+
+\author{ Sheehan Olver }
+\renewcommand{\thechapter}{\Roman{chapter}}
+
+\input{somacros}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Calculus on a Computer}
+
+In this first chapter we explore the basics of mathematical computing and numerical analysis.
+In particular we investigate the following mathematical problems which can not in general be solved exactly:
+
+\begin{enumerate}
+\item Integration. General integrals have no closed form expressions. Can we use a computer to approximate the values of definite integrals?
+\item Differentiation. Differentiating a formula as in calculus is usually algorithmic, however, it is often needed to compute derivatives without access to an underlying formula, eg, of a function defined only in code. Can we use a computer to approximate derivatives?  A very important application is in Machine Learning, where there is a need to compute gradients to determine the ``right" weights in a neural network. 
+\item Root finding. There is no general formula for finding roots (zeros) of arbitrary functions, or even polynomials that are of degree 5 (quintics) or higher. Can we compute roots of general functions using a computer?
+\end{enumerate}
+
+In this chapter we discuss:
+
+\begin{enumerate}
+\item I.1 Rectangular rule: We review the rectangular rule for integration and deduce the {\it converge rate} of the approximation. In the lab  we investigate its implementation as well as extensions to the Trapezium rule. 
+\item I.2 Divided differences: We investigate approximating derivatives by a divided difference and again deduce the convergence rates. In the lab we extend the approach to the central differences formula and computing second derivatives. We also observe a mystery: the approximations may have significant errors in practice, and there is a limit to the accuracy.
+\item I.3 Dual numbers:  We introduce the algebraic notion of a {\it dual number} which allows implementing {\it forward-mode automatic differentiation}, a high accuracy alternative to divided differences for computing derivatives.
+\end{enumerate}
+
+
+
+\input{I.1.RectangularRule.tex}
+\input{I.2.DividedDifferences.tex}
+
+
+\end{document}
