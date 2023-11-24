@@ -467,7 +467,7 @@ contdual.b
 
 # Newton's method is a simple algorithmic approach for computing roots (or zeros)
 # of functions that you may have seen before in A-levels. The basic idea is given an initial guess $x_0$,
-# find the first-order Taylor approximation $p(x)$ (i.e., fine the line that matches the slope of the function at the point)
+# find the first-order Taylor approximation $p(x)$ (i.e., find the line that matches the slope of the function at the point)
 # $$
 # f(x) ≈ \underbrace{f(x_0) + f'(x_0) (x- x_0)}_{p(x)}.
 # $$
