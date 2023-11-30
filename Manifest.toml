@@ -1,8 +1,8 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.1"
+julia_version = "1.9.3"
 manifest_format = "2.0"
-project_hash = "f453f178a3839e613687257a4bb4aa99a4405840"
+project_hash = "d9f93ad56b8d7a9174eb07b1120d8952f04f4960"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -42,6 +42,11 @@ deps = ["TranscodingStreams", "Zlib_jll"]
 git-tree-sha1 = "cd67fc487743b2f0fd4380d4cbd3a24660d0eec8"
 uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
 version = "0.7.3"
+
+[[deps.ColorBitstring]]
+git-tree-sha1 = "a31133b7c2707f5f9216d3bf0c99c5f034d8342d"
+uuid = "ce91de38-7578-4b98-aebb-6a5df05791d6"
+version = "0.2.0"
 
 [[deps.ColorSchemes]]
 deps = ["ColorTypes", "ColorVectorSpace", "Colors", "FixedPointNumbers", "PrecompileTools", "Random"]
@@ -375,7 +380,7 @@ version = "0.6.3"
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
-version = "7.84.0+0"
+version = "8.4.0+0"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -384,7 +389,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
-version = "1.10.2+0"
+version = "1.11.0+1"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -1151,7 +1156,7 @@ version = "1.1.6+0"
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
-version = "1.48.0+0"
+version = "1.52.0+1"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
