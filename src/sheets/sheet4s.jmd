@@ -1,0 +1,125 @@
+
+**Problem 6** What are the exact bits for $1 ⊘ 5$, $1 ⊘ 5 ⊕ 1$ computed
+using  half-precision arithmetic (`Float16`) (using default rounding)?
+
+**SOLUTION**
+
+From Problem 2.1 in Lab 2 we know that
+$$
+1/5 = 2^{-3} * (1.10011001100…)_2 ≈ 2^{-3} * (1.1001100110)_2
+$$
+where the $≈$ is rounded to the nearest 10 bits (in this case rounded down).
+This can be shown using Geometric series:
+$$
+\begin{align*}
+(0.00110011001100…)_2 &= (2^{-3} + 2^{-4})(1.00010001000…)_2 =  (2^{-3} + 2^{-4}) \sum_{k=0}^∞ {1 \over 16^k} \\
+&= {2^{-3} + 2^{-4} \over 1 - {1\over 2^4}} = {3 \over 15} = {1 \over 5}
+\end{align*}
+$$
+
+
+We write $-3 = 12 - 15$
+hence we have $q = 12 = (01100)_2$. 
+so  we get the bits:
+```julia
+printbits(Float16(1)/5)
+```
+
+Adding `1` we get:
+$$
+1 + 2^{-3} * (1.1001100110)_2 = (1.001100110011)_2 ≈ (1.0011001101)_2 
+$$
+Here we write the exponent as $0 = 15 - 15$ where $q = 15 = (01111)_2$. 
+Thus we get:
+```julia
+printbits(1 + Float16(1)/5)
+```
+
+**END**
+
+
+**Problem 9** Find a bound on the _absolute error_ in terms of a constant times machine epsilon
+$ϵ_{\rm m}$ for the following computations
+$$
+\begin{align*}
+(1.1 * 1.2) &+ 1.3 \\
+(1.1 - 1) &/ 0.1 
+\end{align*}
+$$
+implemented using floating point arithmetic (with any precision). That is, each number is rounded
+first using ${\rm fl}$ and each operation is replaced by its floating point analogues $⊕, ⊗, ⊖, ⊘$.
+
+
+**SOLUTION**
+
+The first problem is very similar to what we saw in lecture. Write 
+$$
+({\rm fl}(1.1)⊗ {\rm fl}(1.2)) ⊕ {\rm fl}(1.3) = ( 1.1(1 + δ_1)1.2(1+δ_2)(1+δ_3) + 1.3(1+δ_4))(1+δ_5)
+$$
+We first write
+$$
+1.1(1 + δ_1)1.2(1+δ_2)(1+δ_3) = 1.32( 1+ δ_6)
+$$
+where
+$$
+|δ_6| \leq |δ_1| + |δ_2| + |δ_3| + |δ_1| |δ_2| + |δ_1| |δ_3| + |δ_2| |δ_3|+ |δ_1| |δ_2| |δ_3| \leq 4 ϵ_{\rm m}
+$$
+Then we have
+$$
+1.32 (1 + δ_6) + 1.3 (1 + δ_4) = 2.62 + \underbrace{1.32 δ_6 + 1.3δ_4}_{δ_7}
+$$
+where
+$$
+|δ_7| ≤ 7 ϵ_{\rm m}
+$$
+Finally,
+$$
+(2.62 + δ_7)(1+δ_5) = 2.62 + \underbrace{δ_7 + 2.62δ_5 + δ_7 δ_5}_{δ_8}
+$$
+where
+$$
+|δ_8| ≤ 11 ϵ_{\rm m}
+$$
+
+
+
+For the second part, we do:
+$$
+({\rm fl}(1.1) ⊖ 1) ⊘ {\rm fl}(0.1) = {(1.1 (1 + δ_1) - 1)(1 + δ_2) \over 0.1 (1 + δ_3)} (1 + δ_4)
+$$
+Write
+$$
+{1 \over 1 + δ_3} = 1 + δ_5
+$$
+where
+$$
+|δ_5| \leq \left| {δ_3 \over 1 + δ_3} \right| \leq  {ϵ_{\rm m} \over 2} {1 \over 1 - 1/2} \leq ϵ_{\rm m}
+$$
+using the fact that $|δ_3| < 1/2$.
+Further write
+$$
+(1 + δ_5)(1 + δ_4) = 1 + δ_6
+$$
+where
+$$
+|δ_6| \leq |δ_5| + |δ_4| + |δ_5| |δ_4| \leq 2ϵ_{\rm m}
+$$
+We also write
+$$
+{(1.1 (1 + δ_1) - 1)(1 + δ_2) \over 0.1} = 1 + \underbrace{11δ_1 + δ_2 + 11δ_1δ_2}_{δ_7}
+$$
+where
+$$
+|δ_7| ≤ 12 ϵ_{\rm m}
+$$
+Then we get 
+$$
+({\rm fl}(1.1) ⊖ 1) ⊘ {\rm fl}(0.1) = (1 + δ_7) (1 + δ_6) =  1 + δ_7 + δ_6 + δ_6 δ_7
+$$
+and the error is bounded by:
+$$
+(12 + 2 + 24) ϵ_{\rm m} = 38 ϵ_{\rm m}
+$$
+This is quite pessimistic but still captures that we are on the order of $ϵ_{\rm m}$.
+
+**END**

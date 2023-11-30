@@ -1,120 +1,10 @@
+# # MATH50003 (2023–24)
+# # Lab 3: II.1 Integers and II.2 Reals
+
 # We will use Julia in these notes to explore what is happening as a computer does integer arithmetic.
 # We load an external package
 # which implements functions `printbits` (and `printlnbits`)
 # to print the bits (and with a newline) of numbers in colour:
-
-using ColorBitstring
-
-
-# **Example 2 (arithmetic with  8-bit unsigned integers)** 
-# If  arithmetic lies between $0$ and $m = 2^8 = 256$ works as expected. 
-# For example,
-# $$
-# \begin{align*}
-# 17 ⊕_{256} 3 = 20 ({\rm mod}\ 256) = 20 \\
-# 17 ⊖_{256} 3 = 14 ({\rm mod}\ 256) = 14
-# \end{align*}
-# $$
-
-
-# This can be seen in Julia:
-
-x = UInt8(17)  # An 8-bit representation of the number 255, i.e. with bits 00010001
-y = UInt8(3)   # An 8-bit representation of the number   1, i.e. with bits 00000011
-printbits(x); println(" + "); printbits(y); println(" = ")
-printlnbits(x + y) # + is automatically modular arithmetic
-printbits(x); println(" - "); printbits(y); println(" = ")
-printbits(x - y) # - is automatically modular arithmetic
-
-
-
-# **Example 3 (overflow with 8-bit unsigned integers)** If we go beyond the range
-# the result "wraps around". For example, with integers we have
-# $$
-# 255 + 1 = (11111111)_2 + (00000001)_2 = (100000000)_2 = 256
-# $$
-# However, the result is impossible to store in just 8-bits! 
-# So as mentioned instead it treats the integers as elements of ${\mathbb Z}_{256}$:
-# $$
-# 255 ⊕_{256} 1 = 255 + 1 \ ({\rm mod}\ 256) = (00000000)_2 \ ({\rm mod}\ 256) = 0 \ ({\rm mod}\ 256)
-# $$
-# On the other hand, if we go below $0$ we wrap around from above:
-# $$
-# 3 ⊖_{256} 5 = -2 ({\rm mod}\ 256) = 254 = (11111110)_2
-# $$
-
-# We can see this in  code:
-
-x = UInt8(255) # An 8-bit representation of the number 255, i.e. with bits 11111111
-y = UInt8(1)   # An 8-bit representation of the number   1, i.e. with bits 00000001
-printbits(x); println(" + "); printbits(y); println(" = ")
-printbits(x + y) # + is automatically modular arithmetic
-
-
-x = UInt8(3) # An 8-bit representation of the number   3, i.e. with bits 00000011
-y = UInt8(5) # An 8-bit representation of the number   5, i.e. with bits 00000101
-printbits(x); println(" - "); printbits(y); println(" = ")
-printbits(x - y) # + is automatically modular arithmetic
-
-
-# **Example 4 (multiplication of 8-bit unsigned integers)** 
-# Multiplication works similarly: for example,
-# $$
-# 254 ⊗_{256} 2 = 254 * 2 \ ({\rm mod}\ 256) = 252 \ ({\rm mod}\ 256) = (11111100)_2 \ ({\rm mod}\ 256)
-# $$
-# We can see this behaviour in code by printing the bits:
-
-x = UInt8(254) # An 8-bit representation of the number 254, i.e. with bits 11111110
-y = UInt8(2)   # An 8-bit representation of the number   2, i.e. with bits 00000010
-printbits(x); println(" * "); printbits(y); println(" = ")
-printbits(x * y)
-
-
-
-# ## Division
-
-# In addition to `+`, `-`, and `*` we have integer division `÷`, which rounds towards zero:
-# ```julia
-# 5 ÷ 2 # equivalent to div(5,2)
-# ```
-# Standard division `/` (or `\` for division on the right) creates a floating-point number,
-# which will be discussed in the next chapter:
-# ```julia
-# 5 / 2 # alternatively 2 \ 5
-# ```
-
-#  We can also create rational numbers using `//`:
-# ```julia
-# (1//2) + (3//4)
-# ```
-# Rational arithmetic often leads to overflow so it
-# is often best to combine `big` with rationals:
-# ```julia
-# big(102324)//132413023 + 23434545//4243061 + 23434545//42430534435
-# ```
-
-
-# ## 4. Variable bit representation (non-examinable)
-
-# An alternative representation for integers uses a variable number of bits,
-#     with the advantage of avoiding overflow but with the disadvantage of a substantial
-#     speed penalty. In Julia these are `BigInt`s, which we can create by calling `big` on an
-#     integer:
-#     ```julia
-#     x = typemax(Int64) + big(1) # Too big to be an `Int64`
-#     ```
-#     Note in this case addition automatically promotes an `Int64` to a `BigInt`.
-#     We can create very large numbers using `BigInt`:
-#     ```julia
-#     x^100
-#     ```
-#     Note the number of bits is not fixed, the larger the number, the more bits required 
-#     to represent it, so while overflow is impossible, it is possible to run out of memory if a number is
-#     astronomically large: go ahead and try `x^x` (at your own risk).
-    
-
-
-# We load the following packages:
 
 using ColorBitstring, Test
 
@@ -126,7 +16,8 @@ using ColorBitstring, Test
 sizeof(UInt32) # 4 bytes == 4*8 bits == 32 bits
 
 # The function `typeof` can be used to determine the type of a number.
-# By default when we write an integer (e.g. `-123`) it is of type `Int`:
+# By default when we write an integer (e.g. `-123`) it is of type `Int`
+# (which on 64-bit machines is equivalent to `Int64`):
 
 typeof(5)
 
@@ -192,7 +83,71 @@ reinterpret(Int8, 0b11111111) # Create an Int8 with the bits 11111111
 
 
 
-# Arithmetic follows modular arithmetic. The following examples test your understanding of this.
+# Integer arithmetic follows modular arithmetic. The following examples demonstrate this.
+
+# **Example 2 (arithmetic with  8-bit unsigned integers)** 
+# If  arithmetic lies between $0$ and $m = 2^8 = 256$ works as expected. 
+# For example,
+# $$
+# \begin{align*}
+# 17 ⊕_{256} 3 = 20 ({\rm mod}\ 256) = 20 \\
+# 17 ⊖_{256} 3 = 14 ({\rm mod}\ 256) = 14
+# \end{align*}
+# $$
+
+# This can be seen in Julia:
+
+x = UInt8(17)  # An 8-bit representation of the number 255, i.e. with bits 00010001
+y = UInt8(3)   # An 8-bit representation of the number   1, i.e. with bits 00000011
+printbits(x); println(" + "); printbits(y); println(" = ")
+printlnbits(x + y) # + is automatically modular arithmetic
+printbits(x); println(" - "); printbits(y); println(" = ")
+printbits(x - y) # - is automatically modular arithmetic
+
+
+
+# **Example 3 (overflow with 8-bit unsigned integers)** If we go beyond the range
+# the result "wraps around". For example, with integers we have
+# $$
+# 255 + 1 = (11111111)_2 + (00000001)_2 = (100000000)_2 = 256
+# $$
+# However, the result is impossible to store in just 8-bits! 
+# So as mentioned instead it treats the integers as elements of ${\mathbb Z}_{256}$:
+# $$
+# 255 ⊕_{256} 1 = 255 + 1 \ ({\rm mod}\ 256) = (00000000)_2 \ ({\rm mod}\ 256) = 0 \ ({\rm mod}\ 256)
+# $$
+# On the other hand, if we go below $0$ we wrap around from above:
+# $$
+# 3 ⊖_{256} 5 = -2 ({\rm mod}\ 256) = 254 = (11111110)_2
+# $$
+
+# We can see this in  code:
+
+x = UInt8(255) # An 8-bit representation of the number 255, i.e. with bits 11111111
+y = UInt8(1)   # An 8-bit representation of the number   1, i.e. with bits 00000001
+printbits(x); println(" + "); printbits(y); println(" = ")
+printbits(x + y) # + is automatically modular arithmetic
+
+
+x = UInt8(3) # An 8-bit representation of the number   3, i.e. with bits 00000011
+y = UInt8(5) # An 8-bit representation of the number   5, i.e. with bits 00000101
+printbits(x); println(" - "); printbits(y); println(" = ")
+printbits(x - y) # + is automatically modular arithmetic
+
+
+# **Example 4 (multiplication of 8-bit unsigned integers)** 
+# Multiplication works similarly: for example,
+# $$
+# 254 ⊗_{256} 2 = 254 * 2 \ ({\rm mod}\ 256) = 252 \ ({\rm mod}\ 256) = (11111100)_2 \ ({\rm mod}\ 256)
+# $$
+# We can see this behaviour in code by printing the bits:
+
+x = UInt8(254) # An 8-bit representation of the number 254, i.e. with bits 11111110
+y = UInt8(2)   # An 8-bit representation of the number   2, i.e. with bits 00000010
+printbits(x); println(" * "); printbits(y); println(" = ")
+printbits(x * y)
+
+
 
 # -----
 
@@ -222,6 +177,54 @@ Int8(2)^7 # Retuns -128 since mod(-128,2^8) == 128
 Int8(2)^8 # Returns 0 since mod(2^8, 2^8) == 0
 
 ## END
+
+
+
+# ## Division
+
+# In addition to `+`, `-`, and `*` we have integer division `÷`, which rounds towards zero:
+
+5 ÷ 2 # equivalent to div(5,2)
+
+# Standard division `/` (or `\` for division on the right) creates a floating-point number,
+# which will be discussed in the next chapter:
+
+5 / 2 # alternatively 2 \ 5
+
+
+#  We can also create rational numbers using `//`:
+
+(1//2) + (3//4)
+
+# Rational arithmetic often leads to overflow so it
+# is often best to combine `big` with rationals:
+
+big(102324)//132413023 + 23434545//4243061 + 23434545//42430534435
+
+
+
+# ## 4. Variable bit representation
+
+# An alternative representation for integers uses a variable number of bits,
+#     with the advantage of avoiding overflow but with the disadvantage of a substantial
+#     speed penalty. In Julia these are `BigInt`s, which we can create by calling `big` on an
+#     integer:
+
+x = typemax(Int64) + big(1) # Too big to be an `Int64`
+
+#     Note in this case addition automatically promotes an `Int64` to a `BigInt`.
+#     We can create very large numbers using `BigInt`:
+
+x^100
+
+#     Note the number of bits is not fixed, the larger the number, the more bits required 
+#     to represent it, so while overflow is impossible, it is possible to run out of memory if a number is
+#     astronomically large: go ahead and try `x^x` (at your own risk).
+    
+
+
+
+
 
 # -----
 
@@ -420,9 +423,9 @@ end
 # form: that is, in base-16.
 # Since there are only 10 standard digits (`0-9`) it uses 6 letters (`a–f`) to represent
 # 11–16. For example,
-# ```julia
-# UInt8(250)
-# ```
+
+UInt8(250)
+
 # because `f` corresponds to 15 and `a` corresponds to 10, and we have
 # $$
 # 15 * 16 + 10 = 250.
@@ -431,58 +434,48 @@ end
 # values) and hence two hex-digits are encode 1 byte, and thus the digits correspond
 # exactly with how memory is divided into addresses.
 # We can create unsigned integers either by specifying their hex format:
-# ```julia
-# 0xfa
-# ```
+
+0xfa
+
 # Alternatively, we can specify their digits.
 # For example, we know $(f)_{16} = 15 = (1111)_2$ and $(a)_{16} = 10 = (1010)_2$ and hence
 # $250 = (fa)_{16} = (11111010)_2$ can be written as
-# ```julia
-# 0b11111010
-# ```
+
+0b11111010
+
 
 
 # **Example (converting bits to signed integers)** 
 # What 8-bit integer has the bits `01001001`? Because the first bit is 0 we know the result is positive.
 # Adding the corresponding decimal places we get:
-# ```julia
-# 2^0 + 2^3 + 2^6
-# ```
+
+2^0 + 2^3 + 2^6
+
 # What 8-bit (signed) integer has the bits `11001001`? Because the first bit is `1` we know it's a negative 
 # number, hence we need to sum the bits but then subtract `2^p`:
-# ```julia
-# 2^0 + 2^3 + 2^6 + 2^7 - 2^8
-# ```
+
+2^0 + 2^3 + 2^6 + 2^7 - 2^8
+
 # We can check the results using `printbits`:
-# ```julia
-# printlnbits(Int8(73)) # Int8 is an 8-bit representation of the signed integer 73
-# printbits(-Int8(55))
-# ```
+
+printlnbits(Int8(73)) # Int8 is an 8-bit representation of the signed integer 73
+printbits(-Int8(55))
+
 
 
 # **Example 8 (overflow)** We can find the largest and smallest instances of a type using `typemax` and `typemin`:
-# ```julia
-# printlnbits(typemax(Int8)) # 2^7-1 = 127
-# printbits(typemin(Int8)) # -2^7 = -128
-# ```
+
+printlnbits(typemax(Int8)) # 2^7-1 = 127
+printbits(typemin(Int8)) # -2^7 = -128
+
 # As explained, due to modular arithmetic, when we add `1` to the largest 8-bit integer we get the smallest:
-# ```julia
-# typemax(Int8) + Int8(1) # returns typemin(Int8)
-# ```
+
+typemax(Int8) + Int8(1) # returns typemin(Int8)
+
 # This behaviour is often not desired and is known as _overflow_, and one must be wary
 # of using integers close to their largest value.
 
 
-
-
-# Before we begin, we load two external packages. SetRounding.jl allows us 
-#     to set the rounding mode of floating-point arithmetic. ColorBitstring.jl
-#       implements functions `printbits` (and `printlnbits`)
-#     which print the bits (and with a newline) of floating-point numbers in colour.
-#     ```julia
-#     using SetRounding, ColorBitstring
-#     ```
-    
 
 
 # In Julia these correspond to 3 different floating-point types:
@@ -505,25 +498,23 @@ end
 
 
 # We confirm the simple bit representations:
-# ```julia
-# σ,Q,S = 127,8,23 # Float32
-# εₘ = 2.0^(-S)
-# printlnbits(Float32(2.0^(1-σ))) # smallest positive normal Float32
-# printlnbits(Float32(2.0^(2^Q-2-σ) * (2-εₘ))) # largest normal Float32
-# ```
+
+σ,Q,S = 127,8,23 # Float32
+εₘ = 2.0^(-S)
+printlnbits(Float32(2.0^(1-σ))) # smallest positive normal Float32
+printlnbits(Float32(2.0^(2^Q-2-σ) * (2-εₘ))) # largest normal Float32
+
 # For a given floating-point type, we can find these constants using the following functions:
-# ```julia
-# eps(Float32), floatmin(Float32), floatmax(Float32)
-# ```
+
+eps(Float32), floatmin(Float32), floatmax(Float32)
 
 # **Example (creating a sub-normal number)** If we divide the smallest normal number by two, we get a subnormal number: 
-# ```julia
-# mn = floatmin(Float32) # smallest normal Float32
-# printlnbits(mn)
-# printbits(mn/2)
-# ```
+
+mn = floatmin(Float32) # smallest normal Float32
+printlnbits(mn)
+printbits(mn/2)
+
 # Can you explain the bits?
-# ∎
 
 
 
@@ -534,27 +525,26 @@ end
 # Whenever the bits of $q$ of a floating-point number are all 1 then they represent an element of $F^{\rm special}$.
 # If all $b_k=0$, then the number represents either $±∞$, called `Inf` and `-Inf` for 64-bit floating-point numbers (or `Inf16`, `Inf32`
 # for 16-bit and 32-bit, respectively):
-# ```julia
-# printlnbits(Inf16)
-# printbits(-Inf16)
-# ```
+
+printlnbits(Inf16)
+printbits(-Inf16)
+
 # All other special floating-point numbers represent ${\rm NaN}$. One particular representation of ${\rm NaN}$ 
 # is denoted by `NaN` for 64-bit floating-point numbers (or `NaN16`, `NaN32` for 16-bit and 32-bit, respectively):
-# ```julia
-# printbits(NaN16)
-# ```
+
+printbits(NaN16)
+
 # These are needed for undefined algebraic operations such as:
-# ```julia
-# 0/0
-# ```
+
+0/0
+
 # Essentially it is a CPU's way of indicating an error has occurred.
 
 
 # **Example (many `NaN`s)** What happens if we change some other $b_k$ to be nonzero?
 # We can create bits as a string and see:
-# ```julia
-# i = 0b0111110000010001 # an UInt16
-# reinterpret(Float16, i)
-# ```
+
+i = 0b0111110000010001 # an UInt16
+reinterpret(Float16, i)
+
 # Thus, there are more than one `NaN`s on a computer.  
-# ∎
