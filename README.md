@@ -114,3 +114,8 @@ using IJulia
 notebook()
 ```
 5. Download the labs to the same folder as the Jupyter notebook is running.
+
+## Previous year's pages
+
+1. [2021-22](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis2021-22)
+2. [2022-23](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis2022-23)
