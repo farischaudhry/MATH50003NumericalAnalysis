@@ -118,58 +118,61 @@
 
 
 \def\endash{–}
+\def\bbD{ {\mathbb D} }
+
 \input{somacros}
 
 \begin{document}
 
 
 
-\textbf{Numerical Analysis MATH50003 (2023\ensuremath{\endash}24) Problem Sheet 1}
+\textbf{Numerical Analysis MATH50003 (2023\ensuremath{\endash}24) Problem Sheet 2}
 
-\rule{\textwidth}{1pt}
-\textbf{Problem 1} Assuming $f$ is differentiable, prove the left-point Rectangular rule error formula
+\textbf{Problem 1}  Show that dual numbers $\ensuremath{\bbD}$ are a \emph{commutative ring}, that is, for all $a,b,c \ensuremath{\in} \ensuremath{\bbD}$ the following are satisfied:
+
+\begin{itemize}
+\item[1. ] \emph{additive associativity}: $(a + b) + c = a + (b + c)$
+
+
+\item[2. ] \emph{additive commutativity}: $a + b = b + a$
+
+
+\item[3. ] \emph{additive identity}: There exists $0 \ensuremath{\in} \ensuremath{\bbD}$ such that $a + 0 = a$.
+
+
+\item[4. ] \emph{additive inverse}: There exists $-a$ such that $(-a) + a = 0$.
+
+
+\item[5. ] \emph{multiplicative associativity}: $(ab)c = a(bc)$
+
+
+\item[6. ] \emph{multiplictive commutativity}: $ab = ba$
+
+
+\item[7. ] \emph{multiplictive identity}: There exists $1 \ensuremath{\in} \ensuremath{\bbD}$ such that $1a= a$.
+
+
+\item[8. ] \emph{distributive}: $a(b+c) = ab + ac$
+
+\end{itemize}
+\textbf{Problem 2} What should the following functions applied to dual numbers return for $x = a+b \ensuremath{\epsilon}$:
 \[
-\ensuremath{\int}_a^b f(x) {\rm d}x =  h \ensuremath{\sum}_{j=0}^{n-1} f(x_j) +  \ensuremath{\delta}
+f(x) = x^{10}    + 1, g(x) = 1/x, h(x) = \tan x
 \]
-where $|\ensuremath{\delta}| \ensuremath{\leq} M (b-a) h$ for $M = \sup_{a \ensuremath{\leq} x \ensuremath{\leq} b}|f'(x)|$, $h = (b-a)/n$ and $x_j = a + jh$. 
+State  the domain where these definitions are valid.
 
-\textbf{Problem 2(a)}  Assuming $f$ is twice-differentiable, prove a one-panel Trapezium rule error bound:
+\textbf{Problem 3(a)} What is the correct definition of division on dual numbers, i.e.,
 \[
-\ensuremath{\int}_a^b f(x) {\rm d}x = (b-a) {f(a) + f(b) \over 2} +  \ensuremath{\delta}
+(a + b \ensuremath{\epsilon} )/(c + d \ensuremath{\epsilon} ) = s + t \ensuremath{\epsilon}
 \]
-where $|\ensuremath{\delta}| \ensuremath{\leq} M (b-a)^3$ for $M = \sup_{a \ensuremath{\leq} x \ensuremath{\leq} b}|f''(x)|$.  
+for what choice of $s$ and $t$? 
 
-\emph{Hint}: Recall from the notes
+\textbf{Problem 3(b)} A \emph{field} is a commutative ring such that $0 \ensuremath{\neq} 1$ and all nonzero elements have a multiplicative inverse, i.e., there exists $a^{-1}$ such that $a a^{-1} = 1$. Can we use Problem 4(b) to define $a^{-1} := 1/a$ to make $\ensuremath{\bbD}$ a field? Why or why not?
+
+\textbf{Problem 4} Use dual numbers to compute the derivative of the following functions at $x = 0.1$:
 \[
-\ensuremath{\int}_a^b {(b-x) f(a) + (x-a) f(b) \over b-a} \dx = (b-a) {f(a) + f(b) \over 2}
+\exp(\exp x \cos x + \sin x), \prod_{k=1}^3 \left({x \over k}-1\right),\hbox{ and } f^{\rm s}_2(x) = {1 + {x - 1 \over 2 + {x-1 \over 2}}}
 \]
-and you may need to use Taylor's theorem. Note that the bound is not sharp and so you may arrive at something sharper like $|\ensuremath{\delta}| \ensuremath{\leq} 3(b-a)^3 M/4$. The sharpest bound is $|\ensuremath{\delta}| \ensuremath{\leq} (b-a)^3 M/12$ but that would be a significantly harder challenge to show!
-
-\textbf{Problem 2(b)} Assuming $f$ is twice-differentiable, prove a bound for the Trapezium rule error:
-\[
-\ensuremath{\int}_a^b f(x) {\rm d}x = h \br[{f(a) \over 2} + \ensuremath{\sum}_{j=1}^{n-1} f(x_j) + {f(b) \over 2}] +  \ensuremath{\delta}
-\]
-where $|\ensuremath{\delta}| \ensuremath{\leq} M (b-a) h^2$ for $M = \sup_{a \ensuremath{\leq} x \ensuremath{\leq} b}|f''(x)|$.  
-
-\rule{\textwidth}{1pt}
-\textbf{Problem 3} Assuming $f$ is twice-differentiable, for the left difference approximation
-\[
-f'(x) = {f(x) - f(x - h) \over h} + \ensuremath{\delta},
-\]
-show that $|\ensuremath{\delta}| \ensuremath{\leq} Mh/2$ for $M = \sup_{x \ensuremath{\leq} t \ensuremath{\leq} x+h}\abs{f''(t)}$.
-
-\textbf{Problem 4} Assuming $f$ is thrice-differentiable, for the central differences approximation
-\[
-f'(x) = {f(x + h) - f(x - h) \over 2h} + \ensuremath{\delta},
-\]
-show that $|\ensuremath{\delta}| \ensuremath{\leq} Mh^2/6$ for $M = \sup_{x-h \ensuremath{\leq} t \ensuremath{\leq} x+h}\abs{f'''(t)}$.
-
-\textbf{Problem 5}  Assuming $f$ is thrice-differentiable, for the second-order derivative approximation
-\[
-{f(x+h) - 2f(x) + f(x-h) \over h^2} = f''(x) + \ensuremath{\delta}
-\]
-show that $|\ensuremath{\delta}| \ensuremath{\leq} Mh/3$ for $M = \sup_{x-h \ensuremath{\leq} t \ensuremath{\leq} x+h}\abs{f'''(t)}$.
-
 
 
 \end{document}

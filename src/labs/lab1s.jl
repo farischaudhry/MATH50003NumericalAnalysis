@@ -62,12 +62,12 @@
 
 # One possible definition for an integral is the limit of a Riemann sum, for example:
 # $$
-#   ∫_0^1 f(x) {\rm d}x = \lim_{n → ∞} {1 \over n} ∑_{k=1}^n f(k/n).
+#   ∫_0^1 f(x) {\rm d}x = \lim_{n → ∞} {1 \over n} ∑_{j=1}^n f(j/n).
 # $$
 # This suggests an algorithm known as the _(right-sided) rectangular rule_
 # for approximating an integral: choose $n$ large so that
 # $$
-#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{k=1}^n f(k/n).
+#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{j=1}^n f(j/n).
 # $$
 # To implement this approximation in code we need to turn the sum into a for-loop.
 # Let's take as an example $f(x) = \exp(x)$. We can write:
@@ -76,8 +76,8 @@ n = 10000     # the number of terms in the summation
 ret = 0.0     # ret will store the result, accumulated one argument at a time.
               ## The .0 makes it a "real" rather than an "integer".
               ## Understanding the "type" will be important later on.
-for k = 1:n   # k will be set to 1,2,…,n in sequence
-    ret = ret + exp(k/n) # add exp(k/n) to the result. Now ret = ∑_{j=1}^k f(j/n).
+for j = 1:n   # j will be set to 1,2,…,n in sequence
+    ret = ret + exp(j/n) # add exp(j/n) to the result. Now ret = ∑_{k = 1}^j f(k/n).
 end           # in Julia for-loops are finished with an end
 ret/n         # approximates the true answer exp(1) - exp(0) = ℯ-1 = 1.71828… to 4 digits
 
@@ -86,8 +86,8 @@ ret/n         # approximates the true answer exp(1) - exp(0) = ℯ-1 = 1.71828�
 
 function rightrectangularrule(f, n) # create a function named "rightrectangularrule" that takes in two arguments
     ret = 0.0
-    for k = 1:n
-        ret = ret + f(k/n) # now `f` is the input function
+    for j = 1:n
+        ret = ret + f(j/n) # now `f` is the input function
     end
     ret/n   # the last line of a function is returned
 end # like for-loops, functions are finished with an end
@@ -142,17 +142,17 @@ rightrectangularrule(x -> cos(x^2), 10_000) # No nice formula! But we expect fro
 # **Problem 1(a)** Complete the following function `leftrectangularrule(f, n)` That approximates
 # an integral using the left-sided rectangular rule:
 # $$
-#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{k=0}^{n-1} f(k/n).
+#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} ∑_{j=0}^{n-1} f(j/n).
 # $$
 
 using Test # Loads `@test` again in case you didn't run the line above.
 
 function leftrectangularrule(f, n)
-    ## TODO: return (1/n) * ∑_{k=0}^{n-1} f(k/n) computed using a for-loop
+    ## TODO: return (1/n) * ∑_{j=0}^{n-1} f(j/n) computed using a for-loop
     ## SOLUTION
     ret = 0.0
-    for k = 0:n-1 # k runs from 0 to n-1 instead of 1 to n
-        ret = ret + f(k/n)
+    for j = 0:n-1 # j runs from 0 to n-1 instead of 1 to n
+        ret = ret + f(j/n)
     end
     ret/n   # the last line of a function is returned
     ## END
@@ -164,7 +164,7 @@ end
 # **Problem 1(b)** If we approximate integrals by _trapeziums_ instead of rectangles we arrive
 # at an approximation to an integral using the $(n+1)$-point trapezium rule:
 # $$
-#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} \left[ f(0)/2 + ∑_{k=1}^{n-1} f(k/n) + f(1)/2 \right]
+#   ∫_0^1 f(x) {\rm d}x ≈ {1 \over n} \left[ f(0)/2 + ∑_{j=1}^{n-1} f(j/n) + f(1)/2 \right]
 # $$
 # Write a function `trapeziumrule(f, n)` that implements this approximation.
 # Do you think it is more or less accurate than the rectangular rules?
@@ -173,8 +173,8 @@ end
 ## SOLUTION
 function trapeziumrule(f, n)
     ret = f(0)/2
-    for k = 1:n-1 # k skips first and lest point
-        ret = ret + f(k/n)
+    for j = 1:n-1 # j skips first and lest point
+        ret = ret + f(j/n)
     end
     ret = ret + f(1)/2
     ret/n
@@ -235,21 +235,21 @@ using Plots # Load the plotting package
 
 m = 100 # number of plot points
 x = range(0, 1; length=m) # makes a vector of a 100 points between 0 and 1
-y = [exp(x[k]) for k=1:m] # Make a vector of `exp` evaluated at each point `x`.
+y = [exp(x[j]) for j=1:m] # Make a vector of `exp` evaluated at each point `x`.
 plot(x, y) # plot lines throw the specified x and y coordinates
 
 # We now plot the absolute value of the integral approximated
 # by the left-hand rule compared to the "true" answer `exp(1)-1` as $n$ increases:
 
 N = 10_000 # total number of points
-leftruleerr = n -> leftrectangularrule(exp,n)- (exp(1)-1) # anonymous function that computes the error in the left-hand rectangular rule for the exponential
-errs = [abs(leftruleerr(n)) for n=1:N] # create a vector of the absolute-value of the errors for n running from 1 to N
-plot(1:N, errs; label="left-rule error") # label="..." labels the plot in the legend
+rightruleerr = n -> rightrectangularrule(exp,n)- (exp(1)-1) # anonymous function that computes the error in the right-hand rectangular rule for the exponential
+errs = [abs(rightruleerr(n)) for n=1:N] # create a vector of the absolute-value of the errors for n running from 1 to N
+plot(1:N, errs; label="right-rule error") # label="..." labels the plot in the legend
 
 # This plot is very uninformative: we can see that the error tends to zero but its
 # hard to understand at what rate. We can get more information by scaling both the $x$- and $y$-axis logarithmically:
 
-plot(1:N, errs; xscale=:log10, yscale=:log10, label="left-rule error", yticks=10.0 .^ (-10:1)) # yticks specifies the ticks used on the y-axis
+plot(1:N, errs; xscale=:log10, yscale=:log10, label="right-rule error", yticks=10.0 .^ (-10:1)) # yticks specifies the ticks used on the y-axis
 
 # We see with 10,000 points we get about $10^{-4}$ errors.
 # We can add to this plot reference curves corresponding to $n^{-1}$ and $n^{-2}$
@@ -259,7 +259,7 @@ plot!(1:N, (1:N) .^ (-1); linestyle=:dash, label="n^-1") # exclamation point mea
 plot!(1:N, (1:N) .^ (-2); linestyle=:dash, label="n^-2")
 
 # Since the error decays at the same rate as $n^{-1}$ we conclude that we can likely bound the error by
-# $C n^{-1}$ for some constant $C$.
+# $C n^{-1}$ for some constant $C$, which matches the theory.
 
 # ------
 
@@ -344,6 +344,9 @@ rightdifferences(exp, 1, 10.0^(-15))
 ## Create  vector of errors in divided difference for h = 1,0.1,0.01,…,10^(-20)
 errs = [abs(rightdifferences(exp, 1, 10.0^(-k))-exp(1)) for k = 0:20]
 plot(0:20, errs; yscale=:log10, label="error", legend=:bottomright) # scale only the y-axis, move the legend to bottom right to get out of the way
+bnds = [(h = 10.0^(-k); exp(1+h)*h/2) for k = 0:20] # error bound proven theoretically. We use `;` to write two lines at once
+plot!(0:20, bnds; linestyle=:dash, label="bound")
+
 
 # This raises a couple of mysteries:
 # 1. Why does our numerical version of divided differences diverges
