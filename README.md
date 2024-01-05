@@ -16,10 +16,9 @@ Office hour: Mondays 11am, Huxley 6M40
 
 ## Assessment
 
-1. [2021–22 Computer-based exam](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/exams/computerexam2122.ipynb)
-2. [2022–23 Computer-based exam](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/exams/computerexam2223.ipynb)
-3. Practice computer-based exam: TBA
-4. Final exam (pen-and-paper): TBA
+1. Practice computer-based exam (marked but not for credit): TBA
+2. Computer-based exam: 15 March 2024, 9:00–10:00
+5. Final exam (pen-and-paper): TBA
 
 
 ## Reading List
@@ -116,7 +115,13 @@ notebook()
 ```
 5. Download the labs to the same folder as the Jupyter notebook is running.
 
-## Previous year's pages
+## Past exams
+
+
+1. [2021–22 Computer-based exam](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/exams/computerexam2122.ipynb)
+2. [2022–23 Computer-based exam](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/exams/computerexam2223.ipynb)
+
+## Past Course Websites
 
 1. [2021-22](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis2021-22)
 2. [2022-23](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis2022-23)
