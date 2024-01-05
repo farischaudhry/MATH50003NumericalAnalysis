@@ -388,7 +388,6 @@ x = 0.1
 # $$
 # 1 + {x-1 \over 2 + {x-1 \over 2 + {x-1 \over 2 + ⋱}}},
 # $$
-#
 # Compare with divided differences to give evidence that your implementation is correct.
 
 ## TODO: Use dual numbers to compute the derivatives of the 3 functions above.
@@ -458,6 +457,6 @@ f(r)
 
 
 # **Problem 5(c)** By changing the initial guesses compute 5 roots to
-# $sin(x) - 1/x$. Hint: you may need add an overload for `/(x::Real, y::Dual)`.`
+# $sin(x) - 1/x$. Hint: you may need add an overload for `/(x::Real, y::Dual)`.
 
 ## TODO: Use `newton` to compute rutes of `sin(x) - 1/x`.
