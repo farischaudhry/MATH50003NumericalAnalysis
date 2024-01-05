@@ -80,7 +80,7 @@ $$
 $$
 ∎
 
-Note a consequence of this lemma is that the approximation converges as $n → 0$. In the labs and problem
+Note a consequence of this lemma is that the approximation converges as $n → ∞$ (i.e. $h → 0$). In the labs and problem
 sheets we will consider the left-sided rule:
 $$
 ∫_a^b f(x) {\rm d}x ≈  h ∑_{j=0}^{n-1} f(x_j).
