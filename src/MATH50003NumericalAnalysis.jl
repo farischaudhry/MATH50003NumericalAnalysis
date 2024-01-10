@@ -61,8 +61,9 @@ function compilesheet(filename)
     write(path, replace(read(path, String), r"\\\[\n\\meeq\{(.*?)\}\n\\\]"s => s"\\meeq{\1}"))
 end
 
-compilesheet("sheet1")
-compilesheet("sheet2")
+for k = 1:3
+    compilesheet("sheet$k")
+end
 
 # notebook("sheets/sheet1.jmd"; pkwds...)
 # notebook("src/sheets/sheet1s.jmd"; pkwds...)
@@ -75,7 +76,7 @@ compilesheet("sheet2")
 import Literate
 
 # Make Labs
-for k = 1:2
+for k = 1:3
     write("labs/lab$k.jl", replace(replace(read("src/labs/lab$(k)s.jl", String), r"## SOLUTION(.*?)## END"s => "")))
     Literate.notebook("labs/lab$k.jl", "labs/"; execute=false)
 end

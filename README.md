@@ -13,8 +13,12 @@ Office hour: Mondays 11am, Huxley 6M40
    - [Lab 1](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab1.ipynb)
    - [Sheet 1](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet1.pdf)
 2. I.3 Dual Numbers
-   - [Lab 2](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/  lab2.ipynb)
+   - [Lab 2](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab2.ipynb)
    - [Sheet 2](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet2.pdf)
+3. II.1 Integers and II.2 Reals
+   - [Lab 3](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab3.ipynb)
+   - [Sheet 3](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet3.pdf)
+
 
 ## Assessment
 
