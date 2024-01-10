@@ -112,18 +112,13 @@ exp(2z^2 + 3im)
 # **Problem 1(a)** Use `typeof` to determine the type of `1.2 + 2.3im`.
 
 ## TODO: What is the type of `1.2 + 2.3im`?
-## SOLUTION
-typeof(1.2 + 2.3im)
-## `ComplexF64` is short hand for `Complex{Float64}`
-## END
+
 
 
 # **Problem 1(b)** Add another implementation of `foo` that returns `im` if the input
 # is a `ComplexF64`.
 
-## SOLUTION
-foo(x::ComplexF64) = im
-## END
+
 
 @test foo(1.1 + 2im) == im
 
@@ -144,15 +139,7 @@ foo(x::ComplexF64) = im
 function exp_t(z, n)
     ## TODO: Compute the first (n+1)-terms of the Taylor series of exp
     ## evaluated at z
-    ## SOLUTION
-    ret = 1.0
-    s = 1.0
-    for k = 1:n
-        s = s/k * z
-        ret = ret + s
-    end
-    ret
-    ## END
+    
 end
 
 @test exp_t(1.0, 10) isa Float64 # isa is used to test the type of a result
@@ -166,15 +153,7 @@ end
 
 ## TODO: plot the error for the Taylor series approximation.
 
-## SOLUTION
-plot(1:1000, [nanabs(exp_t(1, n) - exp(1)) for n = 1:1000]; yscale=:log10, label="z = 1")
-plot!(1:1000, [nanabs(exp_t(im, n) - exp(im)) for n = 1:1000]; yscale=:log10, label="z = im")
-plot!(1:1000, [nanabs(exp_t(-10, n) - exp(-10)) for n = 1:1000]; yscale=:log10, label="z = -10")
-plot!(1:1000, [nanabs(exp_t(-100, n) - exp(-100)) for n = 1:1000]; yscale=:log10, label="z = -100")
 
-## It appears to converge to a fixed constant. But this constant is growing exponentially with $z$ giving
-## very inaccurate results for `z = -100`.
-## END
 
 # ------
 
@@ -241,27 +220,17 @@ function ==(x::Rat, y::Rat)
     ## the numerator/denominator are possibly reducible
     ## Hint: gcd and div may be useful. Use ? to find out what they do
 
-    ## SOLUTION
-    xg = gcd(x.p, x.q)
-    yg = gcd(y.p, y.q)
-    div(x.p, xg) == div(y.p, yg) && div(x.q, xg) == div(y.q, yg)
-    ## END
+    
 end
 
 ## We can also support equality when `x isa Rat` and `y isa Int`
 function ==(x::Rat, y::Int)
     ## TODO: implement
-    ## SOLUTION
-    x == Rat(y, 1)
-    ## END
+    
 end
 
 ## TODO: implement ==(x::Int, y::Rat)
-## SOLUTION
-function ==(x::Int, y::Rat)
-    Rat(x,1) == y
-end
-## END
+
 
 @test Rat(1, 2) == Rat(2, 4)
 @test Rat(1, 2) ≠ Rat(1, 3)
@@ -269,12 +238,7 @@ end
 @test 1 == Rat(2,2)
 
 ## TODO: implement +, -, *, and /,
-## SOLUTION
-+(x::Rat, y::Rat) = Rat(x.p * y.q + y.p * x.q, x.q * y.q)
--(x::Rat, y::Rat) = Rat(x.p * y.q - y.p * x.q, x.q * y.q)
-*(x::Rat, y::Rat) = Rat(x.p * y.p, x.q * y.q)
-/(x::Rat, y::Rat) = x * Rat(y.q, y.p)
-## END
+
 
 @test Rat(1, 2) + Rat(1, 3) == Rat(5, 6)
 @test Rat(1, 3) - Rat(1, 2) == Rat(-1, 6)
@@ -402,34 +366,23 @@ import Base: -, cos, sin, /
 -(x::Dual) = Dual(-x.a, -x.b)
 
 ## TODO: implement -(::Dual, ::Dual)
-## SOLUTION
--(x::Dual, y::Dual) = Dual(x.a - y.a, x.b - y.b)
-## END
+
 
 
 function cos(x::Dual)
     ## TODO: implement cos for Duals
-    ## SOLUTION
-    Dual(cos(x.a), -sin(x.a) * x.b)
-    ## END
+    
 end
 
 function sin(x::Dual)
     ## TODO: implement sin for Duals
-    ## SOLUTION
-    Dual(sin(x.a), cos(x.a) * x.b)
-    ## END
+    
 end
 
 function /(x::Dual, y::Dual)
     ## TODO: implement division for Duals.
     ## Hint: think of this as x * (1/y)
-    ## SOLUTION
-    if iszero(y.a)
-        error("Division for dual numbers is ill-defined when denonimator real part is zero.")
-    end
-    return Dual(x.a / y.a, (y.a * x.b - x.a * y.b) / y.a^2)
-    ## END
+    
 end
 
 x = 0.1
@@ -446,30 +399,7 @@ x = 0.1
 # Compare with divided differences to give evidence that your implementation is correct.
 
 ## TODO: Use dual numbers to compute the derivatives of the 3 functions above.
-## SOLUTION
 
-## Define the functions
-f = x -> exp(exp(x)cos(x) + sin(x))
-g = x -> prod([x] ./ (1:1000) .- 1)
-function cont(n, x)
-    ret = 2*one(x)
-    for k = 1:n-1
-        ret = 2 + (x-1)/ret
-    end
-    1 + (x-1)/ret
-end
-
-## With the previous problems solved, this is as simple as running
-
-fdual = f(0.1+ϵ)
-fdual.b
-#
-gdual = g(0.1+ϵ)
-gdual.b
-#
-contdual = cont(1000,0.1+ϵ)
-contdual.b
-## END
 
 
 
@@ -523,10 +453,7 @@ f(r)
 # use the computed `r` as the "exact" root. What do you think the convergence rate is?
 
 ## TODO: compute and plot the error of `newton(f, 0.1, k)` for `k = 1:15`
-## SOLUTION
-plot(1:15, [nanabs(newton(f, 0.1, k)-r) for k=1:15]; yscale=:log10)
-## It converges faster than exponentially.
-## END
+
 
 # **Problem 5(b)** Use `newton` with a complex number to compute
 # an approximation to a complex root of $f(x) = x^5 - x^2 + 1$.
@@ -535,27 +462,9 @@ plot(1:15, [nanabs(newton(f, 0.1, k)-r) for k=1:15]; yscale=:log10)
 
 
 ## TODO: By making the initial guess complex find a complex root.
-## SOLUTION
-r = newton(f, 0.1 + 0.2im, 100)
-f(r) # close to zero
-## END
+
 
 # **Problem 5(c)** By changing the initial guesses compute 5 roots to
 # $sin(x) - 1/x$. Hint: you may need add an overload for `/(x::Real, y::Dual)`.
 
 ## TODO: Use `newton` to compute rutes of `sin(x) - 1/x`.
-## SOLUTION
-
-## We need to add a missing overload for `Dual`:
-
-/(x::Real, y::Dual) = Dual(x)/y
-
-
-## Changing the initial guess we get 5 distinct roots
-newton(x -> sin(x) - 1/x, 1, 100),
-newton(x -> sin(x) - 1/x, 2, 100),
-newton(x -> sin(x) - 1/x, 3, 100),
-newton(x -> sin(x) - 1/x, 5, 100),
-newton(x -> sin(x) - 1/x, 6, 100)
-
-## END

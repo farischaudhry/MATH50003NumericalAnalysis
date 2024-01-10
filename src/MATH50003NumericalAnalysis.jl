@@ -42,6 +42,7 @@ end
 
 compilenotes("I.1.RectangularRule")
 compilenotes("I.2.DividedDifferences")
+compilenotes("I.3.DualNumbers")
 
 
 ###
@@ -58,7 +59,9 @@ function compilesheet(filename)
     write(path, replace(read(path, String), r"\\\[\n\\meeq\{(.*?)\}\n\\\]"s => s"\\meeq{\1}"))
 end
 
-compilesheet("sheet1")
+for k = 1:2
+    compilesheet("sheet$k")
+end
 
 # notebook("sheets/sheet1.jmd"; pkwds...)
 # notebook("src/sheets/sheet1s.jmd"; pkwds...)
@@ -71,7 +74,7 @@ compilesheet("sheet1")
 import Literate
 
 # Make Labs
-for k = 1:1
+for k = 1:2
     write("labs/lab$k.jl", replace(replace(read("src/labs/lab$(k)s.jl", String), r"## SOLUTION(.*?)## END"s => "")))
     Literate.notebook("labs/lab$k.jl", "labs/"; execute=false)
 end
