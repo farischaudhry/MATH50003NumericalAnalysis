@@ -205,3 +205,19 @@ $$
 $$
 
 ∎
+
+## Hexadecimal format
+
+In coding it is often convenient to use base-16 as it is a power of $2$ but uses less
+characters than binary. The digits used are $0$ through $9$
+followed by $a = 10$, $b = 11$, $c = 12$, $d = 13$, $e = 14$, and $f = 15$. 
+
+**Example (Hexadecimal number)**
+We can interpret a number in format as follows:
+$$
+(a5f2)_{16} = a*16^3 + 5*16^2 + f*16 + 2 = 
+10*16^3 + 5*16^2 + 15*16 + 2 = 42,482
+$$
+∎
+
+We will see in the labs that unsigned integers are displayed in base-16.
