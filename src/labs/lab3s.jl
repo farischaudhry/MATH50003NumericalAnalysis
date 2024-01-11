@@ -1,14 +1,32 @@
 # # MATH50003 (2023–24)
 # # Lab 3: II.1 Integers and II.2 Reals
 
-# We will use Julia in these notes to explore what is happening as a computer does integer arithmetic.
+# In this lab, we will use Julia in these notes to explore what is happening as a computer does 
+# integer and real arithmetic.  In particular, its usage of modular and floating point arithmetic. 
+
+
+# **Learning Outcomes**
+#
+# Mathematical knowledge:
+#
+# 1. Behaviour of modular arithmetic for signed and unsigned integers.
+# 2. Binary and hexadecimal number formats.
+# 3. 
+#
+# Coding knowledge:
+#
+# 1. The notion of a type and how to make your own type.
+# 2. Defining functions whose arguments are restricted to specific types.
+# 3. Overloading functions like `+`, `*`, and `exp` for a custom type.
+
+
 # We load an external package
 # which implements functions `printbits` (and `printlnbits`)
 # to print the bits (and with a newline) of numbers in colour:
 
 using ColorBitstring, Test
 
-# ## 1. Integers
+# ## II.1 Integers
 
 # Every primitive number type is stored as a sequence of bits. 
 # The number of _bytes_ (i.e. 8-bits) can be deduced using the `sizeof` function:
@@ -22,7 +40,7 @@ sizeof(UInt32) # 4 bytes == 4*8 bits == 32 bits
 typeof(5)
 
 # -----
-# **Problem 1.1** Use `sizeof` to determine how many bits your machine uses for the type `Int`.
+# **Problem 1(a)** Use `sizeof` to determine how many bits your machine uses for the type `Int`.
 
 ## SOLUTION
 
@@ -53,7 +71,7 @@ UInt8(5) # converts an `Int` to an `UInt8`, displaying the result in hex
 0xabcde # isa UInt32, the smallest type with at least 4*5 = 20 bits
 
 # -----
-# **Problem 1.2** Use binary format to create an `Int` corresponding to $(101101)_2$.
+# **Problem 1(b)** Use binary format to create an `Int` corresponding to $(101101)_2$.
 
 ## SOLUTION
 
@@ -64,7 +82,7 @@ Int(0b101101) # Without the `Int` it would be a UInt8
 
 # -----
 
-# **Problem 1.3** What happens if you specify more than 64 bits using `0b⋅⋅…⋅⋅`? 
+# **Problem 1(c)** What happens if you specify more than 64 bits using `0b⋅⋅…⋅⋅`? 
 # What if you specify more than 128 bits?
 
 ## SOLUTION
@@ -151,7 +169,7 @@ printbits(x * y)
 
 # -----
 
-# **Problem 1.5** Can you predict what the output of the following will be before hitting return?
+# **Problem 1(d)** Can you predict what the output of the following will be before hitting return?
 
 UInt8(120) + UInt8(10); # Convert to `Int` to see the number printed in decimal
 #
@@ -228,12 +246,12 @@ x^100
 
 # -----
 
-# ## 2. Reals
+# ## II.2 Reals
 # 
 # Real numbers interpret a sequence of bits in floating point format. 
 # 
 # -----
-# **Problem 2.1** Use `printbits` to guess the binary representation of $1/5$.
+# **Problem 2(a)** Use `printbits` to guess the binary representation of $1/5$.
 
 ## SOLUTION
 
@@ -246,7 +264,7 @@ printbits(1/5)
 
 # -----
 
-# **Problem 2.2** Create a positive `Float64` whose exponent is $q = 156$ and has significand
+# **Problem 2(b)** Create a positive `Float64` whose exponent is $q = 156$ and has significand
 # bits
 # $$
 # b_k = \begin{cases}
@@ -290,7 +308,7 @@ sig = 2.0^(-52) * parse(Int, ret; base=2)
 
 # -----
 
-# **Problem 2.3** Create the smallest positive non-zero sub-normal `Float16` by specifying
+# **Problem 2(c)** Create the smallest positive non-zero sub-normal `Float16` by specifying
 # its bits.
 
 ## SOLUTION
@@ -307,7 +325,7 @@ reinterpret(Float16, 0b0000000000000001) # == nextfloat(Float16(0))
 
 # -----
 
-# **Problem 3.1** Can you predict what the output of the following will be before hitting return?
+# **Problem 3(a)** Can you predict what the output of the following will be before hitting return?
 
 bitstring(11);  # Semi-colon prohibits output, delete to check your answer
 #
@@ -335,7 +353,7 @@ parse(Int8, "-00001011"; base=2)
 
 # -----
 
-# **Problem 3.2** Combine `parse`, `reinterpret`, and `UInt8` to convert the
+# **Problem 3(b)** Combine `parse`, `reinterpret`, and `UInt8` to convert the
 # above string to a (negative) `Int8` with the specified bits.
 
 ## SOLUTION
@@ -366,7 +384,7 @@ str[11:end]  # returns "45556"
 
 # -----
 
-# **Problem 3.3** Complete the following function that sets the 10th bit of an `Int32` to `1`,
+# **Problem 3(c)** Complete the following function that sets the 10th bit of an `Int32` to `1`,
 # and returns an `Int32`, assuming that the input is a positive integer, using `bitstring`,
 # `parse` and `*`.
 
@@ -394,7 +412,7 @@ end
 # -----
 
 
-# **Problem 3.4**  Modify the previous function to also work with negative numbers. 
+# **Problem 3(d)**  Modify the previous function to also work with negative numbers. 
 
 function tenthbitto1(x::Int32)
 ## TODO: change the 10th bit of `x` to 1

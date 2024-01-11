@@ -3,13 +3,10 @@
 In this section we discuss the following:
 
 \begin{itemize}
-\item[1. ] Binary representation: Any real number can be represented in binary, that is, by an infinite sequence of 0s and 1s (bits). We review  binary representation.
+\item[1. ] Unsigned integers: how computers represent non-negative integers using only $p$-bits, via \href{https://en.wikipedia.org/wiki/Modular_arithmetic}{modular arithmetic}.
 
 
-\item[2. ] Unsigned integers:  We discuss how computers represent non-negative integers using only $p$-bits, via \href{https://en.wikipedia.org/wiki/Modular_arithmetic}{modular arithmetic}.
-
-
-\item[3. ] Signed integers: we discuss how negative integers are handled using the \href{https://en.wikipedia.org/wiki/Two's_complement}{Two's-complement} format.
+\item[2. ] Signed integers: how negative integers are handled using the \href{https://en.wikipedia.org/wiki/Two's_complement}{Two's-complement} format.
 
 \end{itemize}
 Mathematically, CPUs only act on $p$-bits at a time, with $2^p$ possible sequences. That is, essentially all functions $f$ are either of the form $f : \ensuremath{\bbZ}_{2^p} \ensuremath{\rightarrow} \ensuremath{\bbZ}_{2^p}$ or  $f : \ensuremath{\bbZ}_{2^p} \ensuremath{\times} \ensuremath{\bbZ}_{2^p} \ensuremath{\rightarrow} \ensuremath{\bbZ}_{2^p}$, where we use the following notation:
@@ -20,13 +17,13 @@ Mathematically, CPUs only act on $p$-bits at a time, with $2^p$ possible sequenc
 \]
 \end{definition}
 
-The limitations this imposes on representing integers is substantial.  If we have an implementation of $+$, which we shall denote $\ensuremath{\oplus}_m$, how can we possibly represent $m + 1$ in this implementation when the result is above the largest possible integer?
+The limitations this imposes on representing integers is substantial. If we have an implementation of $+$, which we shall denote $\ensuremath{\oplus}_m$, how can we possibly represent $m + 1$ in this implementation when the result is above the largest possible integer?
 
-The solution that is used is straightforward: the CPU uses modular arithmetic. E.g., we have
+The solution that is used is straightforward: \emph{modular arithmetic}. E.g., we have
 \[
 (m-1) \ensuremath{\oplus}_m 1 = m\ ({\rm mod}\ m) = 0.
 \]
-In this chapter we discuss the implications of this approach and how it works with negative numbers.
+In this section we discuss the implications of this approach and how it works with negative numbers.
 
 We will write integers in binary format, that is, as sequence of \texttt{0}s and \texttt{1}s:
 
@@ -39,42 +36,42 @@ We will write integers in binary format, that is, as sequence of \texttt{0}s and
 \begin{example}[integers in binary] A simple integer example is $5 = 2^2 + 2^0 = (101)_2$. On the other hand, we write $-5 = -(101)_2$. Another example is $258 = 2^8 + 2 = (1000000010)_2$. \end{example}
 
 \subsection{Unsigned Integers}
-Computers represent integers by a finite number of $p$ bits, with $2^p$ possible combinations of 0s and 1s. For \emph{unsigned integers} (non-negative integers)  these bits dictate the first $p$ binary digits: $(B_{p-1}\ldots B_1B_0)_2$. 
+Computers represent integers by a finite number of $p$ bits, with $2^p$ possible combinations of 0s and 1s. For \emph{unsigned integers} (non-negative integers) these bits dictate the first $p$ binary digits: $(B_{p-1}\ldots B_1B_0)_2$.
 
-Integers on a computer follow \href{https://en.wikipedia.org/wiki/Modular_arithmetic}{modular arithmetic}: Integers represented with $p$-bits on a computer actually  represent elements of ${\mathbb Z}_{2^p}$ and integer arithmetic on a computer is  equivalent to arithmetic modulo $2^p$. We denote modular arithmetic with $m = 2^p$ as follows:
+Integers on a computer follow \href{https://en.wikipedia.org/wiki/Modular_arithmetic}{modular arithmetic}: Integers represented with $p$-bits on a computer actually represent elements of ${\mathbb Z}_{2^p}$ and integer arithmetic on a computer is equivalent to arithmetic modulo $2^p$. We denote modular arithmetic with $m = 2^p$ as follows:
 
 
 \begin{align*}
-x \ensuremath{\oplus}_m y &:= (x+y) ({\rm mod}\ m) \\
-x \ensuremath{\ominus}_m y &:= (x-y) ({\rm mod}\ m) \\
-x \ensuremath{\otimes}_m y &:= (x*y) ({\rm mod}\ m)
+x \ensuremath{\oplus}_m y &:= (x+y)\ ({\rm mod}\ m) \\
+x \ensuremath{\ominus}_m y &:= (x-y)\ ({\rm mod}\ m) \\
+x \ensuremath{\otimes}_m y &:= (x*y)\ ({\rm mod}\ m)
 \end{align*}
 When $m$ is implied by context we just write $\ensuremath{\oplus}, \ensuremath{\ominus}, \ensuremath{\otimes}$.
 
-\begin{example}[arithmetic with  8-bit unsigned integers]  If  arithmetic lies between $0$ and $m = 2^8 = 256$ works as expected.  For example,
+\begin{example}[arithmetic with  8-bit unsigned integers] If  the result of an operation lies between $0$ and $m = 2^8 = 256$ then airthmetic works exactly like standard integer arithmetic. For example,
 
 
 \begin{align*}
-17 \ensuremath{\oplus}_{256} 3 = 20 ({\rm mod}\ 256) = 20 \\
-17 \ensuremath{\ominus}_{256} 3 = 14 ({\rm mod}\ 256) = 14
+17 \ensuremath{\oplus}_{256} 3 = 20\ ({\rm mod}\ 256) = 20 \\
+17 \ensuremath{\ominus}_{256} 3 = 14\ ({\rm mod}\ 256) = 14
 \end{align*}
 \end{example}
 
-\begin{example}[overflow with 8-bit unsigned integers] If we go beyond the range the result ``wraps around". For example, with integers we have
+\begin{example}[overflow with 8-bit unsigned integers] If we go beyond the range the result \ensuremath{\ldq}wraps around". For example, with true integers we have
 \[
 255 + 1 = (11111111)_2 + (00000001)_2 = (100000000)_2 = 256
 \]
-However, the result is impossible to store in just 8-bits!  So as mentioned instead it treats the integers as elements of ${\mathbb Z}_{256}$:
+However, the result is impossible to store in just 8-bits! So as mentioned instead it treats the integers as elements of ${\mathbb Z}_{256}$:
 \[
 255 \ensuremath{\oplus}_{256} 1 = 255 + 1 \ ({\rm mod}\ 256) = (00000000)_2 \ ({\rm mod}\ 256) = 0 \ ({\rm mod}\ 256)
 \]
 On the other hand, if we go below $0$ we wrap around from above:
 \[
-3 \ensuremath{\ominus}_{256} 5 = -2 ({\rm mod}\ 256) = 254 = (11111110)_2
+3 \ensuremath{\ominus}_{256} 5 = -2\ ({\rm mod}\ 256) = 254 = (11111110)_2
 \]
 \end{example}
 
-\begin{example}[multiplication of 8-bit unsigned integers]  Multiplication works similarly: for example,
+\begin{example}[multiplication of 8-bit unsigned integers] Multiplication works similarly: for example,
 \[
 254 \ensuremath{\otimes}_{256} 2 = 254 * 2 \ ({\rm mod}\ 256) = 252 \ ({\rm mod}\ 256) = (11111100)_2 \ ({\rm mod}\ 256)
 \]
@@ -83,9 +80,9 @@ On the other hand, if we go below $0$ we wrap around from above:
 \subsection{Signed integer}
 Signed integers use the \href{https://epubs.siam.org/doi/abs/10.1137/1.9780898718072.ch3}{Two's complemement} convention. The convention is if the first bit is 1 then the number is negative: the number $2^p - y$ is interpreted as $-y$. Thus for $p = 8$ we are interpreting $2^7$ through $2^8-1$ as negative numbers. More precisely:
 
-\textbf{Definition ($\ensuremath{\bbZ}_{2^p}^s$, unsigned integers)}
+\textbf{Definition ($\ensuremath{\bbZ}_{2^p}^{\rm s}$, signed integers)}
 \[
-\ensuremath{\bbZ}_{2^p}^s := \{-2^{p-1} ,\ensuremath{\ldots}, -1 ,0,1, \ensuremath{\ldots}, 2^{p-1}-1 \}
+\ensuremath{\bbZ}_{2^p}^{\rm s} := \{-2^{p-1} ,\ensuremath{\ldots}, -1 ,0,1, \ensuremath{\ldots}, 2^{p-1}-1 \}
 \]
 \ensuremath{\QED}
 
@@ -97,22 +94,61 @@ x\ ({\rm mod}^{\rm s}\ 2^p) := \begin{cases} y & 0 \ensuremath{\leq} y \ensurem
 \]
 \end{definition}
 
-Note that if $R_p(x) = x ({\rm mod}^{\rm s}\ 2^p)$ then it can be viewed as a map $R_p : \ensuremath{\bbZ} \ensuremath{\rightarrow} \ensuremath{\bbZ}_{2^p}^s$ or a one-to-one map $R_p : \ensuremath{\bbZ}_{2^p} \ensuremath{\rightarrow} \ensuremath{\bbZ}_{2^p}^s$ whose inverse is $R_p^{-1}(x) = x \mod 2^p$. 
+Note that if $R_p(x) = x\ ({\rm mod}^{\rm s}\ 2^p)$ then it can be viewed as a map $R_p : \ensuremath{\bbZ} \ensuremath{\rightarrow} \ensuremath{\bbZ}_{2^p}^{\rm s}$ or a one-to-one map $R_p : \ensuremath{\bbZ}_{2^p} \ensuremath{\rightarrow} \ensuremath{\bbZ}_{2^p}^{\rm s}$ whose inverse is $R_p^{-1}(x) = x (\mod 2^p)$. It can also be viewed as the identity map on signed integers $R_p : \ensuremath{\bbZ}_{2^p}^{\rm s} \ensuremath{\rightarrow} \ensuremath{\bbZ}_{2^p}^{\rm s}$, that is,  $R_p(x) = x$ if $x \in \ensuremath{\bbZ}_{2^p}^{\rm s}$.
 
-Arithmetic works precisely the same for signed and unsigned integers, e.g. we have
+Arithmetic works precisely the same for signed and unsigned integers up to the mapping $R_p$, e.g. we have
 \[
-x \ensuremath{\oplus}_{2^p}^s y := x + y ({\rm mod}^{\rm s}\ 2^p)
+x \ensuremath{\oplus}_{2^p}^{\rm s} y := x + y\ ({\rm mod}^{\rm s}\ 2^p)
 \]
-\begin{example}[addition of 8-bit integers] Consider \texttt{(-1) + 1} in 8-bit arithmetic. The number $-1$ has the same bits as $2^8 - 1 = 255$. Thus this is equivalent to the previous question and we get the correct result of \texttt{0}. In other words:
+\begin{example}[addition of 8-bit signed integers] Consider \texttt{(-1) + 1} in 8-bit arithmetic. The number $-1$ has the same bits as $2^8 - 1 = 255$. Thus this is equivalent to the previous question and we get the correct result of \texttt{0}. In other words:
 \[
--1 \ensuremath{\oplus}_{256} 1 = -1 + 1 \ ({\rm mod}\ 2^p) = 2^p-1  + 1 \ ({\rm mod}\ 2^p) = 2^p \ ({\rm mod}\ 2^p) = 0 \ ({\rm mod}\ 2^p)
+-1 \ensuremath{\oplus}_{256}^{\rm s} 1 = -1 + 1 \ ({\rm mod}^{\rm s}\ 256) = 0
 \]
+But on the bit level this computation is exactly the same as unsigned integers. We represent the number $-1$ using the bits \texttt{11111111} (i.e., we store it equivalently to  $(11111111)_2 = 255$) and the  number $1$ is stored using the bits \texttt{00000001}. When we add this with true integer arithmetic we have
+
+
+\begin{align*}
+(0 11111111)_2 &\ + \\
+(0 00000001)_2 &\ = \\
+(1 00000000)_2&
+\end{align*}
+The modular arithmetic drops the leading $1$ and we are left with all zeros.
+
 \end{example}
 
-\begin{example}[multiplication of 8-bit integers] Consider \texttt{(-2) * 2}. $-2$ has the same bits as $2^{256} - 2 = 254$ and $-4$ has the same bits as $2^{256}-4 = 252$, and hence from the previous example we get the correct result of \texttt{-4}. In other words:
+\begin{example}[signed overflow with 8-bit signed integers] If we go above $2^{p-1}-1 = 2^7 - 1 = 127$  we have perhaps unexpected results:
 \[
-(-2) \ensuremath{\otimes}_{2^p}^s 2 = (-2) * 2 \ ({\rm mod}^{\rm s}\ 2^p) = (2^p-2) * 2 \ ({\rm mod}^{\rm s}\ 2^p) = 2^{p+1}-4 \ ({\rm mod}^{\rm s}\ 2^p) = -4
+127 \ensuremath{\oplus}_{256}^{\rm s} 1 = 128\  ({\rm mod}^{\rm s}\ 256) = 128 - 256 = -128.
 \]
+Again on the bit level this computation is exactly the same as unsigned integers. We represent the number $127$ using the bits \texttt{01111111} and the  number $1$ is stored using the bits \texttt{00000001}. When we add this with true integer arithmetic we have
+
+
+\begin{align*}
+(01111111)_2 &\ + \\
+(00000001)_2 &\ = \\
+(10000000)_2&
+\end{align*}
+Because the first bit is \texttt{1} we interpret this as a negative number using the formula:
+\[
+(10000000)_2\ ({\rm mod}^{\rm s}\ 256) = 128   ({\rm mod}^{\rm s}\ 256) = -128.
+\]
+\textbf{Example (multiplication of 8-bit signed integers)} Consider \texttt{(-2) * 2}. $-2$ has the same bits as $2^{256} - 2 = 254$ and $-4$ has the same bits as $2^{256}-4 = 252$, and hence from the previous example we get the correct result of \texttt{-4}. In other words:
+\[
+(-2) \ensuremath{\otimes}_{2^p}^{\rm s} 2 = -4 \ ({\rm mod}^{\rm s}\ 2^p) = -4
+\]
+On the bit level, the bits of $-2$ (which is one less than $-1$) are \texttt{11111110}. Multiplying by 2 is like multiplying by 10 in base-10, that is, we shift the bits. Hence in true arithmetic we have
+
+
+\begin{align*}
+(0 11111110)_2 & * 2 = \\
+(1 11111100)_2&
+\end{align*}
+We drop the leading 1 due to modular arithmetic. We still have a leading $1$ hence the number is viewed as negative. In particular we have
+\meeq{
+(1 11111100)_2 \ ({\rm mod}^{\rm s}\ 256) = (11111100)_2 \ ({\rm mod}^{\rm s}\ 256) = 
+2^7+2^6+2^5+2^4+2^3+2^2 \ ({\rm mod}^{\rm s}\ 256) \ccr
+ = 252  \ ({\rm mod}^{\rm s}\ 256) = -4.
+}
 \end{example}
 
 
