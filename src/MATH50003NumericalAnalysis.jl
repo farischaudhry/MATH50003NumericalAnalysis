@@ -43,6 +43,7 @@ end
 compilenotes("I.1.RectangularRule")
 compilenotes("I.2.DividedDifferences")
 compilenotes("I.3.DualNumbers")
+compilenotes("I.4.NewtonMethod")
 
 
 ###

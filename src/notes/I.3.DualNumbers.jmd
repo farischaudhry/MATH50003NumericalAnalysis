@@ -1,6 +1,6 @@
 # Dual Numbers
 
-In this chapter we introduce a mathematically beautiful  alternative to divided differences for computing
+In this section we introduce a mathematically beautiful  alternative to divided differences for computing
 derivatives: _dual numbers_. These are a commutative ring that _exactly_ compute derivatives,
 which when implemented on a computer gives very high-accuracy approximations to derivatives. They
 underpin forward-mode [automatic differentation](https://en.wikipedia.org/wiki/Automatic_differentiation).
