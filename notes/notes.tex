@@ -64,9 +64,10 @@ In particular we investigate the following mathematical problems which can not i
 In this chapter we discuss:
 
 \begin{enumerate}
-\item I.1 Rectangular rule: We review the rectangular rule for integration and deduce the {\it converge rate} of the approximation. In the lab/problem sheet  we investigate its implementation as well as extensions to the Trapezium rule. 
-\item I.2 Divided differences: We investigate approximating derivatives by a divided difference and again deduce the convergence rates. In the lab/problem sheet we extend the approach to the central differences formula and computing second derivatives. We also observe a mystery: the approximations may have significant errors in practice, and there is a limit to the accuracy.
-\item I.3 Dual numbers:  We introduce the algebraic notion of a {\it dual number} which allows the implemention of {\it forward-mode automatic differentiation}, a high accuracy alternative to divided differences for computing derivatives.
+\item I.1 Rectangular rule: we review the rectangular rule for integration and deduce the {\it converge rate} of the approximation. In the lab/problem sheet  we investigate its implementation as well as extensions to the Trapezium rule. 
+\item I.2 Divided differences: we investigate approximating derivatives by a divided difference and again deduce the convergence rates. In the lab/problem sheet we extend the approach to the central differences formula and computing second derivatives. We also observe a mystery: the approximations may have significant errors in practice, and there is a limit to the accuracy.
+\item I.3 Dual numbers: we introduce the algebraic notion of a {\it dual number} which allows the implemention of {\it forward-mode automatic differentiation}, a high accuracy alternative to divided differences for computing derivatives.
+\item I.4 Newton's method: Newton's method is a basic approach for computing roots/zeros of a function. We use dual numbers to implement this algorithm.
 \end{enumerate}
 
 
@@ -74,6 +75,7 @@ In this chapter we discuss:
 \input{I.1.RectangularRule.tex}
 \input{I.2.DividedDifferences.tex}
 \input{I.3.DualNumbers.tex}
+\input{I.4.NewtonMethod.tex}
 
 
 \chapter{Representing Numbers}

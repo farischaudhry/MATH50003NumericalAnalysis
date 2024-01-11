@@ -474,7 +474,7 @@ contdual.b
 
 
 # ------
-# ## Newton's method
+# ## I.4 Newton's method
 
 # Newton's method is a simple algorithmic approach that you may have seen before in school for computing roots (or zeros)
 # of functions. The basic idea is given an initial guess $x_0$,
