@@ -1,4 +1,15 @@
 
+
+**Problem 5** Suppose $x = 1.25$ and consider 16-bit floating point arithmetic ($F_{16}$). 
+What is the error in approximating $x$ by the nearest float point number ${\rm fl}(x)$?
+What is the error in approximating $2x$, $x/2$, $x + 2$ and $x - 2$ by $2 \otimes x$, $x \oslash 2$, $x ⊕ 2$ and $x \ominus 2$?
+
+**SOLUTION**
+None of these computations have errors since they are all exactly representable as floating point numbers.
+**END**
+
+
+
 **Problem 6** What are the exact bits for $1 ⊘ 5$, $1 ⊘ 5 ⊕ 1$ computed
 using  half-precision arithmetic (`Float16`) (using default rounding)?
 

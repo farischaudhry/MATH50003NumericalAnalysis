@@ -1,7 +1,29 @@
 **Numerical Analysis MATH50003 (2023–24) Problem Sheet 3**
 
+**Problem 2** With 8-bit unsigned integers, what is the result for the following computations:
+$$
+127 ⊕_{256} 200,\quad 2 ⊗_{256} 127,\quad 2 ⊗_{256} 128, \quad0 ⊖_{256} 1
+$$
 
-**Problem 1** With 8-bit signed integers, what are the bits for the following: $10, 120, -10$.
+**SOLUTION**
+$$
+127 ⊕_{256} 200 = 327\ ({\rm mod} 256) = 71
+$$
+$$
+2 ⊗_{256} 127 = 254
+$$
+$$
+2 ⊗_{256} 128 = 256 \ ({\rm mod} 256) = 0
+$$
+$$
+0 ⊖_{256} 1 = -1  \ ({\rm mod} 256) = 255.
+$$
+
+
+
+**END**
+
+**Problem 2(a)** With 8-bit signed integers, what are the bits for the following: $10, 120, -10$.
 
 **SOLUTION**
 We can find the binary digits by repeatedly subtracting the largest power of 2 less than a number
@@ -30,7 +52,29 @@ printlnbits(Int8(-10))
 ```
 **END**
 
-**Problem 2** What is $π$ to 5 binary places? Hint: recall that $π ≈ 3.14$.
+**Problem 2(b)** With 8-bit signed integers, what is the result for the following computations:
+$$
+127 ⊕_{256}^{\rm s} 200,\quad 2 ⊗_{256}^{\rm s} 127, \quad 2 ⊗_{256}^{\rm s} 128, \quad 0 ⊖_{256}^{\rm s} 1
+$$
+
+**SOLUTION**
+$$
+127 ⊕_{256}^{\rm s} 200 = 327\ ({\rm mod}^{\rm s} 256) = 71
+$$
+$$
+2 ⊗_{256}^{\rm s} 127 = 254\ ({\rm mod}^{\rm s} 256) = -2
+$$
+
+(The third part was a trick question: 128 cannot be represented as an 8-bit signed integer)
+
+$$
+0 ⊖_{256}^{\rm s} 1 = -1  \ ({\rm mod} 256)^{\rm s} = -1.
+$$
+
+**END**
+
+
+**Problem 3** What is $π$ to 5 binary places? Hint: recall that $π ≈ 3.14$.
 
 **SOLUTION**
 Note that
@@ -48,9 +92,9 @@ $$
 $$
 **END**
 
-**Problem 3** What are the single precision $F_{32}$ (`Float32`) floating point representations for the following: 
+**Problem 4** What are the single precision $F_{32} = F_{127,8,23}$ floating point representations for the following: 
 $$
-2, 31, 32, 23/4, (23/4)\times 2^{100}
+2, \quad 31, \quad 32, \quad 23/4, \quad (23/4)\times 2^{100}
 $$
 
 **SOLUTION**
@@ -101,7 +145,7 @@ printlnbits(23f0/4 * 2f0^100)
 **END**
 
 
-**Problem 4** Let $m(y) = \min\{x \in F_{32} : x > y \}$ be the smallest single precision number
+**Problem 5** Let $m(y) = \min\{x \in F_{32} : x > y \}$ be the smallest single precision number
 greater than $y$. What is $m(2) - 2$ and $m(1024) - 1024$? 
 
 **SOLUTION**
@@ -113,13 +157,4 @@ similarly, for $1024 = 2^{10}$ we find that the difference $m(1024) - 1024$ is $
 ```julia
  nextfloat(1024f0) - 1024, 2^(-13)
 ```
-**END**
-
-
-**Problem 5** Suppose $x = 1.25$ and consider 16-bit floating point arithmetic ($F_{16}$). 
-What is the error in approximating $x$ by the nearest float point number ${\rm fl}(x)$?
-What is the error in approximating $2x$, $x/2$, $x + 2$ and $x - 2$ by $2 \otimes x$, $x \oslash 2$, $x ⊕ 2$ and $x \ominus 2$?
-
-**SOLUTION**
-None of these computations have errors since they are all exactly representable as floating point numbers.
 **END**
