@@ -118,6 +118,7 @@ exp(2z^2 + 3im)
 # **Problem 1(b)** Add another implementation of `foo` that returns `im` if the input
 # is a `ComplexF64`.
 
+## TODO: Overload foo for when the input is a ComplexF64 and return im
 
 
 @test foo(1.1 + 2im) == im
@@ -245,7 +246,7 @@ end
 @test Rat(2, 3) * Rat(3, 4) == Rat(1, 2)
 @test Rat(2, 3) / Rat(3, 4) == Rat(8, 9)
 
-# ------
+# ------
 
 # ## I.3 Dual Numbers
 #
@@ -346,7 +347,7 @@ exp(x::Dual) = Dual(exp(x.a), exp(x.a) * x.b)
 # We can use this to differentiate a function that composes these basic operations:
 
 f = x -> exp(x^2 + exp(x))
-f(1 + ϵ)
+f(Dual(1, 1))
 
 
 # What makes dual numbers so effective is that, unlike divided differences, they are not
@@ -386,6 +387,7 @@ function /(x::Dual, y::Dual)
 end
 
 x = 0.1
+ϵ = Dual(0,1)
 @test cos(sin(x+ϵ)/(x+ϵ)).b ≈ -((cos(x)/x - sin(x)/x^2)sin(sin(x)/x))
 
 
