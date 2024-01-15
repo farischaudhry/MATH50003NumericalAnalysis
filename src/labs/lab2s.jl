@@ -1,5 +1,5 @@
 # # MATH50003 (2023–24)
-# # Lab 2: I.3 Dual Numbers (and Newton's Method)
+# # Lab 2: I.3 Dual Numbers and I.4 Newton's Method
 
 # In this lab we explore an alternative approach to computing derivatives:
 # using _dual numbers_. This is a special mathematical object akin to complex numbers
@@ -121,6 +121,7 @@ typeof(1.2 + 2.3im)
 # **Problem 1(b)** Add another implementation of `foo` that returns `im` if the input
 # is a `ComplexF64`.
 
+## TODO: Overload foo for when the input is a ComplexF64 and return im
 ## SOLUTION
 foo(x::ComplexF64) = im
 ## END
@@ -281,7 +282,7 @@ end
 @test Rat(2, 3) * Rat(3, 4) == Rat(1, 2)
 @test Rat(2, 3) / Rat(3, 4) == Rat(8, 9)
 
-# ------
+# ------
 
 # ## I.3 Dual Numbers
 #
@@ -369,7 +370,7 @@ end
 f = x -> x^3 + 1
 f(Dual(2,1))  # 2^3+1 + 3*2^2*ϵ
 
-# ### I.3.2 Differentiating polynomials
+# ### I.3.2 Differentiating functions
 
 # We can also overload functions like `exp` so that they satisfy the rules of
 # a _dual extension_, that is, are consistent with the formula $f(a+bϵ) = f(a) + bf'(a)ϵ$
@@ -382,7 +383,7 @@ exp(x::Dual) = Dual(exp(x.a), exp(x.a) * x.b)
 # We can use this to differentiate a function that composes these basic operations:
 
 f = x -> exp(x^2 + exp(x))
-f(1 + ϵ)
+f(Dual(1, 1))
 
 
 # What makes dual numbers so effective is that, unlike divided differences, they are not
@@ -433,6 +434,7 @@ function /(x::Dual, y::Dual)
 end
 
 x = 0.1
+ϵ = Dual(0,1)
 @test cos(sin(x+ϵ)/(x+ϵ)).b ≈ -((cos(x)/x - sin(x)/x^2)sin(sin(x)/x))
 
 
@@ -541,7 +543,7 @@ f(r) # close to zero
 ## END
 
 # **Problem 5(c)** By changing the initial guesses compute 5 roots to
-# $sin(x) - 1/x$. Hint: you may need add an overload for `/(x::Real, y::Dual)`.
+# $sin(x) - 1/x$. Hint: you may need to add an overload for `/(x::Real, y::Dual)`.
 
 ## TODO: Use `newton` to compute rutes of `sin(x) - 1/x`.
 ## SOLUTION
@@ -551,7 +553,7 @@ f(r) # close to zero
 /(x::Real, y::Dual) = Dual(x)/y
 
 
-## Changing the initial guess we get 5 distinct roots
+## Changing the initial guess we get 5 distinct roots
 newton(x -> sin(x) - 1/x, 1, 100),
 newton(x -> sin(x) - 1/x, 2, 100),
 newton(x -> sin(x) - 1/x, 3, 100),
