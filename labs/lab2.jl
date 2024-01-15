@@ -1,5 +1,5 @@
 # # MATH50003 (2023–24)
-# # Lab 2: I.3 Dual Numbers (and Newton's Method)
+# # Lab 2: I.3 Dual Numbers and I.4 Newton's Method
 
 # In this lab we explore an alternative approach to computing derivatives:
 # using _dual numbers_. This is a special mathematical object akin to complex numbers
