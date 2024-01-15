@@ -467,6 +467,6 @@ f(r)
 
 
 # **Problem 5(c)** By changing the initial guesses compute 5 roots to
-# $sin(x) - 1/x$. Hint: you may need add an overload for `/(x::Real, y::Dual)`.
+# $sin(x) - 1/x$. Hint: you may need to add an overload for `/(x::Real, y::Dual)`.
 
 ## TODO: Use `newton` to compute rutes of `sin(x) - 1/x`.
