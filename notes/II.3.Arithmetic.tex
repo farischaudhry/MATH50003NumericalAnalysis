@@ -1,0 +1,187 @@
+
+\section{Floating Point Arithmetic}
+Arithmetic operations on floating-point numbers are  \emph{exact up to rounding}. There are three basic rounding strategies: round up/down/nearest. Mathematically we introduce a function to capture the notion of rounding:
+
+\begin{definition}[rounding] ${\rm fl}^{\rm up}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number up to the nearest floating-point number that is greater or equal. ${\rm fl}^{\rm down}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number down to the nearest floating-point number that is greater or equal. ${\rm fl}^{\rm nearest}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number to the nearest floating-point number. In case of a tie, it returns the floating-point number whose least significant bit is equal to zero. We use the notation ${\rm fl}$ when $\ensuremath{\sigma},Q,S$ and the rounding mode are implied by context, with ${\rm fl}^{\rm nearest}$ being the default rounding mode. \end{definition}
+
+In IEEE arithmetic, the arithmetic operations \texttt{+}, \texttt{-}, \texttt{*}, \texttt{/} are defined by the property that they are exact up to rounding.  Mathematically we denote these operations as $\ensuremath{\oplus}, \ensuremath{\ominus}, \ensuremath{\otimes}, \ensuremath{\oslash} : F \ensuremath{\otimes} F \ensuremath{\rightarrow} F$ as follows:
+
+
+\begin{align*}
+x \ensuremath{\oplus} y &:= {\rm fl}(x+y) \\
+x \ensuremath{\ominus} y &:= {\rm fl}(x - y) \\
+x \ensuremath{\otimes} y &:= {\rm fl}(x * y) \\
+x \ensuremath{\oslash} y &:= {\rm fl}(x / y)
+\end{align*}
+Note also that  \texttt{\^{}} and \texttt{sqrt} are similarly exact up to rounding. Also, note that when we convert a Julia command with constants specified by decimal expansions we first round the constants to floats, e.g., \texttt{1.1 + 0.1} is actually reduced to
+\[
+{\rm fl}(1.1) \ensuremath{\oplus} {\rm fl}(0.1)
+\]
+This includes the case where the constants are integers (which are normally exactly floats but may be rounded if extremely large).
+
+\begin{example}[decimal is not exact] The Julia command \texttt{1.1+0.1} gives a different result than \texttt{1.2}. This is because ${\rm fl}(1.1) \ensuremath{\neq} 1+1/10$ and ${\rm fl}(0.1) \ensuremath{\neq} 1/10$ since their expansion in \emph{binary} is not finite, but rather:
+
+
+\begin{align*}
+{\rm fl}(1.1) &= (1.0001100110011001100110011001100110011001100110011010)_2 \\
+{\rm fl}(0.1) &= 2^{-4} * (1.1001100110011001100110011001100110011001100110011010)_2 \\
+              &= (0.00011001100110011001100110011001100110011001100110011010)_2
+\end{align*}
+Thus when we add them we get
+\[
+{\rm fl}(1.1) + {\rm fl}(0.1) = (1.0011001100110011001100110011001100110011001100110011\red{1010})_2
+\]
+where the red digits indicate those beyond the 52 representable in $F_{54}$. In this case we round up and get
+\[
+{\rm fl}(1.1) \ensuremath{\oplus} {\rm fl}(0.1) = (1.0011001100110011001100110011001100110011001100110100)_2
+\]
+On the other hand,
+\[
+{\rm fl}(1.2) = (1.0011001100110011001100110011001100110011001100110011)_2
+\]
+which differs by 1 bit. \end{example}
+
+\textbf{WARNING (non-associative)} These operations are not associative! E.g. $(x \ensuremath{\oplus} y) \ensuremath{\oplus} z$ is not necessarily equal to $x \ensuremath{\oplus} (y \ensuremath{\oplus} z)$. Commutativity is preserved, at least.
+
+\subsection{Bounding errors in floating point arithmetic}
+When dealing with normal numbers there are some important constants that we will use to bound errors.
+
+\begin{definition}[machine epsilon/smallest positive normal number/largest normal number] \emph{Machine epsilon} is denoted
+\[
+\ensuremath{\epsilon}_{{\rm m},S} := 2^{-S}.
+\]
+When $S$ is implied by context we use the notation $\ensuremath{\epsilon}_{\rm m}$. The \emph{smallest positive normal number} is $q = 1$ and $b_k$ all zero:
+\[
+\min |F_{\ensuremath{\sigma},Q,S}^{\rm normal}| = 2^{1-\ensuremath{\sigma}}
+\]
+where $|A| := \{|x| : x \in A \}$. The \emph{largest (positive) normal number} is
+\[
+\max F_{\ensuremath{\sigma},Q,S}^{\rm normal} = 2^{2^Q-2-\ensuremath{\sigma}} (1.11\ensuremath{\ldots})_2 = 2^{2^Q-2-\ensuremath{\sigma}} (2-\ensuremath{\epsilon}_{\rm m})
+\]
+\end{definition}
+
+We can bound the error of basic arithmetic operations in terms of machine epsilon, provided a real number is close to a normal number:
+
+\begin{definition}[normalised range] The \emph{normalised range} ${\cal N}_{\ensuremath{\sigma},Q,S} \ensuremath{\subset} \ensuremath{\bbR}$ is the subset of real numbers that lies between the smallest and largest normal floating-point number:
+\[
+{\cal N}_{\ensuremath{\sigma},Q,S} := \{x : \min |F_{\ensuremath{\sigma},Q,S}^{\rm normal}| \ensuremath{\leq} |x| \ensuremath{\leq} \max F_{\ensuremath{\sigma},Q,S}^{\rm normal} \}
+\]
+When $\ensuremath{\sigma},Q,S$ are implied by context we use the notation ${\cal N}$. \end{definition}
+
+We can use machine epsilon to determine bounds on rounding:
+
+\begin{proposition}[round bound] If $x \in {\cal N}$ then
+\[
+{\rm fl}^{\rm mode}(x) = x (1 + \ensuremath{\delta}_x^{\rm mode})
+\]
+where the \emph{relative error} is
+
+
+\begin{align*}
+|\ensuremath{\delta}_x^{\rm nearest}| &\ensuremath{\leq} {\ensuremath{\epsilon}_{\rm m} \over 2} \\
+|\ensuremath{\delta}_x^{\rm up/down}| &< {\ensuremath{\epsilon}_{\rm m}}.
+\end{align*}
+\end{proposition}
+\textbf{Proof}
+
+We have
+
+\ensuremath{\QED}
+
+This immediately implies relative error bounds on all IEEE arithmetic operations, e.g., if $x+y \in {\cal N}$ then we have
+\[
+x \ensuremath{\oplus} y = (x+y) (1 + \ensuremath{\delta}_1)
+\]
+where (assuming the default nearest rounding) $|\ensuremath{\delta}_1| \ensuremath{\leq} {\ensuremath{\epsilon}_{\rm m} \over 2}.$
+
+\subsection{A simplified model of floating point}
+With a complicated formula it is inelegant to work with normalised ranges. Extending the bounds to subnormal numbers is tedious, rarely relevant, and beyond the scope of this module. Thus to avoid this issue we will work with an alternative mathematical model:
+
+\begin{definition}[normal floating point] A mathematical model of floating point which the only subnormal number is zero can be defined as:
+\[
+F_{\ensuremath{\infty},S} := \{\ensuremath{\pm} 2^q \ensuremath{\times} (1.b_1b_2b_3\ensuremath{\ldots}b_S)_2 :  q \ensuremath{\in} \ensuremath{\bbZ} \} \ensuremath{\cup} \{0\}
+\]
+\end{definition}
+
+Note that $F^{\rm normal}_{\ensuremath{\sigma},Q,S} \ensuremath{\subset} F_{\ensuremath{\infty},S}$ for all $\ensuremath{\sigma},Q \ensuremath{\in} \ensuremath{\bbN}$. The definition of rounding ${\rm fl}^{\rm up} : \ensuremath{\bbR} \ensuremath{\rightarrow} F_{\ensuremath{\infty},S}$ (etc.) naturllay extend to $F_{\ensuremath{\infty},S}$ and hence we can consider bounds for floating point operations such as $\ensuremath{\oplus}$, $\ensuremath{\ominus}$, etc. And in this model the round bound is valid for all real numbers (including $x = 0$).
+
+\begin{example}[bounding a simple computation] We show how to bound the error in computing
+\[
+(1.1 + 1.2) + 1.3
+\]
+using extended normal floating-point arithmetic $F_{\ensuremath{\infty},S}$. First note that \texttt{1.1} on a computer is in fact ${\rm fl}(1.1)$, and we will always assume nearest rounding unless otherwise stated. Thus this computation becomes
+\[
+({\rm fl}(1.1) \ensuremath{\oplus} {\rm fl}(1.2)) \ensuremath{\oplus} {\rm fl}(1.3)
+\]
+We will show the \emph{absolute error} is given by
+\[
+({\rm fl}(1.1) \ensuremath{\oplus} {\rm fl}(1.2)) \ensuremath{\oplus} {\rm fl}(1.3) = 3.6 + \ensuremath{\delta}
+\]
+where $|\ensuremath{\delta}| \ensuremath{\leq}  11 \ensuremath{\epsilon}_{\rm m}.$ First we find
+\[
+{\rm fl}(1.1) \ensuremath{\oplus} {\rm fl}(1.2) = (1.1(1 + \ensuremath{\delta}_1) + 1.2 (1+\ensuremath{\delta}_2))(1 + \ensuremath{\delta}_3)
+ = 2.3 + \underbrace{1.1 \ensuremath{\delta}_1 + 1.2 \ensuremath{\delta}_2 + 2.3 \ensuremath{\delta}_3 + 1.1 \ensuremath{\delta}_1 \ensuremath{\delta}_3 + 1.2 \ensuremath{\delta}_2 \ensuremath{\delta}_3}_{\ensuremath{\delta}_4}.
+\]
+While $\ensuremath{\delta}_1 \ensuremath{\delta}_3$ and $\ensuremath{\delta}_2 \ensuremath{\delta}_3$ are absolutely tiny in practice we will bound them rather naïvely by $|\ensuremath{\epsilon}_{\rm m}/2|$. Further we round up constants in the bounds for simplicity. We thus have the bound
+\[
+|\ensuremath{\delta}_4| \ensuremath{\leq} (1+1+2+1+1) \ensuremath{\epsilon}_{\rm m} = 6\ensuremath{\epsilon}_{\rm m}
+\]
+Thus the computation becomes
+\[
+((2.3 + \ensuremath{\delta}_4) + 1.3 (1 + \ensuremath{\delta}_5)) (1 + \ensuremath{\delta}_6) = 3.6 + \underbrace{\ensuremath{\delta}_4 + 1.3 \ensuremath{\delta}_5 + 3.6 \ensuremath{\delta}_6 + \ensuremath{\delta}_4 \ensuremath{\delta}_6  + 1.3 \ensuremath{\delta}_5 \ensuremath{\delta}_6}_{\ensuremath{\delta}_7}
+\]
+where the \emph{absolute error} is
+\[
+|\ensuremath{\delta}_7| \ensuremath{\leq} (6 + 1 + 2 + 1 + 1) \ensuremath{\epsilon}_{\rm m} = 11 \ensuremath{\epsilon}_{\rm m}
+\]
+\end{example}
+
+\subsection{Divided differences bound}
+We can use the bound on floating point arithmetic to deduce a bound on divided differences that captures the phenomena we observed where the error of divided differences became large as $h \ensuremath{\rightarrow} 0$. We assume that the function we are attempting to differentiate is computing using floating point arithmetic in a way that achieves relative accuracy. 
+
+\begin{theorem}[divided difference error bound] Let $f$ be twice-differentiable in a neighbourhood of $x$ and assume that 
+\[
+ f(x) = f^{\rm FP}(x) + \ensuremath{\delta}_x^f
+\]
+has uniform absolute accuracy in that neighbourhood, that is:
+\[
+|\ensuremath{\delta}_x^f| \ensuremath{\leq} c \ensuremath{\epsilon}_{\rm m}
+\]
+for a fixed constant $c \ensuremath{\geq} 0$.  Assume we are working in extended normal floating-point arithmetic $F_{\ensuremath{\infty},S}$ and, for simplicity, $h = 2^{-n}$ where $n \ensuremath{\leq} S$ and $|x| \ensuremath{\leq} 1$. The divided difference approximation satisfies
+\[
+(f^{\rm FP}(x + h) \ensuremath{\ominus} f^{\rm FP}(x)) \ensuremath{\oslash} h = f'(x) + \ensuremath{\delta}_{x,h}^{\rm FD}
+\]
+where 
+\[
+|\ensuremath{\delta}_{x,h}^{\rm FD}| \ensuremath{\leq} {|f'(x)| \over 2} \ensuremath{\epsilon}_{\rm m} + M h +  {4c \ensuremath{\epsilon}_{\rm m} \over h}
+\]
+for $M = \sup_{x \ensuremath{\leq} t \ensuremath{\leq} x+h} |f''(t)|$.
+
+\end{theorem}
+\textbf{Proof}
+
+We have (noting by our assumptions $x \ensuremath{\oplus} h = x + h$ and that dividing by $h$ will only change the exponent so is exact)
+
+
+\begin{align*}
+(f^{\rm FP}(x + h) \ensuremath{\ominus} f^{\rm FP}(x)) \ensuremath{\oslash} h &= {f(x + h) +  \ensuremath{\delta}^f_{x+h} - f(x) - \ensuremath{\delta}^f_x \over h} (1 + \ensuremath{\delta}_1) \\
+&= {f(x+h) - f(x) \over h} (1 + \ensuremath{\delta}_1) + {\ensuremath{\delta}^f_{x+h}- \ensuremath{\delta}^f_x \over h} (1 + \ensuremath{\delta}_1)
+\end{align*}
+where $|\ensuremath{\delta}_1| \ensuremath{\leq} {\ensuremath{\epsilon}_{\rm m} / 2}$. Applying Taylor's theorem we get 
+\[
+(f^{\rm FP}(x + h) \ensuremath{\ominus} f^{\rm FP}(x)) \ensuremath{\oslash} h = f'(x) + \underbrace{f'(x) \ensuremath{\delta}_1 + {f''(t) \over 2} h (1 + \delta_1) + {\ensuremath{\delta}^f_{x+h}- \ensuremath{\delta}^f_x \over h} (1 + \ensuremath{\delta}_1)}_{\ensuremath{\delta}_{x,h}^{\rm FD}}
+\]
+The bound then follows, using the very pessimistic bound $|1 + \ensuremath{\delta}_1| \ensuremath{\leq} 2$.
+
+\ensuremath{\QED}
+
+The three-terms of this bound tell us a story: the first term is a fixed (small) error, the second term tends to zero as $h \rightarrow 0$, while the last term grows like $\ensuremath{\epsilon}_{\rm m}/h$ as $h \rightarrow 0$.  Thus we observe convergence while the second term dominates, until the last term takes over. Of course, a bad upper bound is not the same as a proof that something grows, but it is a good indication of  what happens \emph{in general} and suffices to motivate the following heuristic to balance the two sources of errors:
+
+\textbf{Heuristic (divided difference with floating-point step)} Choose $h$ proportional to $\sqrt{\ensuremath{\epsilon}_{\rm m}}$ in divided differences  so that $M h$ and ${4c \ensuremath{\epsilon}_{\rm m} \over h}$ are roughly the same magnitude.
+
+In the case of double precision $\sqrt{\ensuremath{\epsilon}_{\rm m}} \ensuremath{\approx} 1.5\times 10^{-8}$, which is close to when the observed error begins to increase in the examples we saw before. 
+
+\textbf{Remark} While divided differences is of debatable utility for computing derivatives, it is extremely effective in building methods for solving differential equations, as we shall see later. It is also very useful as a \ensuremath{\ldq}sanity check" if one wants something to compare with other numerical methods for differentiation.
+
+
+

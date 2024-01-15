@@ -1,21 +1,108 @@
 # # MATH50003 (2022–23)
-# # Lab 4: Interval arithmetic
+# # Lab 4: II.3 Floating Point Arithmetic and II.4 Interval Arithmetic
+
+
+
+# II.3 Floating Point Arithmetic
+
+# In Julia, the rounding mode is specified by tags `RoundUp`, `RoundDown`, and
+# `RoundNearest`. (There are also more exotic rounding strategies `RoundToZero`, `RoundNearestTiesAway` and
+# `RoundNearestTiesUp` that we won't use.)
+
+
+
+### Arithmetic and special numbers
+
+# Arithmetic works differently on `Inf` and `NaN` and for undefined operations. 
+# In particular we have:
+
+1/0.0        #  Inf
+1/(-0.0)     # -Inf
+0.0/0.0      #  NaN
+  
+Inf*0        #  NaN
+Inf+5        #  Inf
+(-1)*Inf     # -Inf
+1/Inf        #  0.0
+1/(-Inf)     # -0.0
+Inf - Inf    #  NaN
+Inf ==  Inf  #  true
+Inf == -Inf  #  false
+
+NaN*0        #  NaN
+NaN+5        #  NaN
+1/NaN        #  NaN
+NaN == NaN   #  false
+NaN != NaN   #  true
+
+
+## 4. High-precision floating-point numbers (non-examinable)
+
+# It is possible to set the precision of a floating-point number
+# using the `BigFloat` type, which results from the usage of `big`
+# when the result is not an integer.
+# For example, here is an approximation of 1/3 accurate
+# to 77 decimal digits:
+
+big(1)/3
+
+# Note we can set the rounding mode as in `Float64`, e.g., 
+# this gives (rigorous) bounds on
+# `1/3`:
+
+setrounding(BigFloat, RoundDown) do
+  big(1)/3
+end, setrounding(BigFloat, RoundUp) do
+  big(1)/3
+end
+
+# We can also increase the precision, e.g., this finds bounds on `1/3` accurate to 
+# more than 1000 decimal places:
+
+setprecision(4_000) do # 4000 bit precision
+  setrounding(BigFloat, RoundDown) do
+    big(1)/3
+  end, setrounding(BigFloat, RoundUp) do
+    big(1)/3
+  end
+end
+
+# In the labs we shall see how this can be used to rigorously bound ${\rm e}$,
+# accurate to 1000 digits. 
+
+
+
+# Let's try rounding a `Float64` to a `Float32`.
+
+
+printlnbits(1/3)  # 64 bits
+printbits(Float32(1/3))  # round to nearest 32-bit
+
+# The default rounding mode can be changed:
+
+printbits(Float32(1/3,RoundDown) )
+
+# Or alternatively we can change the rounding mode for a chunk of code
+# using `setrounding`. The following computes upper and lower bounds for `/`:
+
+x = 1f0
+setrounding(Float32, RoundDown) do
+    x/3
+end,
+setrounding(Float32, RoundUp) do
+    x/3
+end
+
+
+# **WARNING (compiled constants, non-examinable)**: Why did we first create a variable `x` instead of typing `1f0/3`?
+# This is due to a very subtle issue where the compiler is _too clever for it's own good_: 
+# it recognises `1f0/3` can be computed at compile time, but failed to recognise the rounding mode
+# was changed. 
+
 
 # This lab explores the usage of rounding modes for floating point arithmetic and how they
 # can be used to compute _rigorous_ bounds on mathematical constants such as ℯ.
 # The key idea is _interval arithmetic_.
-# That is recall the set operations
-# $$
-# A + B = \{x + y : x ∈ A, y ∈ B\}, AB = \{xy : x ∈ A, y ∈ B\}, A/B = \{x/y : x ∈ A, y ∈ B\}
-# $$
-#
-# We will use floating point arithmetic to construct approximate set operations ⊕, ⊗ so that
-# $$
-#   A + B ⊆ A ⊕ B, AB ⊆ A ⊗ B, A/B ⊆ A ⊘ B
-# $$
-# thereby a complicated algorithm can be run on sets and the true result is guaranteed to be
-# a subset of the output. E.g. we can do $ℯ = {\rm exp}(1) ∈ {\rm exp}([1,1]) ⊆ {\rm exp}^{\rm FP}([1,1])$
-# where ${\rm exp}^{\rm FP}$ is implemented using $⊕$ and $⊗$.
 #
 # This will be consist of the following:
 # 1. The finite Taylor series $\exp x ≈ ∑_{k=0}^n x^k/k!$ where each operation is now
@@ -30,48 +117,20 @@ using SetRounding, Test
 
 # -----
 #
-# **Problem 1⋆** For intervals $A = [a,b]$ and $B = [c,d]$ such that $0 ∉ A,B$
-#  and integer $n ≠ 0$, 
-# deduce formulas for the minimum and maximum of $A/n$, $A+B$ and $AB$.
-#
-# -----
-# We want to implement floating point variants such that, for $S = [a,b] + [c,d]$
-#  $P = [a,b] * [c,d]$, and $D = [a,b]/n$ for an integer $n$,
-# $$
-# \begin{align*}
-# [a,b] ⊕ [c,d] &:= [{\rm fl}^{\rm down}(\min S), {\rm fl}^{\rm up}(\max S)] \\
-# [a,b] ⊗ [c,d] &:= [{\rm fl}^{\rm down}(\min P), {\rm fl}^{\rm up}(\max P)] \\
-# [a,b] ⊘ n &:= [{\rm fl}^{\rm down}(\min D), {\rm fl}^{\rm up}(\max D)]
-# \end{align*}
-# $$
-# This guarantees $S ⊆ [a,b] ⊕ [c,d]$, $P ⊆ [a,b] ⊗ [c,d]$, and
-# $D ⊆ [a,b] ⊘ n$.
-# In other words, if $x ∈ [a,b]$ and
-# $y ∈ [c,d]$ then $x +y ∈ [a,b] ⊕ [c,d]$, and we thereby have  bounds on $x + y$.
-#
+# II.4 Interval Arithmetic
+
 # 
 # We will now create a Type to represent an interval, which we will call `Interval`.
-# We need two fields: the left endpoint (`a`) and a right endpoint (`b`). We want to allow
-# these to be a type `T` which may be, say, `Int`, `Float64`, `Float16`, or `BigFloat`.
-# To construct such a type we use the `struct` keyword:
+# We need two fields: the left endpoint (`a`) and a right endpoint (`b`):
 
-struct Interval{T}
-    a::T
-    b::T
+struct Interval
+    a
+    b
 end
 
 # For example, if we say `A = Interval(1, 2)` this corresponds to the mathematical interval
 # $[1, 2]$, and the fields are accessed via `A.a` and `A.b`.
-# Here we create an instance of such an interval interval:
-
-A = Interval(1, 2) 
-
-# This displays (prints out) as `Interval{Int64}(1, 2)`. The `{Int64}` indicates that the fields
-# `A.a` and `A.b` are `Int64`. We can see this as follows:
-
-A.a, A.b # returns a Tuple containing two Ints
-
-# We will overload *, +, -, / to use interval arithmetic. That is, whenever we do arithmetic with
+# We will overload `*`, `+`, `-`, `/` to use interval arithmetic. That is, whenever we do arithmetic with
 # an instance of `Interval` we want it to use correctly rounded interval varients. 
 # We also need to support `one` (a function that creates an interval containing a single point `1`)
 # and `in` functions (a function to test if a number is within an interval).
@@ -101,11 +160,11 @@ one(A::Interval) = Interval(one(A.a), one(A.b))
 one(Interval(2.0,3.3))
 
 # Now if `A = Interval(a,b)` this corresponds to the mathematical interval $[a,b]$.
-# And a real number $x ∈ [a,b]$ iff $a ≤ x ≤ b$. In Julia the endpoints $a$ and $b$ are accessed
+# And a real number $x ∈ [a,b]$ iff $a ≤ x ≤ b$. In Julia the endpoints $a$ and $b$ are accessed
 # via $A.a$ and $B.b$ hence the above test becomes `A.a ≤ x ≤ A.b`. Thus we overload `in` 
 # as follows:
 
-in(x, A::Interval) = A.a ≤ x ≤ A.b
+in(x, A::Interval) = A.a ≤ x ≤ A.b
 
 # The function `in` is whats called an "infix" operation (just like `+`, `-`, `*`, and `/`). We can call it
 # either as `in(x, A)` or put the `in` in the middle and write `x in A`. This can be seen in the following:
@@ -315,7 +374,7 @@ function exp_bound(x::Interval, n)
     if abs(x.a) > 1 || abs(x.b) > 1
         error("Interval must be a subset of [-1, 1]")
     end
-    ret = exp_t(x, n) # the code for Taylor series should work on Interval unmodified
+    ret = exp_t(x, n) # the code for Taylor series should work on Interval unmodified
     f = factorial(min(20, n + 1)) # avoid overflow in computing factorial
     T = typeof(ret.a)
 

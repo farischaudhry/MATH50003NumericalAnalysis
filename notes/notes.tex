@@ -9,15 +9,19 @@
 \usepackage{hyperref}
 \usepackage{amsthm}
 \usepackage{listings}
+\usepackage{xcolor}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
 \let\QED=\blacksquare
 \def\bbD{{\mathbb D}}
 \def\bbZ{{\mathbb Z}}
+\def\bbN{{\mathbb N}}
 \def\emdash{\hbox{---}}
 \def\endash{\hbox{--}}
 \def\nsubset{\not\subset}
 \def\ldq{``}
+\def\red#1{{\color{red} #1}}
+\def\euler{\E}
 
 \hypersetup
        {   pdfauthor = { {{Sheehan Olver}} },
@@ -104,7 +108,9 @@ In particular we discuss:
 \end{enumerate}
 
 
-\input{II.1.Integers.tex}
-\input{II.2.Reals.tex}
+\input{II.1.Integers}
+\input{II.2.Reals}
+\input{II.3.Arithmetic}
+\input{II.4.Intervals}
 
 \end{document}

@@ -1,58 +1,24 @@
-## 3. Arithmetic
+# Floating Point Arithmetic
 
 
 Arithmetic operations on floating-point numbers are  _exact up to rounding_.
 There are three basic rounding strategies: round up/down/nearest.
 Mathematically we introduce a function to capture the notion of rounding:
 
-**Definition 6 (rounding)** ${\rm fl}^{\rm up}_{σ,Q,S} : \mathbb R \rightarrow F_{σ,Q,S}$ denotes 
+**Definition (rounding)** ${\rm fl}^{\rm up}_{σ,Q,S} : \mathbb R \rightarrow F_{σ,Q,S}$ denotes
 the function that rounds a real number up to the nearest floating-point number that is greater or equal.
-${\rm fl}^{\rm down}_{σ,Q,S} : \mathbb R \rightarrow F_{σ,Q,S}$ denotes 
+${\rm fl}^{\rm down}_{σ,Q,S} : \mathbb R \rightarrow F_{σ,Q,S}$ denotes
 the function that rounds a real number down to the nearest floating-point number that is greater or equal.
-${\rm fl}^{\rm nearest}_{σ,Q,S} : \mathbb R \rightarrow F_{σ,Q,S}$ denotes 
+${\rm fl}^{\rm nearest}_{σ,Q,S} : \mathbb R \rightarrow F_{σ,Q,S}$ denotes
 the function that rounds a real number to the nearest floating-point number. In case of a tie,
 it returns the floating-point number whose least significant bit is equal to zero.
 We use the notation ${\rm fl}$ when $σ,Q,S$ and the rounding mode are implied by context,
 with ${\rm fl}^{\rm nearest}$ being the default rounding mode.
+∎
 
-
-
-In Julia, the rounding mode is specified by tags `RoundUp`, `RoundDown`, and
-`RoundNearest`. (There are also more exotic rounding strategies `RoundToZero`, `RoundNearestTiesAway` and
-`RoundNearestTiesUp` that we won't use.)
-
-
-
-
-Let's try rounding a `Float64` to a `Float32`.
-
-```julia
-printlnbits(1/3)  # 64 bits
-printbits(Float32(1/3))  # round to nearest 32-bit
-```
-The default rounding mode can be changed:
-```julia
-printbits(Float32(1/3,RoundDown) )
-```
-Or alternatively we can change the rounding mode for a chunk of code
-using `setrounding`. The following computes upper and lower bounds for `/`:
-```julia
-x = 1f0
-setrounding(Float32, RoundDown) do
-    x/3
-end,
-setrounding(Float32, RoundUp) do
-    x/3
-end
-```
-
-**WARNING (compiled constants, non-examinable)**: Why did we first create a variable `x` instead of typing `1f0/3`?
-This is due to a very subtle issue where the compiler is _too clever for it's own good_: 
-it recognises `1f0/3` can be computed at compile time, but failed to recognise the rounding mode
-was changed. 
 
 In IEEE arithmetic, the arithmetic operations `+`, `-`, `*`, `/` are defined by the property
-that they are exact up to rounding.  Mathematically we denote these operations as 
+that they are exact up to rounding.  Mathematically we denote these operations as
 $⊕, ⊖, ⊗, ⊘ : F ⊗ F → F$ as follows:
 $$
 \begin{align*}
@@ -71,12 +37,7 @@ $$
 This includes the case where the constants are integers (which are normally exactly floats
 but may be rounded if extremely large).
 
-**Example 5 (decimal is not exact)** The Julia command `1.1+0.1` gives a different result than `1.2`:
-```julia
-x = 1.1
-y = 0.1
-x + y - 1.2 # Not Zero?!?
-```
+**Example (decimal is not exact)** The Julia command `1.1+0.1` gives a different result than `1.2`.
 This is because ${\rm fl}(1.1) ≠ 1+1/10$ and ${\rm fl}(0.1) ≠ 1/10$ since their
 expansion in _binary_ is not finite, but rather:
 $$
@@ -100,17 +61,14 @@ $$
 {\rm fl}(1.2) = (1.0011001100110011001100110011001100110011001100110011)_2
 $$
 which differs by 1 bit.
+∎
 
-**WARNING (non-associative)** These operations are not associative! E.g. $(x ⊕ y) ⊕ z$ is not necessarily equal to $x ⊕ (y ⊕ z)$. 
+**WARNING (non-associative)** These operations are not associative! E.g. $(x ⊕ y) ⊕ z$ is not necessarily equal to $x ⊕ (y ⊕ z)$.
 Commutativity is preserved, at least.
-Here is a surprising example of non-associativity:
-```julia
-(1.1 + 1.2) + 1.3, 1.1 + (1.2 + 1.3)
-```
-Can you explain this in terms of bits?
 
 
-### Bounding errors in floating point arithmetic
+
+## Bounding errors in floating point arithmetic
 
 
 When dealing with normal numbers there are some important constants that we will use
@@ -127,74 +85,102 @@ $$
 \min |F_{σ,Q,S}^{\rm normal}| = 2^{1-σ}
 $$
 where $|A| := \{|x| : x \in A \}$.
-The _largest (positive) normal number_ is 
+The _largest (positive) normal number_ is
 $$
 \max F_{σ,Q,S}^{\rm normal} = 2^{2^Q-2-σ} (1.11…)_2 = 2^{2^Q-2-σ} (2-ϵ_{\rm m})
 $$
 ∎
 
-Before we dicuss bounds on errors, we need to talk about the two notions of errors:
 
-**Definition 7 (absolute/relative error)** If $\tilde x = x + δ_{\rm a} = x (1 + δ_{\rm r})$ then 
-$|δ_{\rm a}|$ is called the _absolute error_ and $|δ_{\rm r}|$ is called the 
-_relative error_ in approximating $x$ by $\tilde x$.
 
 We can bound the error of basic arithmetic operations in terms of machine epsilon, provided
 a real number is close to a normal number:
 
-**Definition 8 (normalised range)** The _normalised range_ ${\cal N}_{σ,Q,S} ⊂ ℝ$
+**Definition (normalised range)** The _normalised range_ ${\cal N}_{σ,Q,S} ⊂ ℝ$
 is the subset of real numbers that lies
 between the smallest and largest normal floating-point number:
 $$
 {\cal N}_{σ,Q,S} := \{x : \min |F_{σ,Q,S}^{\rm normal}| ≤ |x| ≤ \max F_{σ,Q,S}^{\rm normal} \}
 $$
 When $σ,Q,S$ are implied by context we use the notation ${\cal N}$.
+∎
 
 We can use machine epsilon to determine bounds on rounding:
 
-**Proposition 1 (round bound)**
-If $x \in {\cal N}$ then 
+**Proposition (round bound)**
+If $x \in {\cal N}$ then
 $$
-{\rm fl}^{\rm mode}(x) = x (1 + \delta_x^{\rm mode})
+{\rm fl}^{\rm mode}(x) = x (1 + δ_x^{\rm mode})
 $$
 where the _relative error_ is
 $$
 \begin{align*}
-|\delta_x^{\rm nearest}| &≤ {ϵ_{\rm m} \over 2} \\
-|\delta_x^{\rm up/down}| &< {ϵ_{\rm m}}.
+|δ_x^{\rm nearest}| &≤ {ϵ_{\rm m} \over 2} \\
+|δ_x^{\rm up/down}| &< {ϵ_{\rm m}}.
 \end{align*}
 $$
 
+**Proof**
 
-This immediately implies relative error bounds on all IEEE arithmetic operations, e.g., 
+We have
+
+∎
+
+
+This immediately implies relative error bounds on all IEEE arithmetic operations, e.g.,
 if $x+y \in {\cal N}$ then
 we have
 $$
-x ⊕ y = (x+y) (1 + \delta_1)
+x ⊕ y = (x+y) (1 + δ_1)
 $$
-where (assuming the default nearest rounding)
-$
-|\delta_1| ≤ {ϵ_{\rm m} \over 2}.
-$
+where (assuming the default nearest rounding) $|δ_1| ≤ {ϵ_{\rm m} \over 2}.$
 
-**Example 6 (bounding a simple computation)** We show how to bound the error in computing
+## A simplified model of floating point
+
+With a complicated formula it is inelegant to work with normalised ranges. Extending the
+bounds to subnormal numbers is tedious, rarely relevant, and beyond the scope of this module. Thus to avoid this
+issue we will work with an alternative mathematical model:
+
+**Definition (normal floating point)**
+A mathematical model of floating point which the only subnormal number is zero can be defined as:
+$$
+F_{∞,S} := \{± 2^q × (1.b_1b_2b_3…b_S)_2 :  q ∈ ℤ \} ∪ \{0\}
+$$
+∎
+
+Note that $F^{\rm normal}_{σ,Q,S} ⊂ F_{∞,S}$ for all $σ,Q ∈ ℕ$.
+The definition of rounding ${\rm fl}^{\rm up} : ℝ → F_{∞,S}$ (etc.) naturllay extend to $F_{∞,S}$
+and hence we can consider bounds for floating point operations such as $⊕$, $⊖$, etc. And
+in this model the round bound is valid for all real numbers (including $x = 0$).
+
+
+
+
+
+
+**Example (bounding a simple computation)** We show how to bound the error in computing
 $$
 (1.1 + 1.2) + 1.3
 $$
-using floating-point arithmetic. First note that `1.1` on a computer is in
-fact ${\rm fl}(1.1)$. Thus this computation becomes
+using extended normal floating-point arithmetic $F_{∞,S}$. First note that `1.1` on a computer is in
+fact ${\rm fl}(1.1)$, and we will always assume nearest rounding unless otherwise
+stated. Thus this computation becomes
 $$
 ({\rm fl}(1.1) ⊕ {\rm fl}(1.2)) ⊕ {\rm fl}(1.3)
 $$
+We will show the _absolute error_ is given by
+$$
+({\rm fl}(1.1) ⊕ {\rm fl}(1.2)) ⊕ {\rm fl}(1.3) = 3.6 + δ
+$$
+where $|δ| ≤  11 ϵ_{\rm m}.$
 First we find
 $$
-({\rm fl}(1.1) ⊕ {\rm fl}(1.2)) = (1.1(1 + δ_1) + 1.2 (1+δ_2))(1 + δ_3)
+{\rm fl}(1.1) ⊕ {\rm fl}(1.2) = (1.1(1 + δ_1) + 1.2 (1+δ_2))(1 + δ_3)
  = 2.3 + \underbrace{1.1 δ_1 + 1.2 δ_2 + 2.3 δ_3 + 1.1 δ_1 δ_3 + 1.2 δ_2 δ_3}_{δ_4}.
- $$
-In this module we will never ask for precise bounds: that is, we will always want bounds of the form
-$C ϵ_{\rm m}$ for a specified constant $C$ but the choice of $C$ need not be sharp. Thus we will
-tend to round up to integers. Further, while $δ_1 δ_3$ and $δ_2 δ_3$ are absolutely tiny 
-we will tend to bound them rather naïvely by $|ϵ_{\rm m}/2|$. Using these rules we have the bound
+$$
+While $δ_1 δ_3$ and $δ_2 δ_3$ are absolutely tiny in practice
+we will bound them rather naïvely by $|ϵ_{\rm m}/2|$. Further we round up constants
+in the bounds for simplicity. We thus have the bound
 $$
 |δ_4| ≤ (1+1+2+1+1) ϵ_{\rm m} = 6ϵ_{\rm m}
 $$
@@ -204,139 +190,74 @@ $$
 $$
 where the _absolute error_ is
 $$
-|δ_7| ≤ (6 + 1 + 2 + 1 + 1) ϵ_{\rm m} = 11 ϵ_{\rm m} 
+|δ_7| ≤ (6 + 1 + 2 + 1 + 1) ϵ_{\rm m} = 11 ϵ_{\rm m}
 $$
-Indeed, this bound is bigger than the observed error:
-```julia
-abs(3.6 - (1.1+1.2+1.3)), 11eps()
-```
+∎
 
 
-### Arithmetic and special numbers
+## Divided differences bound
 
-Arithmetic works differently on `Inf` and `NaN` and for undefined operations. 
-In particular we have:
-```julia
-1/0.0        #  Inf
-1/(-0.0)     # -Inf
-0.0/0.0      #  NaN
-  
-Inf*0        #  NaN
-Inf+5        #  Inf
-(-1)*Inf     # -Inf
-1/Inf        #  0.0
-1/(-Inf)     # -0.0
-Inf - Inf    #  NaN
-Inf ==  Inf  #  true
-Inf == -Inf  #  false
-
-NaN*0        #  NaN
-NaN+5        #  NaN
-1/NaN        #  NaN
-NaN == NaN   #  false
-NaN != NaN   #  true
-```
+We can use the bound on floating point arithmetic to deduce a bound on divided differences that
+captures the phenomena we observed where the error of divided differences became large as $h → 0$.
+We assume that the function we are attempting to differentiate is computing using floating point arithmetic
+in a way that achieves relative accuracy. 
 
 
-### Special functions (non-examinable)
-
-Other special functions like `cos`, `sin`, `exp`, etc. are _not_ part of the IEEE standard.
-Instead, they are implemented by composing the basic arithmetic operations, which accumulate
-errors. Fortunately many are  designed to have _relative accuracy_, that is, `s = sin(x)` 
-(that is, the Julia implementation of $\sin x$) satisfies
+**Theorem (divided difference error bound)** Let $f$ be twice-differentiable in a neighbourhood of $x$ and assume that 
 $$
-{\tt s} = (\sin x) ( 1 + \delta)
+ f(x) = f^{\rm FP}(x) + δ_x^f
 $$
-where $|\delta| < cϵ_{\rm m}$ for a reasonably small $c > 0$,
-_provided_ that $x \in {\rm F}^{\rm normal}$.
-Note these special functions are written in (advanced) Julia code, for example, 
-[sin](https://github.com/JuliaLang/julia/blob/d08b05df6f01cf4ec6e4c28ad94cedda76cc62e8/base/special/trig.jl#L76).
-
-
-**WARNING (sin(fl(x)) is not always close to sin(x))** This is possibly a misleading statement
-when one thinks of $x$ as a real number. Consider $x = \pi$ so that $\sin x = 0$.
-However, as ${\rm fl}(\pi) ≠ \pi$. Thus we only have relative accuracy compared
-to the floating point approximation:
-```julia
-π₆₄ = Float64(π)
-πᵦ = big(π₆₄) # Convert 64-bit approximation of π to higher precision. Note its the same number.
-abs(sin(π₆₄)), abs(sin(π₆₄) - sin(πᵦ)) # only has relative accuracy compared to sin(πᵦ), not sin(π)
-```
-Another issue is when $x$ is very large:
-```julia
-ε = eps() # machine epsilon, 2^(-52)
-x = 2*10.0^100
-abs(sin(x) - sin(big(x)))  ≤  abs(sin(big(x))) * ε
-```
-But if we instead compute `10^100` using `BigFloat` we get a completely different
-answer that even has the wrong sign!
-```julia
-x̃ = 2*big(10.0)^100
-sin(x), sin(x̃)
-```
-This is because we commit an error on the order of roughly
+has uniform absolute accuracy in that neighbourhood, that is:
 $$
-2 * 10^{100} * ϵ_{\rm m} \approx 4.44 * 10^{84}
+|δ_x^f| ≤ c ϵ_{\rm m}
 $$
-when we round $2*10^{100}$ to the nearest float. 
-
-
-**Example 7 (polynomial near root)** 
-For general functions we do not generally have relative accuracy. 
-For example, consider a simple
-polynomial $1 + 4x + x^2$ which has a root at $\sqrt 3 - 2$. But
-```julia
-f = x -> 1 + 4x + x^2
-x = sqrt(3) - 2
-abserr = abs(f(big(x)) - f(x))
-relerr = abserr/abs(f(x))
-abserr, relerr # very large relative error
-```
-We can see this in the error bound (note that $4x$ is exact for floating point numbers
-and adding $1$ is exact for this particular $x$):
+for a fixed constant $c ≥ 0$. 
+Assume we are working in extended normal floating-point arithmetic $F_{∞,S}$
+and, for simplicity, $h = 2^{-n}$ where $n ≤ S$ and $|x| ≤ 1$.
+The divided difference approximation satisfies
 $$
-(x ⊗ x) ⊕ 4x + 1 = (x^2 (1 + \delta_1) + 4x)(1+\delta_2) + 1 = x^2 + 4x + 1 + \delta_1 x^2 + 4x \delta_2 + x^2 \delta_1 \delta_2
+(f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x)) ⊘ h = f'(x) + δ_{x,h}^{\rm FD}
 $$
-Using a simple bound $|x| < 1$ we get a (pessimistic) bound on the absolute error of
-$3 ϵ_{\rm m}$. Here `f(x)` itself is less than $2 ϵ_{\rm m}$ so this does not imply
-relative accuracy. (Of course, a bad upper bound is not the same as a proof of inaccuracy,
-but here we observe the inaccuracy in practice.)
+where 
+$$
+|δ_{x,h}^{\rm FD}| ≤ {|f'(x)| \over 2} ϵ_{\rm m} + M h +  {4c ϵ_{\rm m} \over h}
+$$
+for $M = \sup_{x ≤ t ≤ x+h} |f''(t)|$.
+
+**Proof**
+
+We have (noting by our assumptions $x ⊕ h = x + h$ and that dividing by $h$ will only change the exponent so
+is exact)
+$$
+\begin{align*}
+(f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x)) ⊘ h &= {f(x + h) +  δ^f_{x+h} - f(x) - δ^f_x \over h} (1 + δ_1) \\
+&= {f(x+h) - f(x) \over h} (1 + δ_1) + {δ^f_{x+h}- δ^f_x \over h} (1 + δ_1)
+\end{align*}
+$$
+where $|δ_1| ≤ {ϵ_{\rm m} / 2}$. Applying Taylor's theorem we get 
+$$
+(f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x)) ⊘ h = f'(x) + \underbrace{f'(x) δ_1 + {f''(t) \over 2} h (1 + \delta_1) + {δ^f_{x+h}- δ^f_x \over h} (1 + δ_1)}_{δ_{x,h}^{\rm FD}}
+$$
+The bound then follows, using the very pessimistic bound $|1 + δ_1| ≤ 2$.
+
+∎
+
+The three-terms of this bound tell us a story: the first term is a fixed (small) error, the second term tends to zero
+as $h \rightarrow 0$, while the last term grows like $ϵ_{\rm m}/h$ as $h \rightarrow 0$.  Thus we observe convergence
+while the second term dominates, until the last term takes over.
+Of course, a bad upper bound is not the same as a proof that something grows, but it is a good indication of 
+what happens _in general_ and suffices to motivate the following heuristic to balance the two sources of errors:
+
+
+**Heuristic (divided difference with floating-point step)** Choose $h$ proportional to $\sqrt{ϵ_{\rm m}}$
+in divided differences  so that $M h$ and ${4c \ensuremath{\epsilon}_{\rm m} \over h}$ are roughly the same magnitude.
+
+In the case of double precision $\sqrt{ϵ_{\rm m}} ≈ 1.5\times 10^{-8}$, which is close to when the observed error begins to increase
+in the examples we saw before. 
 
 
 
+**Remark** While divided differences is of debatable utility for computing derivatives, it is extremely effective
+in building methods for solving differential equations, as we shall see later. It is also very useful as a “sanity check"
+if one wants something to compare with other numerical methods for differentiation.
 
-
-
-## 4. High-precision floating-point numbers (non-examinable)
-
-It is possible to set the precision of a floating-point number
-using the `BigFloat` type, which results from the usage of `big`
-when the result is not an integer.
-For example, here is an approximation of 1/3 accurate
-to 77 decimal digits:
-```julia
-big(1)/3
-```
-Note we can set the rounding mode as in `Float64`, e.g., 
-this gives (rigorous) bounds on
-`1/3`:
-```julia
-setrounding(BigFloat, RoundDown) do
-  big(1)/3
-end, setrounding(BigFloat, RoundUp) do
-  big(1)/3
-end
-```
-We can also increase the precision, e.g., this finds bounds on `1/3` accurate to 
-more than 1000 decimal places:
-```julia
-setprecision(4_000) do # 4000 bit precision
-  setrounding(BigFloat, RoundDown) do
-    big(1)/3
-  end, setrounding(BigFloat, RoundUp) do
-    big(1)/3
-  end
-end
-```
-In the labs we shall see how this can be used to rigorously bound ${\rm e}$,
-accurate to 1000 digits. 

@@ -1,0 +1,70 @@
+# Interval Arithmetic
+
+
+We can use rounding modes of floating point arithmetic to do rigorous computation
+to compute bounds on, for example, $\E$ or $π$. To do this we will use set/interval
+arithmetic which is then easily implemented on a computer. 
+
+That is recall the set operations
+$$
+A + B = \{x + y : x ∈ A, y ∈ B\}, AB = \{xy : x ∈ A, y ∈ B\}, A/B = \{x/y : x ∈ A, y ∈ B\}
+$$
+We will use floating point arithmetic to construct approximate set operations ⊕, ⊗ so that
+$$
+  A + B ⊆ A ⊕ B, AB ⊆ A ⊗ B, A/B ⊆ A ⊘ B
+$$
+thereby a complicated algorithm can be run on sets and the true result is guaranteed to be
+a subset of the output. E.g. we can do $ℯ = {\rm exp}(1) ∈ {\rm exp}([1,1]) ⊆ {\rm exp}^{\rm FP}([1,1])$
+where ${\rm exp}^{\rm FP}$ is implemented using $⊕$ and $⊗$.
+
+
+For intervals we can deduce formulas for basic arithmetic operations:
+
+**Proposition (interval bounds)** For intervals  $A = [a,b]$ and $B = [c,d]$ such that $0 ∉ A,B$
+and integer $n ≠ 0$, we have
+$$
+\meeq{
+A + B = [a+b, b+d] \ccr
+A/n =  \begin{cases}
+[a/n,b/n] & n > 0  \\
+[b/n,a/n] & n < 0 
+\end{cases} \ccr
+AB = \begin{cases}
+[ac, bd] & a, b, c, d ≥ 0
+\end{cases}
+}
+$$
+
+**Proof**
+
+∎
+
+We want to  implement floating point variants of these operations. 
+
+
+**Definition (floating point interval arithmetic)**
+ such that, for $S = [a,b] + [c,d]$
+ $P = [a,b] * [c,d]$, and $D = [a,b]/n$ for an integer $n$,
+$$
+\begin{align*}
+[a,b] ⊕ [c,d] &:= [{\rm fl}^{\rm down}(a+b), {\rm fl}^{\rm up}(b+d)] \\
+[a,b] ⊘ n &:= [{\rm fl}^{\rm down}(\min D), {\rm fl}^{\rm up}(\max D)] \\
+[a,b] ⊗ [c,d] &:= [{\rm fl}^{\rm down}(\min P), {\rm fl}^{\rm up}(\max P)]
+\end{align*}
+$$
+∎
+
+This guarantees $S ⊆ [a,b] ⊕ [c,d]$, $P ⊆ [a,b] ⊗ [c,d]$, and
+$D ⊆ [a,b] ⊘ n$.
+In other words, if $x ∈ [a,b]$ and
+$y ∈ [c,d]$ then $x +y ∈ [a,b] ⊕ [c,d]$, and we thereby have  bounds on $x + y$.
+
+
+
+**Example (exponential)** As a motivating example, consider computing $\exp(x)$ from the Taylor series approximation:
+$$
+\exp(x) = \sum_{k=0}^{n-1} {x^k \over k!} + δ
+$$
+If we can evaluate polynomials on intervals (eg., if we have access to `+` and `*` operations)
+then we can obtain a rigorous enclosure for the value of the polynomial on the right-hand side. 
+∎
