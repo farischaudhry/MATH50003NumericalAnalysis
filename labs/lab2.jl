@@ -333,7 +333,7 @@ end
 f = x -> x^3 + 1
 f(Dual(2,1))  # 2^3+1 + 3*2^2*ϵ
 
-# ### I.3.2 Differentiating polynomials
+# ### I.3.2 Differentiating functions
 
 # We can also overload functions like `exp` so that they satisfy the rules of
 # a _dual extension_, that is, are consistent with the formula $f(a+bϵ) = f(a) + bf'(a)ϵ$
