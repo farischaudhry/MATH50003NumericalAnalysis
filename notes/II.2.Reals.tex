@@ -128,7 +128,7 @@ and the significand bits are \texttt{0101010101}. Thus the stored bits for $1/3$
 \end{verbatim}
 \end{example}
 
-\subsubsection{Sub-normal and special numbers}
+\subsection{Sub-normal and special numbers}
 For sub-normal numbers, the simplest example is zero, which has $q=0$ and all significand bits zero: \texttt{0 00000 0000000000}. Unlike integers, we also have a negative zero, which has bits: \texttt{1 00000 0000000000}. This is treated as identical to positive \texttt{0} (except for degenerate operations as explained in special numbers).
 
 \begin{example}[subnormal in 16-bits] Consider the number with bits
