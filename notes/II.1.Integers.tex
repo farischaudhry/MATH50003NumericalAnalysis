@@ -132,7 +132,9 @@ Because the first bit is \texttt{1} we interpret this as a negative number using
 \[
 (10000000)_2\ ({\rm mod}^{\rm s}\ 256) = 128   ({\rm mod}^{\rm s}\ 256) = -128.
 \]
-\textbf{Example (multiplication of 8-bit signed integers)} Consider \texttt{(-2) * 2}. $-2$ has the same bits as $2^{256} - 2 = 254$ and $-4$ has the same bits as $2^{256}-4 = 252$, and hence from the previous example we get the correct result of \texttt{-4}. In other words:
+\end{example}
+
+\begin{example}[multiplication of 8-bit signed integers] Consider \texttt{(-2) * 2}. $-2$ has the same bits as $2^{256} - 2 = 254$ and $-4$ has the same bits as $2^{256}-4 = 252$, and hence from the previous example we get the correct result of \texttt{-4}. In other words:
 \[
 (-2) \ensuremath{\otimes}_{2^p}^{\rm s} 2 = -4 \ ({\rm mod}^{\rm s}\ 2^p) = -4
 \]

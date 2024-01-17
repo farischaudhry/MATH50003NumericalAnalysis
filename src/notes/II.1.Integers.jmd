@@ -178,6 +178,7 @@ Because the first bit is `1` we interpret this as a negative number using the fo
 $$
 (10000000)_2\ ({\rm mod}^{\rm s}\ 256) = 128   ({\rm mod}^{\rm s}\ 256) = -128.
 $$
+∎
 
 **Example (multiplication of 8-bit signed integers)**
 Consider `(-2) * 2`. $-2$ has the same bits as $2^{256} - 2 = 254$ and $-4$ has the
@@ -203,7 +204,6 @@ $$
  = 252  \ ({\rm mod}^{\rm s}\ 256) = -4.
 }
 $$
-
 ∎
 
 ## Hexadecimal format
