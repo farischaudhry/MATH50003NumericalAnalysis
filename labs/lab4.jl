@@ -70,21 +70,12 @@ end
 function exp_t_3_down(x)
     T = typeof(x) # use this to set the rounding mode
     ## TODO: use setrounding to compute 1 + x + x/2 + x^2/6 but rounding down
-    ## SOLUTION
-    setrounding(T, RoundDown) do
-        1 + x + x/2 + x^2/6
-    end
-    ## END
+    
 end
 
 function exp_t_3_up(x)
     ## TODO: use setrounding to compute 1 + x + x/2 + x^2/6 but rounding up
-    ## SOLUTION
-    T = typeof(x) # use this to set the rounding mode
-    setrounding(T, RoundUp) do
-        1 + x + x/2 + x^2/6
-    end
-    ## END
+    
 end
 
 @test exp_t_3_down(Float32(1)) ≡ 2.6666665f0 # ≡ checks type and all bits are equal
@@ -131,14 +122,7 @@ end
 # and the inbuilt `exp` function.
 
 ## TODO: Use big and setprecision to compute the first thousand digits of ℯ.
-## SOLUTION
-x = setprecision(4_000) do
-    exp(big(1.0))
-end
 
-length(string(x)) == 1207 # we have 1205 digits
-
-## END
 
 
 
@@ -294,24 +278,14 @@ import Base: -
 function -(X::Interval)
     a,b = promote(X.a, X.b)
     ## TODO: return an interval representing {-x : x in X}
-    ## SOLUTION
-    Interval(-b, -a)
-    ## END
+    
 end
 
 function -(X::Interval, Y::Interval)
     a,b,c,d = promote(X.a, X.b, Y.a, Y.b)
     T = typeof(a)
     ## TODO: return an interval implementing X ⊖ Y
-    ## SOLUTION
-    α = setrounding(T, RoundDown) do
-        a - d
-    end
-    β = setrounding(T, RoundUp) do
-        b - c
-    end
-    Interval(α, β)
-    ## END
+    
 end
 
 @test -Interval(0.1,0.2) == Interval(-0.2, -0.1)
@@ -323,45 +297,7 @@ end
 
 ## TODO: overload / and *, again.
 
-## SOLUTION
-function /(X::Interval, n::Int)
-    a,b = promote(X.a, X.b)
-    T = eltype(a)
-    if n == 0
-        error("Dividing by zero not support")
-    end
-    α = setrounding(T, RoundDown) do
-        if n > 0
-            a / n
-        else
-            b / n
-        end
-    end
-    β = setrounding(T, RoundUp) do
-        if n > 0
-            b / n
-        else
-            a / n
-        end
-    end
-    Interval(α, β)
-end
 
-function *(X::Interval, Y::Interval)
-    a,b,c,d = promote(X.a, X.b, Y.a, Y.b)
-    T = typeof(a)
-    if !(a ≤ b && c ≤ d)
-        error("Empty intervals not supported.")
-    end
-    α = setrounding(T, RoundDown) do
-        min(a*c,a*d,b*c,b*d)
-    end
-    β = setrounding(T, RoundUp) do
-        max(a*c,a*d,b*c,b*d)
-    end
-    Interval(α, β)
-end
-## END
 
 @test Interval(1.1, 1.2) * Interval(2.1, 3.1) ≡ Interval(2.31, 3.72)
 @test Interval(-1.2, -1.1) * Interval(2.1, 3.1) ≡ Interval(-3.72, -2.31)
@@ -446,25 +382,7 @@ end
 ## TODO: re-overload `exp` but without the restrictions on positivity and adjusting the
 ## the bound appropriately.
 
-## SOLUTION
-function exp_bound(X::Interval, n)
-    a,b = promote(X.a, X.b)
-    T = typeof(a)
-    
-    if !(abs(a) ≤ 2 && abs(b) ≤ 2)
-        error("Interval must be a subset of [-2, 2]")
-    end
-    ret = exp_t(X, n) # the code for Taylor series should work on Interval unmodified
-    ## avoid overflow in computing factorial by using `big`.
-    ## Convert to type `T` to support rounding.
-    f = T(factorial(big(n + 1)),RoundDown)
 
-    δ = setrounding(T, RoundUp) do
-        T(3) * T(2)^(n+1) / f # need to convert 3 to the right type to set the rounding
-    end
-    ret + Interval(-δ,δ)
-end
-## END
 
 @test exp(big(-2)) in exp_bound(Interval(-2.0), 20)
 
@@ -478,12 +396,7 @@ function sin_t(x, n)
     ret = x
     s = x
     ## TODO: Compute the first 2n+1 terms of the Taylor series of sin, without using the factorial function
-    ## SOLUTION
-    for k = 1:n
-        s = -s/(2k*(2k+1)) * x^2
-        ret = ret + s
-    end
-    ## END
+    
     ret
 end
 
@@ -497,17 +410,7 @@ function sin_bound(X::Interval, n)
     a,b = promote(X.a, X.b)
     T = typeof(a)
     ## TODO: complete the implementation to include the error in truncating the Taylor series. 
-    ## SOLUTION    
-    ret = sin_t(X, n) # the code for Taylor series should work on Interval unmodified
-    ## avoid overflow in computing factorial by using `big`.
-    ## Convert to type `T` to support rounding.
-    f = T(factorial(big(2n + 3)),RoundDown)
-
-    err = setrounding(T, RoundUp) do
-        T(1) / f # need to convert 3 to the right type to set the rounding
-    end
-    ret + Interval(-err,err)
-    ## END
+    
 end
 
 
