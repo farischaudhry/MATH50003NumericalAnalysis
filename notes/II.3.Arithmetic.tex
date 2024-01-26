@@ -143,27 +143,28 @@ We will show the \emph{absolute error} is given by
 \[
 ({\rm fl}(1.1) \ensuremath{\oplus} {\rm fl}(1.2)) \ensuremath{\otimes} {\rm fl}(1.3) = 2.99 + \ensuremath{\delta}
 \]
-where $|\ensuremath{\delta}| \ensuremath{\leq}  11 \ensuremath{\epsilon}_{\rm m}.$ First we find
+where $|\ensuremath{\delta}| \ensuremath{\leq}  20 \ensuremath{\epsilon}_{\rm m}.$ First we find
 \meeq{
 {\rm fl}(1.1) \ensuremath{\oplus} {\rm fl}(1.2) = (1.1(1 + \ensuremath{\delta}_1) + 1.2 (1+\ensuremath{\delta}_2))(1 + \ensuremath{\delta}_3) \ccr
  = 2.3 + \underbrace{1.1 \ensuremath{\delta}_1 + 1.2 \ensuremath{\delta}_2 + 2.3 \ensuremath{\delta}_3 + 1.1 \ensuremath{\delta}_1 \ensuremath{\delta}_3 + 1.2 \ensuremath{\delta}_2 \ensuremath{\delta}_3}_{\ensuremath{\delta}_4}.
 }
 While $\ensuremath{\delta}_1 \ensuremath{\delta}_3$ and $\ensuremath{\delta}_2 \ensuremath{\delta}_3$ are absolutely tiny in practice we will bound them rather naïvely by eg.
 \[
-|\ensuremath{\delta}_1 \ensuremath{\delta}_3| \ensuremath{\leq} |\ensuremath{\epsilon}_{\rm m}^2/4| \ensuremath{\leq} |\ensuremath{\epsilon}_{\rm m}/4|.
+|\ensuremath{\delta}_1 \ensuremath{\delta}_3| \ensuremath{\leq} \ensuremath{\epsilon}_{\rm m}^2/4 \ensuremath{\leq} \ensuremath{\epsilon}_{\rm m}/4.
 \]
 Further we round up constants to integers in the bounds for simplicity. We thus have the bound
 \[
-|\ensuremath{\delta}_4| \ensuremath{\leq} (1+1+2+1+1) \ensuremath{\epsilon}_{\rm m} = 6\ensuremath{\epsilon}_{\rm m}
+|\ensuremath{\delta}_4| \ensuremath{\leq} (2+2+3+1/2+1/2) {\ensuremath{\epsilon}_{\rm m} \over 2} = 4\ensuremath{\epsilon}_{\rm m}.
 \]
-Thus the computation becomes
-\[
-(2.3 + \ensuremath{\delta}_4) 1.3 (1 + \ensuremath{\delta}_5) (1 + \ensuremath{\delta}_6) = 2.99 + \underbrace{1.3( \ensuremath{\delta}_4 + 2.3\ensuremath{\delta}_5 + 2.3\ensuremath{\delta}_6 + 
-\ensuremath{\delta}_4 \ensuremath{\delta}_5 + \ensuremath{\delta}_4 \ensuremath{\delta}_6 + 2.3 \ensuremath{\delta}_5 \ensuremath{\delta}_6 + \ensuremath{\delta}_4\ensuremath{\delta}_5\ensuremath{\delta}_6)}_{\ensuremath{\delta}_7}
-\]
+Writing ${\rm fl}(1.3) = 1.3 (1+\ensuremath{\delta}_5)$ and also incorporating an error from the rounding in $\ensuremath{\otimes}$ we arrive at 
+\meeq{
+({\rm fl}(1.1) \ensuremath{\oplus} {\rm fl}(1.2)) \ensuremath{\otimes} {\rm fl}(1.3) =
+                (2.3 + \ensuremath{\delta}_4) 1.3 (1 + \ensuremath{\delta}_5) (1 + \ensuremath{\delta}_6) \ccr 
+                 = 2.99 + \underbrace{1.3( \ensuremath{\delta}_4 + 2.3\ensuremath{\delta}_5 + 2.3\ensuremath{\delta}_6 + \ensuremath{\delta}_4 \ensuremath{\delta}_5 + \ensuremath{\delta}_4 \ensuremath{\delta}_6 + 2.3 \ensuremath{\delta}_5 \ensuremath{\delta}_6 + \ensuremath{\delta}_4\ensuremath{\delta}_5\ensuremath{\delta}_6)}_\ensuremath{\delta}
+}
 where the \emph{absolute error} is bounded by
 \[
-|\ensuremath{\delta}_7| \ensuremath{\leq} 2 (6 +  2 + 2 + 1/4 + 1/4 + 3/4 + 1/8) \ensuremath{\epsilon}_{\rm m} \ensuremath{\leq} 24 \ensuremath{\epsilon}_{\rm m}
+|\ensuremath{\delta}| \ensuremath{\leq} 2 (4 +  2 + 2 + 1/4 + 1/4 + 3/4 + 1/8) \ensuremath{\epsilon}_{\rm m} \ensuremath{\leq} 20 \ensuremath{\epsilon}_{\rm m}
 \]
 \end{example}
 
