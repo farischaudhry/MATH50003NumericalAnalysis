@@ -194,12 +194,12 @@ for $M = \sup_{x \ensuremath{\leq} t \ensuremath{\leq} x+h} |f''(t)|$.
 
 We have (noting by our assumptions $x \ensuremath{\oplus} h = x + h$ and that dividing by $h$ will only change the exponent so is exact)
 \begin{align*}
-(f^{\rm FP}(x + h) \ensuremath{\ominus} f^{\rm FP}(x)) \ensuremath{\oslash} h &= {f(x + h) +  \ensuremath{\delta}^f_{x+h} - f(x) - \ensuremath{\delta}^f_x \over h} (1 + \ensuremath{\delta}_1) \\
-&= {f(x+h) - f(x) \over h} (1 + \ensuremath{\delta}_1) + {\ensuremath{\delta}^f_{x+h}- \ensuremath{\delta}^f_x \over h} (1 + \ensuremath{\delta}_1)
+(f^{\rm FP}(x + h) \ensuremath{\ominus} f^{\rm FP}(x)) \ensuremath{\oslash} h &= {f(x + h) -  \ensuremath{\delta}^f_{x+h} - f(x) + \ensuremath{\delta}^f_x \over h} (1 + \ensuremath{\delta}_1) \\
+&= {f(x+h) - f(x) \over h} (1 + \ensuremath{\delta}_1) + { \ensuremath{\delta}^f_x - \ensuremath{\delta}^f_{x+h} \over h} (1 + \ensuremath{\delta}_1)
 \end{align*}
 where $|\ensuremath{\delta}_1| \ensuremath{\leq} {\ensuremath{\epsilon}_{\rm m} / 2}$. Applying Taylor's theorem we get
 \[
-(f^{\rm FP}(x + h) \ensuremath{\ominus} f^{\rm FP}(x)) \ensuremath{\oslash} h = f'(x) + \underbrace{f'(x) \ensuremath{\delta}_1 + {f''(t) \over 2} h (1 + \delta_1) + {\ensuremath{\delta}^f_{x+h}- \ensuremath{\delta}^f_x \over h} (1 + \ensuremath{\delta}_1)}_{\ensuremath{\delta}_{x,h}^{\rm FD}}
+(f^{\rm FP}(x + h) \ensuremath{\ominus} f^{\rm FP}(x)) \ensuremath{\oslash} h = f'(x) + \underbrace{f'(x) \ensuremath{\delta}_1 + {f''(t) \over 2} h (1 + \delta_1) + {\ensuremath{\delta}^f_x  - \ensuremath{\delta}^f_{x+h}\over h} (1 + \ensuremath{\delta}_1)}_{\ensuremath{\delta}_{x,h}^{\rm FD}}
 \]
 The bound then follows, using the very pessimistic bound $|1 + \ensuremath{\delta}_1| \ensuremath{\leq} 2$.
 

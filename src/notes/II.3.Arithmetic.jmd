@@ -291,13 +291,13 @@ We have (noting by our assumptions $x ⊕ h = x + h$ and that dividing by $h$ wi
 is exact)
 $$
 \begin{align*}
-(f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x)) ⊘ h &= {f(x + h) +  δ^f_{x+h} - f(x) - δ^f_x \over h} (1 + δ_1) \\
-&= {f(x+h) - f(x) \over h} (1 + δ_1) + {δ^f_{x+h}- δ^f_x \over h} (1 + δ_1)
+(f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x)) ⊘ h &= {f(x + h) -  δ^f_{x+h} - f(x) + δ^f_x \over h} (1 + δ_1) \\
+&= {f(x+h) - f(x) \over h} (1 + δ_1) + { δ^f_x - δ^f_{x+h} \over h} (1 + δ_1)
 \end{align*}
 $$
 where $|δ_1| ≤ {ϵ_{\rm m} / 2}$. Applying Taylor's theorem we get
 $$
-(f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x)) ⊘ h = f'(x) + \underbrace{f'(x) δ_1 + {f''(t) \over 2} h (1 + \delta_1) + {δ^f_{x+h}- δ^f_x \over h} (1 + δ_1)}_{δ_{x,h}^{\rm FD}}
+(f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x)) ⊘ h = f'(x) + \underbrace{f'(x) δ_1 + {f''(t) \over 2} h (1 + \delta_1) + {δ^f_x  - δ^f_{x+h}\over h} (1 + δ_1)}_{δ_{x,h}^{\rm FD}}
 $$
 The bound then follows, using the very pessimistic bound $|1 + δ_1| ≤ 2$.
 
