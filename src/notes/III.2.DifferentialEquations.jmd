@@ -197,10 +197,10 @@ Note that $x_0$ and $x_n$ are not permitted since that would go past the endpoin
 $$
 \Vectt[u(x_0) \\ 
 u''(x_1) \\
-u''(x_1) \\
+u''(x_2) \\
 ⋮ \\
 u''(x_{n-1}) \\
-u(x_n)] = \underbrace{\Vectt[c, f(x_0), f(x_1), ⋮ , f(x_{n-1}), d]}_{𝐛}
+u(x_n)] = \underbrace{\Vectt[c, f(x_1), f(x_2), ⋮ , f(x_{n-1}), d]}_{𝐛}
 $$
 (2) Replace derivatives with divided differences:
 $$
