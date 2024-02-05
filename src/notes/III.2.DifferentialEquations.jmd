@@ -171,12 +171,13 @@ We can solve $L 𝐮 = 𝐛$ using forward-substitution so that $u_j ≈ u(x_j)$
 
 ## Poisson equation
 
-Consider the Poisson equation with Dirichlet conditions (a two-point boundary value problem):
+Consider the Poisson equation with Dirichlet conditions (a two-point boundary value problem): given
+constants $c,d$ and a function $f : [a,b] → ℝ$ find a twice differentiable function $u : [a,b] → ℝ$ satisfying
 $$
 \begin{align*}
-u(0) &= c, \\
+u(a) &= c, \\
 u''(x) &= f(x), \\
-u(1) &= d
+u(b) &= d
 \end{align*}
 $$
 
