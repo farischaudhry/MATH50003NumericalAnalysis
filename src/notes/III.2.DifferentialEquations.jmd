@@ -145,7 +145,7 @@ $$
 (u(x_1) - u(x_0))/h + ω(x_0)u(x_0) \\
 (u(x_2) - u(x_1))/h + ω(x_1)u(x_1) \\
 ⋮ \\
-(u(x_n) - u(x_{n-1})/h + ω(x_{n-1})u(x_{n-1})] ≈ 𝐛
+(u(x_n) - u(x_{n-1}))/h + ω(x_{n-1})u(x_{n-1})] ≈ 𝐛
 $$
 (3) Replace $u(x_j)$  by its approximation $u_j$ but now with the system being an equality:
 $$
