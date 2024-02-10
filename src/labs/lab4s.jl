@@ -1,87 +1,187 @@
-# # MATH50003 (2022–23)
-# # Lab 4: Interval arithmetic
+# # MATH50003 (2023–24)
+# # Lab 4: II.3 Floating Point Arithmetic and II.4 Interval Arithmetic
 
 # This lab explores the usage of rounding modes for floating point arithmetic and how they
-# can be used to compute _rigorous_ bounds on mathematical constants such as ℯ.
-# The key idea is _interval arithmetic_.
-# That is recall the set operations
-# $$
-# A + B = \{x + y : x ∈ A, y ∈ B\}, AB = \{xy : x ∈ A, y ∈ B\}, A/B = \{x/y : x ∈ A, y ∈ B\}
-# $$
+# can be used to compute _rigorous_ bounds on mathematical constants such as `ℯ`.
+# The key idea is using _interval arithmetic_ to compute the Taylor series which is
+# combined with a bound on the error caused by truncating a Taylor series.
+# As a fun example, we compute the first 1000 digits of `ℯ`, backed up by a rigorous
+# computation.
+
+# **Learning Outcomes**
 #
-# We will use floating point arithmetic to construct approximate set operations ⊕, ⊗ so that
-# $$
-#   A + B ⊆ A ⊕ B, AB ⊆ A ⊗ B, A/B ⊆ A ⊘ B
-# $$
-# thereby a complicated algorithm can be run on sets and the true result is guaranteed to be
-# a subset of the output. E.g. we can do $ℯ = {\rm exp}(1) ∈ {\rm exp}([1,1]) ⊆ {\rm exp}^{\rm FP}([1,1])$
-# where ${\rm exp}^{\rm FP}$ is implemented using $⊕$ and $⊗$.
+# Mathematical knowledge:
 #
-# This will be consist of the following:
-# 1. The finite Taylor series $\exp x ≈ ∑_{k=0}^n x^k/k!$ where each operation is now
-#    an interval operation
-# 2. A bound on $∑_{k=n+1}^∞ x^k/k!$ that we capture in the returned result
+# 1. Behaviour of floating point rounding and interval arithmetic.
+# 2. Extending interval arithmetic operations to non-positive intervals.
+# 3. Combining interval arithmetic with Taylor series bounds for rigorous computations.
 #
+# Coding knowledge:
 #
-# In what follows, the starred (⋆) problems are meant to be done with pen-and-paper.
+# 1. Setting the rounding mode in constructors like `Float32` and via `setrounding`.
+# 2. High precision floating point numbers via `big` and setting precision via `setprecision`.
+# 3. The `promote` command for converting multiple variables to be the same type.
+# 4. Using `&&` for "and" and `||` for "or".
+
 # We need the following packages:
 
-using SetRounding, Test
+using ColorBitstring, SetRounding, Test
 
-# -----
-#
-# **Problem 1⋆** For intervals $A = [a,b]$ and $B = [c,d]$ such that $0 ∉ A,B$
-#  and integer $n ≠ 0$, 
-# deduce formulas for the minimum and maximum of $A/n$, $A+B$ and $AB$.
-#
-# -----
-# We want to implement floating point variants such that, for $S = [a,b] + [c,d]$
-#  $P = [a,b] * [c,d]$, and $D = [a,b]/n$ for an integer $n$,
-# $$
-# \begin{align*}
-# [a,b] ⊕ [c,d] &:= [{\rm fl}^{\rm down}(\min S), {\rm fl}^{\rm up}(\max S)] \\
-# [a,b] ⊗ [c,d] &:= [{\rm fl}^{\rm down}(\min P), {\rm fl}^{\rm up}(\max P)] \\
-# [a,b] ⊘ n &:= [{\rm fl}^{\rm down}(\min D), {\rm fl}^{\rm up}(\max D)]
-# \end{align*}
-# $$
-# This guarantees $S ⊆ [a,b] ⊕ [c,d]$, $P ⊆ [a,b] ⊗ [c,d]$, and
-# $D ⊆ [a,b] ⊘ n$.
-# In other words, if $x ∈ [a,b]$ and
-# $y ∈ [c,d]$ then $x +y ∈ [a,b] ⊕ [c,d]$, and we thereby have  bounds on $x + y$.
-#
-# 
-# We will now create a Type to represent an interval, which we will call `Interval`.
-# We need two fields: the left endpoint (`a`) and a right endpoint (`b`). We want to allow
-# these to be a type `T` which may be, say, `Int`, `Float64`, `Float16`, or `BigFloat`.
-# To construct such a type we use the `struct` keyword:
+# ## II.3 Floating Point Arithmetic
 
-struct Interval{T}
-    a::T
-    b::T
+# In Julia, the rounding mode is specified by tags `RoundUp`, `RoundDown`, and
+# `RoundNearest`. (There are also more exotic rounding strategies `RoundToZero`, `RoundNearestTiesAway` and
+# `RoundNearestTiesUp` that we won't use.)
+
+
+
+# Let's try rounding a `Float64` to a `Float32`.
+
+
+printlnbits(1/3)  # 64 bits
+printbits(Float32(1/3))  # round to nearest 32-bit
+
+# The default rounding mode can be changed:
+
+printbits(Float32(1/3,RoundDown) ) # Rounds from a Float64 to Float32, rounding down
+
+# Or alternatively we can change the rounding mode for a chunk of code
+# using `setrounding`. The following computes upper and lower bounds for `/`:
+
+x = 1f0
+setrounding(Float32, RoundDown) do
+    x/3
+end,
+setrounding(Float32, RoundUp) do
+    x/3
 end
 
-# For example, if we say `A = Interval(1, 2)` this corresponds to the mathematical interval
-# $[1, 2]$, and the fields are accessed via `A.a` and `A.b`.
-# Here we create an instance of such an interval interval:
 
-A = Interval(1, 2) 
+# **WARNING (compiled constants)**: Why did we first create a variable `x` instead of typing `1f0/3`?
+# This is due to a very subtle issue where the compiler is _too clever for it's own good_: 
+# it recognises `1f0/3` can be computed at compile time, but failed to recognise the rounding mode
+# was changed. 
 
-# This displays (prints out) as `Interval{Int64}(1, 2)`. The `{Int64}` indicates that the fields
-# `A.a` and `A.b` are `Int64`. We can see this as follows:
+# **Problem 1** Complete functions `exp_t_3_down`/`exp_t_3_up` implementing the first
+# three terms of the Taylor expansion of $\exp(x)$, that is, $1 + x + x^2/2 + x^3/6$ but where
+# each operation is rounded down/up. Use `typeof(x)` to make sure you are changing the
+# rounding mode for the right floating point type.
 
-A.a, A.b # returns a Tuple containing two Ints
+function exp_t_3_down(x)
+    T = typeof(x) # use this to set the rounding mode
+    ## TODO: use setrounding to compute 1 + x + x/2 + x^2/6 but rounding down
+    ## SOLUTION
+    setrounding(T, RoundDown) do
+        1 + x + x^2/2 + x^3/6
+    end
+    ## END
+end
 
-# We will overload *, +, -, / to use interval arithmetic. That is, whenever we do arithmetic with
-# an instance of `Interval` we want it to use correctly rounded interval varients. 
+function exp_t_3_up(x)
+    ## TODO: use setrounding to compute 1 + x + x/2 + x^2/6 but rounding up
+    ## SOLUTION
+    T = typeof(x) # use this to set the rounding mode
+    setrounding(T, RoundUp) do
+        1 + x + x^2/2 + x^3/6
+    end
+    ## END
+end
+
+@test exp_t_3_down(Float32(1)) ≡ 2.6666665f0 # ≡ checks type and all bits are equal
+@test exp_t_3_up(Float32(1)) ≡ 2.6666667f0
+
+
+
+# ### High-precision floating-point numbers
+
+
+# It is possible to get higher precision (more signficand and exponent bits)
+#  of a floating-point number
+# using the `BigFloat` type, which results from the usage of `big`
+# when the result is not an integer.
+# For example, here is an approximation of 1/3 accurate
+# to 77 decimal digits:
+
+big(1)/3
+
+# Note we can set the rounding mode as in `Float64`, e.g., 
+# this gives (rigorous) bounds on
+# `1/3`:
+
+setrounding(BigFloat, RoundDown) do
+  big(1)/3
+end, setrounding(BigFloat, RoundUp) do
+  big(1)/3
+end
+
+# We can also increase the precision, e.g., this finds bounds on `1/3` accurate to 
+# more than 1000 decimal places:
+
+setprecision(4_000) do # 4000 bit precision
+  setrounding(BigFloat, RoundDown) do
+    big(1)/3
+  end, setrounding(BigFloat, RoundUp) do
+    big(1)/3
+  end
+end
+
+
+# **Problem 2** Inbuilt functions like `exp`, `sqrt`, etc. support `BigFloat`.
+# Compute at least the first thousand decimal digits of `ℯ` using `setprecision`
+# and the inbuilt `exp` function.
+
+## TODO: Use big and setprecision to compute the first thousand digits of ℯ.
+## SOLUTION
+x = setprecision(4_000) do
+    exp(big(1.0))
+end
+
+length(string(x)) == 1207 # we have 1205 digits
+
+## END
+
+
+
+# -----
+#
+# ## II.4 Interval Arithmetic
+
+# 
+# We will now create a Type to represent an interval $[a,b] = {x : a ≤ x ≤ b}$, which we will call `Interval`.
+# We need fields for the left endpoint (`a`) and a right endpoint (`b`):
+
+struct Interval # represents the set [a,b]
+    a # left endpoint
+    b # right endpoint
+end
+
+Interval(x) = Interval(x,x) # Support Interval(1) to represent [1,1]
+
+# For example, if we say `X = Interval(1, 2)` this corresponds to the mathematical interval
+# $[1, 2]$, and the fields are accessed via `X.a` and `X.b`.
+# We will overload `*`, `+`, `-`, `/` to use interval arithmetic. That is, whenever we do arithmetic with
+# an instance of `Interval` we want it to use correctly rounded interval variants. 
 # We also need to support `one` (a function that creates an interval containing a single point `1`)
 # and `in` functions (a function to test if a number is within an interval).
 # To overload these functions we need to import them as follows:
 
-import Base: *, +, -, /, one, in
+import Base: *, +, -, ^, /, one, in
+
+# We overload `in` as follows:
+
+in(x, X::Interval) = X.a ≤ x ≤ X.b
+
+# The function `in` is whats called an "infix" operation (just like `+`, `-`, `*`, and `/`). We can call it
+# either as `in(x, X)` or put the `in` in the middle and write `x in X`. This can be seen in the following:
+
+X = Interval(2.0,3.3)
+## 2.5 in X is equivalent to in(2.5, X)
+## !(3.4 in X) is equivalent to !in(3.4, X)
+2.5 in X, !(3.4 in X)
 
 
 # We can overload `one` as follows to create an interval corresponding to $[1,1]$.
-# First note that the `one(T)` function will create the "multiplicative identity"
+# The `one(T)` function will create the "multiplicative identity"
 # for a given type. For example `one(Int)` will return `1`, `one(Float64)` returns `1.0`,
 # and `one(String)` returns "" (because `"" * "any string" == "any string"`):
 
@@ -92,185 +192,188 @@ one(Int), one(Int64), one(String)
 one(2), one(2.0), one("any string")
 
 # For an interval the multiplicative identity is the interval whose lower and upper limit are both 1.
-# To ensure its the right type we call `one(A.a)` and `one(A.b)`
+# To ensure its the right type we call `one(X.a)` and `one(X.b)`
 
-one(A::Interval) = Interval(one(A.a), one(A.b))
+one(X::Interval) = Interval(one(X.a), one(X.b))
 
 # Thus the following returns an interval whose endpoints are both `1.0`:
 
 one(Interval(2.0,3.3))
 
-# Now if `A = Interval(a,b)` this corresponds to the mathematical interval $[a,b]$.
-# And a real number $x ∈ [a,b]$ iff $a ≤ x ≤ b$. In Julia the endpoints $a$ and $b$ are accessed
-# via $A.a$ and $B.b$ hence the above test becomes `A.a ≤ x ≤ A.b`. Thus we overload `in` 
-# as follows:
+# We now want to overload the operations `+`, `/` and `*` so that we can compute the Taylor
+# series of `exp`. We begin with `+`. 
 
-in(x, A::Interval) = A.a ≤ x ≤ A.b
-
-# The function `in` is whats called an "infix" operation (just like `+`, `-`, `*`, and `/`). We can call it
-# either as `in(x, A)` or put the `in` in the middle and write `x in A`. This can be seen in the following:
-
-A = Interval(2.0,3.3)
-## 2.5 in A is equivalent to in(2.5, A)
-## !(3.4 in A) is equivalent to !in(3.4, A)
-2.5 in A, !(3.4 in A)
-
-# The first problem now is to overload arithmetic operations to do the right thing.
-
-# **Problem 2**  Use the formulae from Problem 1 to complete (by replacing the `# TODO: …` comments with code)
-#  the following implementation of an 
-# `Interval` 
-# so that `+`, `-`, and `/` implement $⊕$, $⊖$, and $⊘$ as defined above.
-
-
-
-
-# Hint: Like `in`, `+` is an infix operation, so if `A isa Interval` and `B isa Interval`
-# then the following function will be called when we call `A + B`.
-# We want it to  implement `⊕` as worked out by hand by replacing the `# TODO` with
-# the correct interval versions. For example, for the first `# TODO`, we know the lower bound of
-# $A + B$ is $a + c$, where $A = [a,b]$ and $B = [c,d]$. But in Julia we access the lower bound of $A$ ($a$)
-# via `A.a` and the lower bound of $B$ via `B.a`.
-# Thus just replace the first `#TODO` with `A.a + B.a`.
-
-# You can probably ignore the `T = promote_type(...)` line for now: it is simply finding the right type
-# to change the rounding mode by finding the "bigger" of the type of `A.a` and `B.a`. So in the examples below
-# `T` will just become `Float64`.
-# Finally, the code block
-# ```julia
-# setrounding(T, RoundDown) do
-#
-# end
-# ```
-# changes the rounding mode of floating point operations corresponding to the type `T` of the CPU, for any code between
-# the `do` and the `end`.
-
-function +(A::Interval, B::Interval)
-    T = promote_type(typeof(A.a), typeof(B.a))
-    a = setrounding(T, RoundDown) do
-        ## TODO: lower bound
-        ## SOLUTION
-        A.a + B.a
-        ## END
+function +(X::Interval, Y::Interval)
+    a,b,c,d = promote(X.a, X.b, Y.a, Y.b) # make sure all are the same type
+    T = typeof(a)
+    α = setrounding(T, RoundDown) do
+        a + c
     end
-    b = setrounding(T, RoundUp) do
-        ## TODO: upper bound
-        ## SOLUTION
-        A.b + B.b
-        ## END
+    β = setrounding(T, RoundUp) do
+        b + d
     end
-    Interval(a, b)
+    Interval(α, β)
 end
+
+
++(x::Number, Y::Interval) = Interval(x) + Y # Number is a supertype that contains Int, Float64, etc.
++(X::Interval, y::Number) = X + Interval(y)
+
 
 ## following example was the non-associative example but now we have bounds
-@test Interval(1.1,1.1) + Interval(1.2,1.2) + Interval(1.3,1.3) ≡ Interval(3.5999999999999996, 3.6000000000000005)
+Interval(1.1) + Interval(1.2) + Interval(1.3)
+
+## note we are actually doing computations on ${\rm fl}^{nearest}(1.1)$, etc.,
+## that is, we haven't accounted in the errors from making the constants. 
 
 
-# The following function is called whenever we divide an interval by an `Integer` (think of `Integer` for now
-# a "superset" containing all integer types, e.g. `Int8`, `Int`, `UInt8`, etc.). Again we want it to return the
-# set operation ⊘ with correct rounding.
-# Be careful about whether `n` is positive or negative, and you may want to test if `n > 0`. To do so, use an
-# `if-else-end` block:
-# ```julia
-# if COND1
-#     # do this if COND1 == true
-# else
-#     # do this if COND1 == false
-# end
-# ```
-function /(A::Interval, n::Integer)
-    T = typeof(A.a)
-    if iszero(n)
+# We now implement division, checking that our assumptions 
+# are satified. Note that `&&` means "and" whilst `||` means "or",
+# While `!` changes a `true` to `false` and vice-versa.
+
+
+function /(X::Interval, n::Int)
+    a,b = promote(X.a, X.b)
+    T = typeof(a)
+    if !(n > 0 && 0 < a ≤ b)
+        error("Input doesn't satisfy positivity assumptions")
+    end
+    α = setrounding(T, RoundDown) do
+            a / n
+    end
+    β = setrounding(T, RoundUp) do
+            b / n
+    end
+    Interval(α, β)
+end
+
+Interval(1.0,2.0)/3 # rounds bottom down and top up
+
+# Finally we overload `*` to behave like the operation `⊗`:
+
+function *(X::Interval, Y::Interval)
+    a,b,c,d = promote(X.a, X.b, Y.a, Y.b)
+    T = typeof(a)
+    if !(0 < a ≤ b && 0 < c ≤ d)
+        error("Input doesn't satisfy positivity assumptions")
+    end
+    α = setrounding(T, RoundDown) do
+            a * c
+    end
+    β = setrounding(T, RoundUp) do
+            b * d
+    end
+    Interval(α, β)
+end
+
+# Let's also support powers:
+
+function ^(X::Interval, k::Int)
+    if k ≤ 0
+        error("not supported")
+    elseif k == 1
+        X
+    else
+        X * X^(k-1)
+    end
+end
+
+# We can now compute positive polynomials with interval arithmetic:
+
+X = Interval(1.0)
+1 + X + X^2/2 + X^3/6 + X^4/24
+
+# ------
+
+
+# **Problem 3(a)** Complete the following implementations of `-` to correctly round
+# the endpoints in interval negation and subtraction.
+
+import Base: -
+
+function -(X::Interval)
+    a,b = promote(X.a, X.b)
+    ## TODO: return an interval representing {-x : x in X}
+    ## SOLUTION
+    Interval(-b, -a)
+    ## END
+end
+
+function -(X::Interval, Y::Interval)
+    a,b,c,d = promote(X.a, X.b, Y.a, Y.b)
+    T = typeof(a)
+    ## TODO: return an interval implementing X ⊖ Y
+    ## SOLUTION
+    α = setrounding(T, RoundDown) do
+        a - d
+    end
+    β = setrounding(T, RoundUp) do
+        b - c
+    end
+    Interval(α, β)
+    ## END
+end
+
+@test -Interval(0.1,0.2) == Interval(-0.2, -0.1)
+@test Interval(0.1,0.2) - Interval(1.1,1.2) ≡ Interval(-1.1, -0.9)
+
+# **Problem 3(b)** Alter the implementation of `/(X::Interval, n::Int)`
+# to support the case where `n < 0` and `*` to remove the restrictions on
+# positivity of the endpoints. You may assume the intervals are non-empty.
+
+## TODO: overload / and *, again.
+
+## SOLUTION
+function /(X::Interval, n::Int)
+    a,b = promote(X.a, X.b)
+    T = eltype(a)
+    if n == 0
         error("Dividing by zero not support")
     end
-    a = setrounding(T, RoundDown) do
-        ## TODO: lower bound
-        ## SOLUTION
+    α = setrounding(T, RoundDown) do
         if n > 0
-            A.a / n
+            a / n
         else
-            A.b / n
+            b / n
         end
-        ## END
     end
-    b = setrounding(T, RoundUp) do
-        ## TODO: upper bound
-        ## SOLUTION
+    β = setrounding(T, RoundUp) do
         if n > 0
-            A.b / n
+            b / n
         else
-            A.a / n
+            a / n
         end
-        ## END
     end
-    Interval(a, b)
+    Interval(α, β)
 end
 
-@test Interval(1.0,2.0)/3 ≡ Interval(0.3333333333333333, 0.6666666666666667)
-@test Interval(1.0,2.0)/(-3) ≡ Interval(-0.6666666666666667, -0.3333333333333333)
-
-# Now we need to overload `*` to behave like the operation `⊗` defined above.
-# Now you will need to use an if-elseif-else-end block:
-# ```julia
-# if COND1
-#   # Do this if COND1 == true
-# elseif COND2
-#   # Do this if COND1 == false and COND2 == true
-# elseif COND3
-#   # Do this if COND1 == COND2 == false and COND3 == true
-# else
-#   # Do this if COND1 == COND2 == COND3 == false
-# end
-# ```
-# You will also have to test whether multiple conditions are true.
-# The notation `COND1 && COND2` returns true if `COND1` and `COND2` are both true.
-# The notation `COND1 || COND2` returns true if either `COND1` or `COND2` are true.
-# So for example the statement `0 in A || 0 in B` returns `true` if either interval `A`
-# or `B` contains `0`.
-
-function *(A::Interval, B::Interval)
-    T = promote_type(typeof(A.a), typeof(B.a))
-    if 0 in A || 0 in B
-        error("Multiplying with intervals containing 0 not supported.")
-    end
-    if A.a > A.b || B.a > B.b
+function *(X::Interval, Y::Interval)
+    a,b,c,d = promote(X.a, X.b, Y.a, Y.b)
+    T = typeof(a)
+    if !(a ≤ b && c ≤ d)
         error("Empty intervals not supported.")
     end
-    a = setrounding(T, RoundDown) do
-        ## TODO: lower bound
-        ## SOLUTION
-        if A.a < 0 && A.b < 0 && B.a < 0 && B.b < 0
-            B.b * A.b
-        elseif A.a < 0 && A.b < 0 && B.a > 0 && B.b > 0
-            A.a * B.b
-        elseif A.a > 0 && A.b > 0 && B.a < 0 && B.b < 0
-            A.b * B.a
-        else
-            A.a * B.a
-        end
-        ## END
+    α = setrounding(T, RoundDown) do
+        min(a*c,a*d,b*c,b*d)
     end
-    b = setrounding(T, RoundUp) do
-        ## TODO: upper bound
-        ## SOLUTION
-        if A.a < 0 && A.b < 0 && B.a < 0 && B.b < 0
-            B.a * A.a
-        elseif A.a < 0 && A.b < 0 && B.a > 0 && B.b > 0
-            A.b * B.a
-        elseif A.a > 0 && A.b > 0 && B.a < 0 && B.b < 0
-            A.a * B.b
-        else
-            A.b * B.b
-        end
-        ## END
+    β = setrounding(T, RoundUp) do
+        max(a*c,a*d,b*c,b*d)
     end
-    Interval(a, b)
+    Interval(α, β)
 end
+## END
 
 @test Interval(1.1, 1.2) * Interval(2.1, 3.1) ≡ Interval(2.31, 3.72)
 @test Interval(-1.2, -1.1) * Interval(2.1, 3.1) ≡ Interval(-3.72, -2.31)
 @test Interval(1.1, 1.2) * Interval(-3.1, -2.1) ≡ Interval(-3.72, -2.31)
 @test Interval(-1.2, -1.1) * Interval(-3.1, -2.1) ≡ Interval(2.31, 3.72)
+
+
+@test Interval(1.0,2.0)/3 ≡ Interval(0.3333333333333333, 0.6666666666666667)
+@test Interval(1.0,2.0)/(-3) ≡ Interval(-0.6666666666666667, -0.3333333333333333)
+
+@test Interval(-1., 2) * Interval(2,3) ≡ Interval(-3.0, 6.0)
+@test Interval(-1., 2) * Interval(-3,5) ≡ Interval(-6.0, 10.0)
 
 # -----
 
@@ -278,10 +381,10 @@ end
 # $$
 # \sum_{k=0}^n {x^k \over k!}
 # $$
-# (similar to the one seen in lectures).
+# We avoid using `factorial` to avoid underflow/overflow.
 
 function exp_t(x, n)
-    ret = one(x) # 1 of same type as x
+    ret = one(x)
     s = one(x)
     for k = 1:n
         s = s/k * x
@@ -290,65 +393,126 @@ function exp_t(x, n)
     ret
 end
 
-
-# **Problem 3.1⋆** Bound the tail of the Taylor series for ${\rm e}^x$ assuming $|x| ≤ 1$. 
-# (Hint: ${\rm e}^x ≤ 3$ for $x ≤ 1$.)
-# ## SOLUTION
-# From the Taylor remainder theorem we know the error is
-# $$
-# {f^{(n+1)}(ξ) \over (n+1)!} |x|^{n+1} ≤ {3 \over (n+1)!}
-# $$
-# Thus by widening the computation by this error we ensure that we have
-# captured the error by truncating the Taylor series.
-# ## END
-
-# 
-# **Problem 3.2** Use the bound
-# to write a function `exp_bound` which computes ${\rm e}^x$ with rigorous error bounds, that is
-# so that when applied to an interval $[a,b]$ it returns an interval that is 
-# guaranteed to contain the interval $[{\rm e}^a, {\rm e}^b]$.
+exp_t(X, 100) # Taylor series with interval arithemtic
 
 
-function exp_bound(x::Interval, n)
-    ## TODO: Return an Interval such that exp(x) is guaranteed to be a subset
-    ## SOLUTION
-    if abs(x.a) > 1 || abs(x.b) > 1
-        error("Interval must be a subset of [-1, 1]")
+# In the notes we derived a bound assuming $0 ≤ x ≤ 1$
+# on the error in Taylor series of the form $|δ_{x,n}| ≤ 3/(n+1)!$.
+# Here we incorporate that error to get a rigorous bound.
+
+function exp_bound(X::Interval, n)
+    a,b = promote(X.a, X.b)
+    T = typeof(a)
+    
+    if !(0 < a ≤ b)
+        error("Interval must be a subset of [0, 1]")
     end
-    ret = exp_t(x, n) # the code for Taylor series should work on Interval unmodified
-    f = factorial(min(20, n + 1)) # avoid overflow in computing factorial
-    T = typeof(ret.a)
+    ret = exp_t(X, n) # the code for Taylor series should work on Interval unmodified
+    ## avoid overflow in computing factorial by using `big`.
+    ## Convert to type `T` to support rounding.
+    f = T(factorial(big(n + 1)),RoundDown)
+
+    δ = setrounding(T, RoundUp) do
+        T(3) / f # need to convert 3 to the right type to set the rounding
+    end
+    ret + Interval(-δ,δ)
+end
+
+E = exp_bound(Interval(1.0), 20)
+
+# Here we test that the bounds match our expectations:
+
+@test exp(big(1)) in E
+@test E.b - E.a ≤ 1E-13 # we want our bounds to be sharp
+
+# We can even use the code with `BigFloat` to compute a rigorous bound on the first
+# 1000 digits of `ℯ`:
+
+
+e_int_big = setprecision(4_000) do
+    exp_bound(Interval(big(1.0)), 1000)
+end
+
+# Our tests show that this has computed more than 1000 digits:
+
+@test ℯ in e_int_big # we contain ℯ
+@test e_int_big.b - e_int_big.a ≤ big(10.0)^(-1200) # with 1200 digits of accuracy!
+
+
+
+# ------
+# **Problem 4** Extend the implementation of `exp_bound` for the case when `-2 ≤ x ≤ 2`.
+
+## TODO: re-overload `exp` but without the restrictions on positivity and adjusting the
+## the bound appropriately.
+
+## SOLUTION
+function exp_bound(X::Interval, n)
+    a,b = promote(X.a, X.b)
+    T = typeof(a)
+    
+    if !(abs(a) ≤ 2 && abs(b) ≤ 2)
+        ## check our assumptions are met. This is optional: in the exam, proper error checking is
+        ## not expected unless explicitly asked for.
+        error("Interval must be a subset of [-2, 2]")
+    end
+    ret = exp_t(X, n) # the code for Taylor series should work on Interval unmodified
+    ## avoid overflow in computing factorial by using `big`.
+    ## Convert to type `T` to support rounding.
+    f = T(factorial(big(n + 1)),RoundDown)
+
+    δ = setrounding(T, RoundUp) do
+        T(8) * T(2)^(n+1) / f # need to convert 3 to the right type to set the rounding
+    end
+    ret + Interval(-δ,δ)
+end
+## END
+
+@test exp(big(-2)) in exp_bound(Interval(-2.0), 20)
+
+# **Problem 5(a)** Complete the implementation of a function `sin_t(x,n)` computing the
+# first `2n+1` terms of the Taylor series:
+# $$
+# \sin\ x ≈ ∑_{k=0}^n {(-1)^k x^{2k+1} \over (2k+1)!}
+# $$
+
+function sin_t(x, n)
+    ret = x
+    s = x
+    ## TODO: Compute the first 2n+1 terms of the Taylor series of sin, without using the factorial function
+    ## SOLUTION
+    for k = 1:n
+        s = -s/(2k*(2k+1)) * x^2
+        ret = ret + s
+    end
+    ## END
+    ret
+end
+
+@test sin_t(1.0, 10) ≈ 0.8414709848078965
+@test sin_t(big(1.0), 10) in  sin_t(Interval(1.0), 10)
+
+# **Problem 5(b)** Complete the implementation of a function `sin_bound(x,n)` that
+# includes an error bound on the computation. You may assume $0 ≤ x ≤ 1$.
+
+function sin_bound(X::Interval, n)
+    a,b = promote(X.a, X.b)
+    T = typeof(a)
+    ## TODO: complete the implementation to include the error in truncating the Taylor series. 
+    ## SOLUTION    
+    ret = sin_t(X, n) # the code for Taylor series should work on Interval unmodified
+    ## avoid overflow in computing factorial by using `big`.
+    ## Convert to type `T` to support rounding.
+    f = T(factorial(big(2n + 3)),RoundDown)
 
     err = setrounding(T, RoundUp) do
-        3 / f
+        T(1) / f # need to convert 3 to the right type to set the rounding
     end
     ret + Interval(-err,err)
     ## END
 end
 
-e_int = exp_bound(Interval(1.0,1.0), 20)
-@test exp(big(1)) in e_int
-@test exp(big(-1)) in exp_bound(Interval(-1.0,-1.0), 20)
-@test e_int.b - e_int.a ≤ 1E-13 # we want our bounds to be sharp
 
-# ------
-# **Problem 4** Use `big` and `setprecision` to compute ℯ to a 1000 decimal digits with
-# rigorous error bounds. 
-
-# Hint: The function `big` will create a `BigFloat` version of a `Float64` and the type
-# `BigFloat` allows changing the number of signficand bits. In particular, the code block
-# ```julia
-# setprecision(NUMSIGBITS) do
-#
-# end
-# ```
-# will use the number of significand bits specified by `NUMSIGBITS` for any `BigFloat` created
-# between the `do` and the `end`. 
-
-## SOLUTION
-
-setprecision(100_000) do
-    exp_bound(Interval(big(1.0),big(1.0)), 20)
-end
-
-## END
+S = sin_bound(Interval(1.0), 20)
+@test sin(big(1)) in S
+@test S.b - S.a ≤ 1E-13 # we want our bounds to be sharp

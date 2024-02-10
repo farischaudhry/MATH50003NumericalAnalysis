@@ -1,6 +1,7 @@
+**Numerical Analysis MATH50003 (2023–24) Problem Sheet 4**
 
 
-**Problem 5** Suppose $x = 1.25$ and consider 16-bit floating point arithmetic ($F_{16}$). 
+**Problem 1** Suppose $x = 1.25$ and consider 16-bit floating point arithmetic ($F_{16}$).
 What is the error in approximating $x$ by the nearest float point number ${\rm fl}(x)$?
 What is the error in approximating $2x$, $x/2$, $x + 2$ and $x - 2$ by $2 \otimes x$, $x \oslash 2$, $x ⊕ 2$ and $x \ominus 2$?
 
@@ -10,127 +11,281 @@ None of these computations have errors since they are all exactly representable 
 
 
 
-**Problem 6** What are the exact bits for $1 ⊘ 5$, $1 ⊘ 5 ⊕ 1$ computed
-using  half-precision arithmetic (`Float16`) (using default rounding)?
+**Problem 2** Show that $1/5 = 2^{-3} (1.1001100110011…)_2$.
+What are the exact bits for $1 ⊘ 5$, $1 ⊘ 5 ⊕ 1$ computed
+using  half-precision arithmetic ($F_{16} := F_{15,5,10}$) (using default rounding)?
 
 **SOLUTION**
 
-From Problem 2.1 in Lab 2 we know that
+For the first part we use Geometric series:
 $$
-1/5 = 2^{-3} * (1.10011001100…)_2 ≈ 2^{-3} * (1.1001100110)_2
+\meeq{
+ 2^{-3} (1.1001100110\magenta{011…})_2 =  2^{-3} \left(∑_{k=0}^∞ {1 \over 2^{4k}} + 
+{1 \over 2} ∑_{k=0}^∞ {1 \over 2^{4k}}\right) \ccr
+= {3 \over 2^4} {1 \over 1-1/2^4} = {3 \over 2^4-1} = {1 \over 5}
+}
 $$
-where the $≈$ is rounded to the nearest 10 bits (in this case rounded down).
-This can be shown using Geometric series:
+Write $-3 = 12 - 15$
+hence we have $q = 12 = (01100)_2$.
+Since $1/5$ is below the midpoint (the midpoint would have been the first magenta bit was 1 and all other bits are 0) we round down and hence have the bits:
 $$
-\begin{align*}
-(0.00110011001100…)_2 &= (2^{-3} + 2^{-4})(1.00010001000…)_2 =  (2^{-3} + 2^{-4}) \sum_{k=0}^∞ {1 \over 16^k} \\
-&= {2^{-3} + 2^{-4} \over 1 - {1\over 2^4}} = {3 \over 15} = {1 \over 5}
-\end{align*}
+\red{0}\ \green{01100}\ \blue{1001100110}
 $$
-
-
-We write $-3 = 12 - 15$
-hence we have $q = 12 = (01100)_2$. 
-so  we get the bits:
-```julia
-printbits(Float16(1)/5)
-```
-
-Adding `1` we get:
+Adding $1$ we get:
 $$
-1 + 2^{-3} * (1.1001100110)_2 = (1.001100110011)_2 ≈ (1.0011001101)_2 
+1 + 2^{-3} * (1.1001100110)_2 = (1.0011001100\magenta{11})_2 ≈ (1.0011001101)_2
 $$
-Here we write the exponent as $0 = 15 - 15$ where $q = 15 = (01111)_2$. 
-Thus we get:
-```julia
-printbits(1 + Float16(1)/5)
-```
+Here we write the exponent as $0 = 15 - 15$ where $q = 15 = (01111)_2$.
+Thus we have the bits:
+$$
+\red{0}\ \green{01111}\ \blue{0011001101}
+$$
 
 **END**
 
 
-**Problem 9** Find a bound on the _absolute error_ in terms of a constant times machine epsilon
-$ϵ_{\rm m}$ for the following computations
+**Problem 3** Prove the following bounds on the _absolute error_ of a floating point calculation
+in idealised floating-point arithmetic $F_{∞,S}$ (i.e., you may assume all operations involve normal floating point numbers):
 $$
 \begin{align*}
-(1.1 * 1.2) &+ 1.3 \\
-(1.1 - 1) &/ 0.1 
+({\rm fl}(1.1) ⊗ {\rm fl}(1.2)) &⊕ {\rm fl}(1.3) = 2.62 + ε_1 \\
+({\rm fl}(1.1) ⊖ 1) & ⊘ {\rm fl}(0.1) = 1 + ε_2
 \end{align*}
 $$
-implemented using floating point arithmetic (with any precision). That is, each number is rounded
-first using ${\rm fl}$ and each operation is replaced by its floating point analogues $⊕, ⊗, ⊖, ⊘$.
+such that $|ε_1| ≤ 11 ϵ_{\rm m}$ and $|ε_2| ≤ 40 ϵ_{\rm m}$, where $ϵ_{\rm m}$ is
+machine epsilon.
 
 
 **SOLUTION**
 
-The first problem is very similar to what we saw in lecture. Write 
+The first problem is very similar to what we saw in lecture. Write
 $$
 ({\rm fl}(1.1)⊗ {\rm fl}(1.2)) ⊕ {\rm fl}(1.3) = ( 1.1(1 + δ_1)1.2(1+δ_2)(1+δ_3) + 1.3(1+δ_4))(1+δ_5)
 $$
-We first write
+where we have $|δ_1|,…,|δ_5| ≤ ϵ_{\rm m}/2$. We first write
 $$
-1.1(1 + δ_1)1.2(1+δ_2)(1+δ_3) = 1.32( 1+ δ_6)
+1.1(1 + δ_1)1.2(1+δ_2)(1+δ_3) = 1.32( 1+ ε_1)
 $$
-where
+where, using the bounds:
 $$
-|δ_6| \leq |δ_1| + |δ_2| + |δ_3| + |δ_1| |δ_2| + |δ_1| |δ_3| + |δ_2| |δ_3|+ |δ_1| |δ_2| |δ_3| \leq 4 ϵ_{\rm m}
+|δ_1δ_2|,|δ_1δ_3|,|δ_2δ_3| ≤ ϵ_{\rm m}/4, |δ_1δ_2δ_3| ≤ ϵ_{\rm m}/8
+$$
+we find that
+$$
+|ε_1| ≤ |δ_1| + |δ_2| + |δ_3| + |δ_1δ_2| + |δ_1δ_3| + |δ_2δ_3|+ |δ_1δ_2δ_3| 
+     ≤ (3/2 + 3/4 + 1/8) ≤ 5/2 ϵ_{\rm m}
 $$
 Then we have
 $$
-1.32 (1 + δ_6) + 1.3 (1 + δ_4) = 2.62 + \underbrace{1.32 δ_6 + 1.3δ_4}_{δ_7}
+1.32 (1 + ε_1) + 1.3 (1 + δ_4) = 2.62 + \underbrace{1.32 ε_1 + 1.3δ_4}_{ε_2}
 $$
 where
 $$
-|δ_7| ≤ 7 ϵ_{\rm m}
+|ε_2| ≤ (15/4 + 3/4) ϵ_{\rm m} ≤ 5ϵ_{\rm m}.
 $$
 Finally,
 $$
-(2.62 + δ_7)(1+δ_5) = 2.62 + \underbrace{δ_7 + 2.62δ_5 + δ_7 δ_5}_{δ_8}
+(2.62 + ε_2)(1+δ_5) = 2.62 + \underbrace{ε_2 + 2.62δ_5 + ε_2 δ_5}_{ε_3}
 $$
-where
+where, using $|ε_2 δ_5| ≤ 3ϵ_{\rm m}$ we get, 
 $$
-|δ_8| ≤ 11 ϵ_{\rm m}
+|ε_3| ≤ (5 + 3/2 + 3) ϵ_{\rm m}  ≤ 10ϵ_{\rm m}.
 $$
-
-
 
 For the second part, we do:
 $$
 ({\rm fl}(1.1) ⊖ 1) ⊘ {\rm fl}(0.1) = {(1.1 (1 + δ_1) - 1)(1 + δ_2) \over 0.1 (1 + δ_3)} (1 + δ_4)
 $$
+where we have $|δ_1|,…,|δ_4| ≤ ϵ_{\rm m}/2$.
 Write
 $$
-{1 \over 1 + δ_3} = 1 + δ_5
+{1 \over 1 + δ_3} = 1 + ε_1
 $$
-where
+where, using that $|δ_3| ≤ ϵ_{\rm m}/2 ≤ 1/2$, we have
 $$
-|δ_5| \leq \left| {δ_3 \over 1 + δ_3} \right| \leq  {ϵ_{\rm m} \over 2} {1 \over 1 - 1/2} \leq ϵ_{\rm m}
+|ε_1| ≤ \left| {δ_3 \over 1 + δ_3} \right| ≤  {ϵ_{\rm m} \over 2} {1 \over 1 - 1/2} ≤ ϵ_{\rm m}.
 $$
-using the fact that $|δ_3| < 1/2$.
 Further write
 $$
-(1 + δ_5)(1 + δ_4) = 1 + δ_6
+(1 + ε_1)(1 + δ_4) = 1 + ε_2
 $$
 where
 $$
-|δ_6| \leq |δ_5| + |δ_4| + |δ_5| |δ_4| \leq 2ϵ_{\rm m}
+|ε_2| ≤ |ε_1| + |δ_4| + |ε_1| |δ_4| ≤ (1 + 1/2 + 1/2) ϵ_{\rm m} =   2ϵ_{\rm m}.
 $$
 We also write
 $$
-{(1.1 (1 + δ_1) - 1)(1 + δ_2) \over 0.1} = 1 + \underbrace{11δ_1 + δ_2 + 11δ_1δ_2}_{δ_7}
+{(1.1 (1 + δ_1) - 1)(1 + δ_2) \over 0.1} = 1 + \underbrace{11δ_1 + δ_2 + 11δ_1δ_2}_{ε_3}
 $$
 where
 $$
-|δ_7| ≤ 12 ϵ_{\rm m}
+|ε_3| ≤ (11/2 + 1/2  + 11/4) ≤ 9 ϵ_{\rm m}
 $$
-Then we get 
+Then we get
 $$
-({\rm fl}(1.1) ⊖ 1) ⊘ {\rm fl}(0.1) = (1 + δ_7) (1 + δ_6) =  1 + δ_7 + δ_6 + δ_6 δ_7
+({\rm fl}(1.1) ⊖ 1) ⊘ {\rm fl}(0.1) = (1 + ε_3) (1 + ε_2) =  1 + \underbrace{ε_3 + ε_2 + ε_2 ε_3}_{ε_4}
 $$
 and the error is bounded by:
 $$
-(12 + 2 + 24) ϵ_{\rm m} = 38 ϵ_{\rm m}
+|ε_4| ≤ (9 + 2 + 18) ϵ_{\rm m} ≤ 29 ϵ_{\rm m}.
 $$
-This is quite pessimistic but still captures that we are on the order of $ϵ_{\rm m}$.
+
+**END**
+
+
+
+
+
+
+
+**Problem 4**
+Let $x ∈ [0,1] ∩ F_{∞,S}$.
+Assume that $f^{\rm FP} : F_{∞,S} → F_{∞,S}$ satisfies $f^{\rm FP}(x) = f(x) + δ_x$ where $|δ_x| ≤ c ϵ_{\rm m}$ for all $x ∈ [0,1]$.
+Show that
+$$
+{f^{\rm FP}(x+h) ⊖ f^{\rm FP}(x-h) \over  2h} = f'(x) + ε
+$$
+where absolute error is bounded by
+$$
+|ε| ≤ {|f'(x)| \over 2} ϵ_{\rm m} + {M \over 3} h^2 + {2 c ϵ_{\rm m} \over h},
+$$
+where we assume  that $h = 2^{-n}$ for $n ≤ S$.
+
+**SOLUTION**
+
+In floating point we have
+$$
+\begin{align*}
+{f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x-h) \over 2h} &= {f(x + h) +  δ_{x+h} - f(x-h) - δ_{x-h} \over 2h} (1 + δ_1) \\
+&= {f(x+h) - f(x-h) \over 2h} (1 + δ_1) + {δ_{x+h}- δ_{x-h} \over 2h} (1 + δ_1)
+\end{align*}
+$$
+Applying Taylor's theorem we get
+$$
+(f^{\rm FP}(x + h) ⊖ f^{\rm FP}(x-h)) / (2h) =
+f'(x) + \underbrace{f'(x) δ_1 + δ_{x,h}^{\rm T} (1 + δ_1) + {δ_{x+h}- δ_{x-h} \over 2h} (1 + δ_1)}_{δ_{x,h}^{\rm CD}}
+$$
+where
+$$
+|δ_{x,h}^{\rm CD}| ≤ {|f'(x)| \over 2} ϵ_{\rm m} + {M \over 3} h^2 + {2 c ϵ_{\rm m} \over h}
+$$
+
+**END**
+
+**Problem 5** For intervals  $X = [a,b]$ and $Y = [c,d]$ satisfying
+$0 < a < b$ and $0 < c < d$, and $n > 0$ prove that
+$$
+\meeq{
+X/n = [a/n,b/n] \ccr
+XY = [ac, bd]
+}
+$$
+Generalise (without proof) these formulæ to the case $n < 0$ and to where there are no restrictions
+on positivity of $a,b,c,d$. You may use the $\min$ or $\max$ functions.
+
+**SOLUTION**
+
+For $X/n$: if $x ∈ X$ then $a/n ≤ x/n ≤ b/n$ means $x ∈ [a/n,b/n]$. Similarly, 
+if $z ∈ [a/n,b/n]$ then $a ≤ nz ≤ b$ hence $nz ∈ X$ and therefore $z ∈ X/n$.
+
+For $XY$: if $x ∈ X$ and $y ∈ Y$ then $ac ≤ xy ≤ bd$ means $xy ∈ [ac,bd]$.
+Note $ac,bd ∈ XY$. To employ convexity we take logarithms. In particular
+if $z ∈ [ac,bd]$ then $\log a + \log c ≤ \log z ≤ \log b + \log d$. Hence write
+$$
+\log z = (1-t) (\log a + \log c) + t (\log b + \log d) =
+        \underbrace{(1-t)\log a + t \log b}_{\log x} + \underbrace{(1-t)\log c + t \log d}_{\log y}
+$$
+i.e. we have $z = xy$ where
+$$
+\meeq{
+x = \exp((1-t)\log a + t \log b) = a^{1-t} b^t ∈ X \ccr
+y = \exp((1-t)\log c + t \log d) = c^{1-t} d^t ∈ Y.
+}
+$$
+
+The generalisation to negative cases proceeds by being a bit careful
+with the signs. Eg if $n < 0$ we need to swap the order hence we get:
+$$
+A/n =  \begin{cases}
+[a/n,b/n] & n > 0  \\
+[b/n,a/n] & n < 0 
+\end{cases}
+$$
+
+For multiplication we just use $\min$ and $\max$ in a naive fashion:
+$$
+AB = [\min(ac,ad,bc,bd), \max(ac,ad,bc,bd)].
+$$
+
+**END**
+
+
+**Problem 6(a)** Compute the following floating point interval arithmetic
+expression assuming half-precision $F_{16}$ arithmetic:
+$$
+[1,1] ⊖ ([1,1] ⊘ 6)
+$$
+Hint: it might help to write $1 = (0.1111…)_2$ when doing subtraction.
+
+**SOLUTION** 
+Note that
+$$
+{1 \over 6} = {1 \over 2} {1\over 3} = 2^{-3} (1.010101…)_2
+$$
+Thus
+$$
+[1,1] ⊘ 6 = 2^{-3} [(1.0101010101)_2, (1.0101010110)_2]
+$$
+And hence
+$$
+\meeq{
+[1,1] ⊖ ([1,1] ⊘ 6) = [1,1] ⊖ [(0.0010101010101)_2, (0.0010101010110)_2] \ccr
+= [{\rm fl}^{\rm down}(0.11010101010\magenta{0111111…})_2, {\rm fl}^{\rm up}(0.11010101010\magenta{111111…})_2] \ccr
+= 2^{-1}[(1.1010101010)_2, (1.1010101011)_2] = [0.8330078125,0.83349609375]
+}
+$$
+
+**END**
+
+
+**Problem 6(b)** Writing 
+$$
+\sin\ x = ∑_{k=0}^n {(-1)^k x^{2k+1} \over (2k+1)!} + δ_{x,2n+1}
+$$
+Prove the bound $|δ_{x,2n+1}| ≤ 1/(2n+3)!$, assuming $x ∈ [0,1]$.
+
+**SOLUTION**
+
+We have from Taylor's theorem up to order $x^{2n+2}$:
+$$
+\sin\ x = ∑_{k=0}^n {(-1)^k x^{2k+1} \over (2k+1)!} + \underbrace{{\sin^{2n+3}(t) x^{2n+3} \over (2n+3)!}}_{δ_{x,2n+1}}.
+$$
+The bound follows since all derivatives of $\sin$ are bounded by 1 and we have assumed $|x| ≤ 1$. 
+
+**END**
+
+
+**Problem 6(c)** Combine the previous parts to prove that:
+$$
+\sin 1 ∈ [(0.11010011000)_2, (0.11010111101)_2] = [0.82421875, 0.84228515625]
+$$
+You may use without proof that $1/120 = 2^{-7} (1.000100010001…)_2$. 
+
+**SOLUTION**
+Using $n = 1$ we have
+$$
+∑_{k=0}^1 {(-1)^k x^{2k+1} \over (2k+1)!} = x - {x^2 \over 3!} ∈ x ⊖ ((x ⊗ x) ⊘ 6).
+$$
+Noting that in floating point $1 ⊗ 1 = 1$ (ie it is exact) we compute
+$$
+\begin{align*}
+\sin 1 &∈ [1,1] ⊖ [1,1] ⊘ 6 ⊕ [{\rm fl}^{\rm down}(-1/120), {\rm fl}^{\rm up}(1/120)] \ccr 
+ = [(0.11010101010)_2, (0.11010101011)_2] ⊕ [-(0.0000001000100010)_2, (0.00000010001000101)_2] \ccr
+  =
+[{\rm fl}^{\rm down}(0.11010011000\magenta{11101111…})_2,
+ {\rm fl}^{\rm up}(0.11010111100\magenta{000101})_2] \ccr 
+ = [(0.11010011000)_2, (0.11010111101)_2] = [0.82421875, 0.84228515625]
+\end{align*}
+$$
 
 **END**

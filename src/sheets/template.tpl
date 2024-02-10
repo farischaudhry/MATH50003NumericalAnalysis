@@ -7,11 +7,15 @@
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{xcolor}
 {{#:tex_deps}}
 {{{ :tex_deps }}}
 {{/:tex_deps}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
+
+
+
 
 \hypersetup
        {   pdfauthor = { {{{:author}}} },
@@ -38,6 +42,19 @@
 
 \def\endash{–}
 \def\bbD{ {\mathbb D} }
+\def\bbZ{ {\mathbb Z} }
+
+\def\x{ {\vc x} }
+\def\a{ {\vc a} }
+\def\b{ {\vc b} }
+\def\e{ {\vc e} }
+\def\f{ {\vc f} }
+\def\u{ {\vc u} }
+
+\def\red#1{ {\color{red} #1} }
+\def\blue#1{ {\color{blue} #1} }
+\def\green#1{ {\color{ForestGreen} #1} }
+\def\magenta#1{ {\color{magenta} #1} }
 
 \input{somacros}
 

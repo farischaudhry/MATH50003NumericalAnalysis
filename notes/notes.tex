@@ -8,22 +8,129 @@
 \usepackage{microtype}
 \usepackage{hyperref}
 \usepackage{amsthm}
+\usepackage{upquote}
 \usepackage{listings}
+\usepackage{appendix}
 \usepackage[usenames,dvipsnames]{xcolor}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    upquote=true,
+    breaklines=true,
+    breakindent=0pt,
+    keepspaces=true,
+    showspaces=false,
+    columns=fullflexible,
+    showtabs=false,
+    showstringspaces=false,
+    escapeinside={(*@}{@*)},
+    extendedchars=true,
+}
+
+\newcommand{\HLJLt}[1]{#1}
+\newcommand{\HLJLw}[1]{#1}
+\newcommand{\HLJLe}[1]{#1}
+\newcommand{\HLJLeB}[1]{#1}
+\newcommand{\HLJLo}[1]{#1}
+\newcommand{\HLJLk}[1]{\textcolor[RGB]{148,91,176}{\textbf{#1}}}
+\newcommand{\HLJLkc}[1]{\textcolor[RGB]{59,151,46}{\textit{#1}}}
+\newcommand{\HLJLkd}[1]{\textcolor[RGB]{214,102,97}{\textit{#1}}}
+\newcommand{\HLJLkn}[1]{\textcolor[RGB]{148,91,176}{\textbf{#1}}}
+\newcommand{\HLJLkp}[1]{\textcolor[RGB]{148,91,176}{\textbf{#1}}}
+\newcommand{\HLJLkr}[1]{\textcolor[RGB]{148,91,176}{\textbf{#1}}}
+\newcommand{\HLJLkt}[1]{\textcolor[RGB]{148,91,176}{\textbf{#1}}}
+\newcommand{\HLJLn}[1]{#1}
+\newcommand{\HLJLna}[1]{#1}
+\newcommand{\HLJLnb}[1]{#1}
+\newcommand{\HLJLnbp}[1]{#1}
+\newcommand{\HLJLnc}[1]{#1}
+\newcommand{\HLJLncB}[1]{#1}
+\newcommand{\HLJLnd}[1]{\textcolor[RGB]{214,102,97}{#1}}
+\newcommand{\HLJLne}[1]{#1}
+\newcommand{\HLJLneB}[1]{#1}
+\newcommand{\HLJLnf}[1]{\textcolor[RGB]{66,102,213}{#1}}
+\newcommand{\HLJLnfm}[1]{\textcolor[RGB]{66,102,213}{#1}}
+\newcommand{\HLJLnp}[1]{#1}
+\newcommand{\HLJLnl}[1]{#1}
+\newcommand{\HLJLnn}[1]{#1}
+\newcommand{\HLJLno}[1]{#1}
+\newcommand{\HLJLnt}[1]{#1}
+\newcommand{\HLJLnv}[1]{#1}
+\newcommand{\HLJLnvc}[1]{#1}
+\newcommand{\HLJLnvg}[1]{#1}
+\newcommand{\HLJLnvi}[1]{#1}
+\newcommand{\HLJLnvm}[1]{#1}
+\newcommand{\HLJLl}[1]{#1}
+\newcommand{\HLJLld}[1]{\textcolor[RGB]{148,91,176}{\textit{#1}}}
+\newcommand{\HLJLs}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLsa}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLsb}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLsc}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLsd}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLsdB}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLsdC}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLse}[1]{\textcolor[RGB]{59,151,46}{#1}}
+\newcommand{\HLJLsh}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLsi}[1]{#1}
+\newcommand{\HLJLso}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLsr}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLss}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLssB}[1]{\textcolor[RGB]{201,61,57}{#1}}
+\newcommand{\HLJLnB}[1]{\textcolor[RGB]{59,151,46}{#1}}
+\newcommand{\HLJLnbB}[1]{\textcolor[RGB]{59,151,46}{#1}}
+\newcommand{\HLJLnfB}[1]{\textcolor[RGB]{59,151,46}{#1}}
+\newcommand{\HLJLnh}[1]{\textcolor[RGB]{59,151,46}{#1}}
+\newcommand{\HLJLni}[1]{\textcolor[RGB]{59,151,46}{#1}}
+\newcommand{\HLJLnil}[1]{\textcolor[RGB]{59,151,46}{#1}}
+\newcommand{\HLJLnoB}[1]{\textcolor[RGB]{59,151,46}{#1}}
+\newcommand{\HLJLoB}[1]{\textcolor[RGB]{102,102,102}{\textbf{#1}}}
+\newcommand{\HLJLow}[1]{\textcolor[RGB]{102,102,102}{\textbf{#1}}}
+\newcommand{\HLJLp}[1]{#1}
+\newcommand{\HLJLc}[1]{\textcolor[RGB]{153,153,119}{\textit{#1}}}
+\newcommand{\HLJLch}[1]{\textcolor[RGB]{153,153,119}{\textit{#1}}}
+\newcommand{\HLJLcm}[1]{\textcolor[RGB]{153,153,119}{\textit{#1}}}
+\newcommand{\HLJLcp}[1]{\textcolor[RGB]{153,153,119}{\textit{#1}}}
+\newcommand{\HLJLcpB}[1]{\textcolor[RGB]{153,153,119}{\textit{#1}}}
+\newcommand{\HLJLcs}[1]{\textcolor[RGB]{153,153,119}{\textit{#1}}}
+\newcommand{\HLJLcsB}[1]{\textcolor[RGB]{153,153,119}{\textit{#1}}}
+\newcommand{\HLJLg}[1]{#1}
+\newcommand{\HLJLgd}[1]{#1}
+\newcommand{\HLJLge}[1]{#1}
+\newcommand{\HLJLgeB}[1]{#1}
+\newcommand{\HLJLgh}[1]{#1}
+\newcommand{\HLJLgi}[1]{#1}
+\newcommand{\HLJLgo}[1]{#1}
+\newcommand{\HLJLgp}[1]{#1}
+\newcommand{\HLJLgs}[1]{#1}
+\newcommand{\HLJLgsB}[1]{#1}
+\newcommand{\HLJLgt}[1]{#1}
+
+
 \let\QED=\blacksquare
 \def\bbD{{\mathbb D}}
 \def\bbZ{{\mathbb Z}}
 \def\bbN{{\mathbb N}}
+\def\bbF{{\mathbb F}}
 \def\emdash{\hbox{---}}
 \def\endash{\hbox{--}}
 \def\nsubset{\not\subset}
 \def\ldq{``}
+\def\x{{\vc x}}
+\def\a{{\vc a}}
+\def\b{{\vc b}}
+\def\e{{\vc e}}
+\def\f{{\vc f}}
+\def\u{{\vc u}}
 \def\red#1{{\color{red} #1}}
 \def\blue#1{{\color{blue} #1}}
 \def\green#1{{\color{ForestGreen} #1}}
 \def\euler{\E}
+\def\ocaret{\wedge\mkern-19mu \bigcirc\,}
+
+\def\fldown{{\rm fl}^{\rm down}}
+\def\flup{{\rm fl}^{\rm up}}
 
 \hypersetup
        {   pdfauthor = { {{Sheehan Olver}} },
@@ -40,6 +147,7 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}
@@ -110,7 +218,46 @@ In particular we discuss:
 \end{enumerate}
 
 
-\input{II.1.Integers.tex}
-\input{II.2.Reals.tex}
+\input{II.1.Integers}
+\input{II.2.Reals}
+\input{II.3.Arithmetic}
+\input{II.4.Intervals}
+
+
+\chapter{Numerical Linear Algebra}
+
+Many problems in mathematics are linear: for example, polynomial regression and
+differential equations. Numerical methods for such applications invariably result
+in (finite-dimensional) linear systems that must be solved numerically on a computer: 
+the dimensions of the problems are often in the 1000s, millions, or even billions.
+One would certainly not want to tackle that with Gaussian elimination by hand!
+In this chapter we discuss algorithms, and in particular matrix factorisations, that are
+computed using floating point operations. We also introduce some basic applications.
+
+
+
+In particular we discuss:
+
+\begin{enumerate}
+    \item III.1 Structured Matrices: we discuss special structured matrices such as triangular and tridiagonal.
+    \item III.2 Differential Equations: using divided differences we can reduce differential equations
+    to linear systems. This motivates the investigation of numerical algorithms for solving linear systems.
+    \item III.3 Cholesky Factorisation: we look at computing a factorisation of a square matrix as a product of a lower and upper triangular matrix in the special case where the matrix is symmetric positive
+    definite. Hidden in this is an algorithm to prove positive definiteness.
+\item III.4 Polynomial Regression: often in data science one needs to approximate data by a polynomial.
+We discuss how to reduce this problem to solving a rectangular least squares problem.
+\item III.5 Orthogonal Matrices: we discuss different types of orthogonal matrices, which will be used to simplify rectangular least squares problems.
+\item III.6 QR Factorisation: we introduce an algorithm to compute a factorisation of a rectangular matrix as a product of an orthogonal and upper triangular matrix, thereby solving least squares problems.
+\end{enumerate}
+
+\input{III.1.StructuredMatrices}
+\input{III.2.DifferentialEquations}
+
+\appendix
+
+\chapter{Asymptotics and Computational Cost}
+\input{A.Asymptotics}
+
+
 
 \end{document}
