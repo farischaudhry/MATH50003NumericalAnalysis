@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{xcolor}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
 
@@ -123,6 +124,7 @@
 \def\endash{–}
 \def\bbD{ {\mathbb D} }
 \def\bbZ{ {\mathbb Z} }
+\def\bbR{ {\mathbb R} }
 
 \def\x{ {\vc x} }
 \def\a{ {\vc a} }
@@ -130,6 +132,13 @@
 \def\e{ {\vc e} }
 \def\f{ {\vc f} }
 \def\u{ {\vc u} }
+\def\y{ {\vc y} }
+\def\z{ {\vc z} }
+
+\def\red#1{ {\color{red} #1} }
+\def\blue#1{ {\color{blue} #1} }
+\def\green#1{ {\color{ForestGreen} #1} }
+\def\magenta#1{ {\color{magenta} #1} }
 
 \input{somacros}
 
@@ -186,7 +195,7 @@ to a lower triangular system by discretising on the grid $x_j = a + j h$ for $h 
 
 \textbf{Problem 3} Reduce a Schrödinger equation to a tridiagonal linear system by discretising on the grid $x_j = a + j h$ for $h = (b-a)/n$:
 \meeq{
-u(a) =  c, \qquad u''(x) + V(x) u(x) = f(x), \qquad u(b) = d.
+u(a) =  c,\qquad u''(x) + V(x) u(x) = f(x), \qquad u(b) = d.
 }
 
 

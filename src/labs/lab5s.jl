@@ -1073,7 +1073,7 @@ plot!(ns, ns .^ (-2); label="1/n^2")
 ## We do something slightly different and use SymTridiagonal.
 ## You can also do this with Tridiagonal
 function helm(k, n)
-    x = range(0, 1; length = n)
+    x = range(0, 1; length = n+1)
     h = step(x)
     T = SymTridiagonal(ones(n-2)*(-2/h^2 + k^2),ones(n-3)*1/h^2)
     u = T \ exp.(x[2:end-1])
