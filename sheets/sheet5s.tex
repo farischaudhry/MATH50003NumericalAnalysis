@@ -176,9 +176,13 @@ x_1 \ensuremath{\oplus} \ensuremath{\cdots} \ensuremath{\oplus} x_n = x_1 +  \en
 \]
 where
 \[
-|\ensuremath{\sigma}_n| \ensuremath{\leq} \| \ensuremath{\bm{\x}} \|_\ensuremath{\infty} E_{n-1,\ensuremath{\epsilon}_{\rm m}/2},
+|\ensuremath{\sigma}_n| \ensuremath{\leq} \| \ensuremath{\bm{\x}} \|_1 E_{n-1,\ensuremath{\epsilon}_{\rm m}/2},
 \]
-assuming $n \ensuremath{\epsilon}_{\rm m} < 2$ and where $\|\ensuremath{\bm{\x}}\|_\ensuremath{\infty} := \max_k |x_k|$. Hint: use the previous part to first write
+assuming $n \ensuremath{\epsilon}_{\rm m} < 2$ and where
+\[
+\|\ensuremath{\bm{\x}}\|_1 := \ensuremath{\sum}_{k=1}^n |x_k|.
+\]
+Hint: use the previous part to first write
 \[
 x_1 \ensuremath{\oplus} \ensuremath{\cdots} \ensuremath{\oplus} x_n = x_1(1+\ensuremath{\theta}_{n-1}) + \ensuremath{\sum}_{j=2}^n x_j (1 + \ensuremath{\theta}_{n-j+1}).
 \]
@@ -192,14 +196,16 @@ Using Problem 2.1 we write:
 }
 where we have for $j = 2,\ensuremath{\ldots},n$
 \[
-|\ensuremath{\theta}_{n-j+1}| \ensuremath{\leq} E_{n-j+1,\ensuremath{\epsilon}_{\rm m}/2} \ensuremath{\leq} E_{n-1,\ensuremath{\epsilon}_{\rm m}/2}.
+|\ensuremath{\theta}_{n-j+1}| \ensuremath{\leq} E_{n-j+1,\ensuremath{\epsilon}_{\rm m}/2} \ensuremath{\leq} E_{n-1,\ensuremath{\epsilon}_{\rm m}/2}.
 \]
 Thus we have 
 \[
 \ensuremath{\sum}_{j=1}^n x_j (1 + \ensuremath{\theta}_{n-j+1})= \ensuremath{\sum}_{j=1}^n x_j + \underbrace{\ensuremath{\sum}_{j=1}^n x_j \ensuremath{\theta}_{n-j+1}}_{\ensuremath{\sigma}_n}
 \]
-where $|\ensuremath{\sigma}_n| \ensuremath{\leq} M E_{n-1,\ensuremath{\epsilon}_{\rm m}/2}$.
-
+where
+\[
+|\ensuremath{\sigma}_n| \ensuremath{\leq}  \ensuremath{\sum}_{j=1}^n |x_j \ensuremath{\theta}_{n-j+1}| \ensuremath{\leq} \sup_j |\ensuremath{\theta}_{n-j+1}| \ensuremath{\sum}_{j=1}^n |x_j|  \ensuremath{\leq} \| \ensuremath{\bm{\x}}\|_1 E_{n-1,\ensuremath{\epsilon}_{\rm m}/2}.
+\]
 \textbf{END}
 
 \textbf{Problem 1(c)} For $A \ensuremath{\in} F_{\ensuremath{\infty},S}^{n \ensuremath{\times} n}$ and $\ensuremath{\bm{\x}} \ensuremath{\in} F_{\ensuremath{\infty},S}^n$ consider the error in approximating matrix multiplication with idealised floating point: for
@@ -221,9 +227,9 @@ where  $n \ensuremath{\epsilon}_{\rm m} < 2$ and the matrix norm is $\|A \|_\ens
 \ensuremath{\bigoplus}_{j=1}^n A_{k,j} \ensuremath{\otimes} x_j =  \ensuremath{\bigoplus}_{j=1}^n A_{k,j} x_j (1+\ensuremath{\delta}_j) = 
 \ensuremath{\sum}_{j=1}^n A_{k,j} x_j (1+\ensuremath{\delta}_j) + \ensuremath{\sigma}_{k,n}
 \]
-where we know $|\ensuremath{\sigma}_n| \ensuremath{\leq} M_k E_{n-1,\ensuremath{\epsilon}_{\rm m}/2}$, where
+where we know $|\ensuremath{\sigma}_n| \ensuremath{\leq} M_k E_{n-1,\ensuremath{\epsilon}_{\rm m}/2}$, where from 1(b) we have
 \[
-M_k \ensuremath{\leq} \ensuremath{\Sigma}_{j=1}^n |A_{k,j}| |x_j| (1+|\ensuremath{\delta}_j|)  \ensuremath{\leq} 2 \max |x_j| \ensuremath{\Sigma}_{j=1}^n |A_{k,j}|
+M_k = \ensuremath{\Sigma}_{j=1}^n |A_{k,j}x_j (1+\ensuremath{\delta}_j)| = \ensuremath{\Sigma}_{j=1}^n |A_{k,j}| |x_j| (1+|\ensuremath{\delta}_j|)  \ensuremath{\leq} 2 \max |x_j| \ensuremath{\Sigma}_{j=1}^n |A_{k,j}|
 \ensuremath{\leq} 2 \|\ensuremath{\bm{\x}}\|_\ensuremath{\infty} \|A \|_\ensuremath{\infty}
 \]
 Similarly, we also have 
