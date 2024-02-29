@@ -43,6 +43,8 @@
 \def\endash{–}
 \def\bbD{ {\mathbb D} }
 \def\bbZ{ {\mathbb Z} }
+\def\bbR{ {\mathbb R} }
+\def\bbC{ {\mathbb C} }
 
 \def\x{ {\vc x} }
 \def\a{ {\vc a} }
@@ -50,6 +52,9 @@
 \def\e{ {\vc e} }
 \def\f{ {\vc f} }
 \def\u{ {\vc u} }
+\def\v{ {\vc v} }
+\def\y{ {\vc y} }
+\def\z{ {\vc z} }
 
 \def\red#1{ {\color{red} #1} }
 \def\blue#1{ {\color{blue} #1} }

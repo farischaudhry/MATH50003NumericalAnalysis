@@ -5,7 +5,7 @@ Lecturer: [Dr Sheehan Olver](https://www.ma.imperial.ac.uk/~solver/)
 
 Office hour: Mondays 11am, Huxley 6M40
 
-## [Notes](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/raw/main/notes/notes.pdf) (up to Week 5)
+## [Notes](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/raw/main/notes/notes.pdf) (up to Week 7)
 
 ## Weekly Material
 
@@ -22,16 +22,21 @@ Office hour: Mondays 11am, Huxley 6M40
    - [Lab 4](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab4.ipynb) ([Solutions](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab4s.ipynb))
    - [Sheet 4](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet4.pdf) ([Solutions](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet4s.pdf))
 5. III.1 Structured Matrices and III.2 Differential Equations via Finite Differences
-   - [Lab 5](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab5.ipynb)
-   - [Sheet 5](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet5.pdf)
-
+   - [Lab 5](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab5.ipynb) ([Solutions](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab5s.ipynb))
+   - [Sheet 5](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet5.pdf) ([Solutions](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet5s.pdf))
+6. III.3 Cholesky Factorisations and III.4 Polynomial Regression
+   - [Lab 6](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab6.ipynb)
+   - [Sheet 6](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet6.pdf)
+7. III.5 Orthogonal and Unitary Matrices and III.6 QR Factorisation
+   - [Lab 7](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/labs/lab7.ipynb)
+   - [Sheet 7](https://github.com/Imperial-MATH50003/MATH50003NumericalAnalysis/blob/main/sheets/sheet7.pdf)   
 
 
 ## Assessment
 
-1. Practice computer-based exam (marked but not for credit): 29 February 2024, 16:00-17:30pm
-2. Computer-based exam: 15 March 2024, 9:00–10:30
-5. Final exam (pen-and-paper): TBA
+1. Practice computer-based exam (marked but not for credit): 7 March 2024, 16:00-17:30pm
+2. Computer-based exam (20% of term mark): 15 March 2024, 9:00–10:30
+5. Final exam (pen-and-paper, 80% of term mark): TBA
 
 
 ## Reading List
