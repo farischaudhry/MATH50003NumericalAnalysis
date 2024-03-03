@@ -705,7 +705,7 @@ b = [fill(1.6,n-2); 1.5; 1] # exact result
 # the true answer of $\sin x$. Recall from the notes that this equation can be approximated by $u_k$ solving the bidiagonal linear system
 # $$
 # \begin{bmatrix}
-#     1 \\ 
+#     1 \\
 #     -1/h & 1/h \\
 #     & ⋱ & ⋱ \\
 #     && -1/h & 1/h \end{bmatrix} \begin{bmatrix}u_0\\u_1\\⋮\\u_n\end{bmatrix} = \begin{bmatrix}c\\ f(x_0)\\ ⋮ \\ f(x_{n-1})\end{bmatrix}.
@@ -716,7 +716,7 @@ n = 10
 x = range(0, 1; length=n+1) # makes an n+1 point evenly spaced grid
 h = step(x) # equivalent to 1/n
 L = Bidiagonal([1; fill(1/h, n)], fill(-1/h, n), :L)
- 
+
 # We can use this bidiagonal matrix along with `\` to solve the
 # system via forward substitution:
 
@@ -750,7 +750,7 @@ ns = 10 .^ (1:8) # solve up to n = 10 million
 scatter(ns, forward_err.(sin, 0, f, ns); xscale=:log10, yscale=:log10, label="forward")
 plot!(ns, ns .^ (-1); label="1/n", linestyle=:dash)
 
-# We see that the method converges linearly (like $O(n^{-1})$). 
+# We see that the method converges linearly (like $O(n^{-1})$).
 
 # ------
 
@@ -916,7 +916,7 @@ plot!(ns, ns .^ (-2); label="1/n^2")
 # We now have the system:
 # $$
 # \underbrace{\begin{bmatrix}
-# 1 \\ 
+# 1 \\
 # ω(x_0)-1/h & 1/h \\
 # & ⋱ & ⋱ \\
 # && ω(x_{n-1})-1/h & 1/h \end{bmatrix}}_L \underbrace{\begin{bmatrix}u_0 \\ u_1 \\ ⋮ \\ u_n\end{bmatrix} }_{𝐮} = \begin{bmatrix} c \\ f(x_0) \\ ⋮ \\ f(x_{n-1}) \end{bmatrix}
@@ -948,7 +948,7 @@ scatter!(x, 𝐮; label="forward")
 
 # We see that it is converging to the true result.
 
-# ---- 
+# ----
 
 
 # **Problem  6** Implement backward Euler for solving:
@@ -1006,18 +1006,18 @@ println(first_eq.(ns)')
 # We approximate it by the solution to the tridiagonal system:
 # $$
 # \underbrace{\begin{bmatrix}
-#     1 \\ 
+#     1 \\
 #     1/h^2 & -2/h^2 & 1/h \\
 #     & ⋱ & ⋱ & ⋱ \\
-#    && 1/h^2 & -2/h^2 & 1/h \\ 
+#    && 1/h^2 & -2/h^2 & 1/h \\
 #    &&&& 1 \end{bmatrix}}_A \underbrace{\begin{bmatrix}u_0\\u_1\\⋮\\u_n\end{bmatrix} }_{𝐮} = \underbrace{\begin{bmatrix}c\\ f(x_0)\\ f(x_1)\\ ⋮ \\ f(x_{n-1})\\ d\end{bmatrix} }_{𝐛}
 # $$
 # We first construct the matrix $A$ using `Tridiagonal`:
 n = 20
 x = range(0, 1; length = n + 1)
 h = step(x)
-A = Tridiagonal([fill(1/h^2, n-1); 0], 
-                [1; fill(-2/h^2, n-1); 1], 
+A = Tridiagonal([fill(1/h^2, n-1); 0],
+                [1; fill(-2/h^2, n-1); 1],
                 [0; fill(1/h^2, n-1)])
 
 # Thus we get an approximation to our (known) solution:
@@ -1037,9 +1037,9 @@ scatter!(x, 𝐮; label="finite differences")
 ## SOLUTION
 
 function poisson_err(u, c_0, c_1, f, n)
-    x = range(0, 1; length = n)
+    x = range(0, 1; length = n+1)
     h = step(x)
-    T = Tridiagonal([fill(1/h^2, n-2); 0], [1; fill(-2/h^2, n-2); 1], [0; fill(1/h^2, n-2)])
+    T = Tridiagonal([fill(1/h^2, n-1); 0], [1; fill(-2/h^2, n-1); 1], [0; fill(1/h^2, n-1)])
     uᶠ = T \ [c_0; f.(x[2:end-1]); c_1]
     norm(uᶠ - u.(x), Inf)
 end
@@ -1075,7 +1075,7 @@ plot!(ns, ns .^ (-2); label="1/n^2")
 function helm(k, n)
     x = range(0, 1; length = n+1)
     h = step(x)
-    T = SymTridiagonal(ones(n-2)*(-2/h^2 + k^2),ones(n-3)*1/h^2)
+    T = SymTridiagonal(ones(n-1)*(-2/h^2 + k^2),ones(n-2)*1/h^2)
     u = T \ exp.(x[2:end-1])
     [0; u; 0]
 end
@@ -1083,8 +1083,8 @@ end
 k = 10
 u = x -> (-cos(k*x) + exp(x)cos(k*x)^2 + cot(k)sin(k*x) - ℯ*cos(k)cot(k)sin(k*x) - ℯ*sin(k)sin(k*x) + exp(x)sin(k*x)^2)/(1 + k^2)
 
-n = 2048 
-x = range(0, 1; length=n)
+n = 2048
+x = range(0, 1; length=n+1)
 @test norm(helm(k, n) - u.(x)) ≤ 1E-4
 ## END
 
