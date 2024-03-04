@@ -772,9 +772,9 @@ c = 0 # u(0) = 0
 f = x -> cos(x)
 n = 10
 
-x = range(0,1;length=n)
+x = range(0,1;length=n+1)
 h=step(x)
-A = Bidiagonal([1; fill(1/h, n-1)], fill(-1/h, n-1), :L)
+A = Bidiagonal([1; fill(1/h, n)], fill(-1/h, n), :L)
 ub = A\[c; f.(x[2:end])]
 uf = A \ [c; f.(x[1:end-1])]
 
@@ -797,9 +797,9 @@ function forward_err(u, c, f, n)
 end
 
 function back_err(u, c, f, n)
-    x = range(0,1;length=n)
+    x = range(0,1;length=n+1)
     h=step(x)
-    A = Bidiagonal([1; fill(1/h, n-1)], fill(-1/h, n-1), :L)
+    A = Bidiagonal([1; fill(1/h, n)], fill(-1/h, n), :L)
     ub = A\[c; f.(x[2:end])]
     norm(ub - u.(x), Inf)
 end
@@ -824,12 +824,12 @@ plot!(ns, ns .^ (-2); label="1/n^2")
 c = 0 # u(0) = 0
 n = 100_000
 
-#functions defined in the solutions to problem sheet 2
+##functions defined in the solutions to problem sheet 2
 f = x -> exp(exp(x)cos(x) + sin(x))
 
-x = range(0,1;length=n)
+x = range(0,1;length=n+1)
 h=step(x)
-A = Bidiagonal([1; fill(1/h, n-1)], fill(-1/h, n-1), :L)
+A = Bidiagonal([1; fill(1/h, n)], fill(-1/h, n), :L)
 uf = A\[c; f.(x[2:end])]
 
 uf_int = uf[end]
@@ -932,13 +932,13 @@ plot!(ns, ns .^ (-2); label="1/n^2")
 using SpecialFunctions
 c = 1
 ω = x -> x
-n = 2000
-x = range(0, 1; length=n)
+n = 200
+x = range(0, 1; length=n+1)
 ## exact solution, found in Mathematica
 u = x -> -(1/2)*exp(-(1+x^2)/2)*(-2sqrt(ℯ) + sqrt(2π)erfi(1/sqrt(2)) - sqrt(2π)erfi((1 + x)/sqrt(2)))
 
 h = step(x)
-L = Bidiagonal([1; fill(1/h, n-1)], ω.(x[1:end-1]) .- 1/h, :L)
+L = Bidiagonal([1; fill(1/h, n)], ω.(x[1:end-1]) .- 1/h, :L)
 
 𝐛 = [c; exp.(x[1:end-1])]
 𝐮 = L \ 𝐛
@@ -946,7 +946,7 @@ L = Bidiagonal([1; fill(1/h, n-1)], ω.(x[1:end-1]) .- 1/h, :L)
 plot(x, u.(x); label="u(x)", legend=:bottomright)
 scatter!(x, 𝐮; label="forward")
 
-# We see that it is converging to the true result.
+## We see that it is converging to the true result.
 
 # ----
 
@@ -957,10 +957,7 @@ scatter!(x, 𝐮; label="forward")
 # u(0) &= 1, u'(t) - \cos(t) u(t) = t
 # \end{align*}
 # $$
-# If we increase the initial condition $w(0) = c > 1$, $w'(0)$
-# the solution may blow up in finite time. Find the smallest positive integer $c$
-# such that the numerical approximation suggests the equation
-# does not blow up.
+# on the interval $[0,1]$. Approximate $u(1)$ to three digits accuracy.
 
 ## TODO: Implement backward Euler for the case with a variable coefficient.
 
@@ -969,15 +966,15 @@ scatter!(x, 𝐮; label="forward")
 function first_eq(n)
     #this function takes n and returns the estimate of u(1) using n steps
     #define the range of t
-    t = range(0, 1; length=n)
+    t = range(0, 1; length=n+1)
     #find the step-size h
     h = step(t)
 
     #preallocate memory
-    u = zeros(n)
+    u = zeros(n+1)
     #set initial condition
     u[1] = 1
-    for k=1:n-1
+    for k=1:n
        u[k+1] = (1+h*cos(t[k]))*u[k] + h*t[k]
     end
     u[end]

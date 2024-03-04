@@ -601,7 +601,7 @@ b = [fill(1.6,n-2); 1.5; 1] # exact result
 # the true answer of $\sin x$. Recall from the notes that this equation can be approximated by $u_k$ solving the bidiagonal linear system
 # $$
 # \begin{bmatrix}
-#     1 \\ 
+#     1 \\
 #     -1/h & 1/h \\
 #     & ⋱ & ⋱ \\
 #     && -1/h & 1/h \end{bmatrix} \begin{bmatrix}u_0\\u_1\\⋮\\u_n\end{bmatrix} = \begin{bmatrix}c\\ f(x_0)\\ ⋮ \\ f(x_{n-1})\end{bmatrix}.
@@ -612,7 +612,7 @@ n = 10
 x = range(0, 1; length=n+1) # makes an n+1 point evenly spaced grid
 h = step(x) # equivalent to 1/n
 L = Bidiagonal([1; fill(1/h, n)], fill(-1/h, n), :L)
- 
+
 # We can use this bidiagonal matrix along with `\` to solve the
 # system via forward substitution:
 
@@ -646,7 +646,7 @@ ns = 10 .^ (1:8) # solve up to n = 10 million
 scatter(ns, forward_err.(sin, 0, f, ns); xscale=:log10, yscale=:log10, label="forward")
 plot!(ns, ns .^ (-1); label="1/n", linestyle=:dash)
 
-# We see that the method converges linearly (like $O(n^{-1})$). 
+# We see that the method converges linearly (like $O(n^{-1})$).
 
 # ------
 
@@ -690,7 +690,7 @@ plot!(ns, ns .^ (-1); label="1/n", linestyle=:dash)
 # We now have the system:
 # $$
 # \underbrace{\begin{bmatrix}
-# 1 \\ 
+# 1 \\
 # ω(x_0)-1/h & 1/h \\
 # & ⋱ & ⋱ \\
 # && ω(x_{n-1})-1/h & 1/h \end{bmatrix}}_L \underbrace{\begin{bmatrix}u_0 \\ u_1 \\ ⋮ \\ u_n\end{bmatrix} }_{𝐮} = \begin{bmatrix} c \\ f(x_0) \\ ⋮ \\ f(x_{n-1}) \end{bmatrix}
@@ -706,13 +706,13 @@ plot!(ns, ns .^ (-1); label="1/n", linestyle=:dash)
 using SpecialFunctions
 c = 1
 ω = x -> x
-n = 2000
-x = range(0, 1; length=n)
+n = 200
+x = range(0, 1; length=n+1)
 ## exact solution, found in Mathematica
 u = x -> -(1/2)*exp(-(1+x^2)/2)*(-2sqrt(ℯ) + sqrt(2π)erfi(1/sqrt(2)) - sqrt(2π)erfi((1 + x)/sqrt(2)))
 
 h = step(x)
-L = Bidiagonal([1; fill(1/h, n-1)], ω.(x[1:end-1]) .- 1/h, :L)
+L = Bidiagonal([1; fill(1/h, n)], ω.(x[1:end-1]) .- 1/h, :L)
 
 𝐛 = [c; exp.(x[1:end-1])]
 𝐮 = L \ 𝐛
@@ -720,9 +720,9 @@ L = Bidiagonal([1; fill(1/h, n-1)], ω.(x[1:end-1]) .- 1/h, :L)
 plot(x, u.(x); label="u(x)", legend=:bottomright)
 scatter!(x, 𝐮; label="forward")
 
-# We see that it is converging to the true result.
+## We see that it is converging to the true result.
 
-# ---- 
+# ----
 
 
 # **Problem  6** Implement backward Euler for solving:
@@ -731,10 +731,7 @@ scatter!(x, 𝐮; label="forward")
 # u(0) &= 1, u'(t) - \cos(t) u(t) = t
 # \end{align*}
 # $$
-# If we increase the initial condition $w(0) = c > 1$, $w'(0)$
-# the solution may blow up in finite time. Find the smallest positive integer $c$
-# such that the numerical approximation suggests the equation
-# does not blow up.
+# on the interval $[0,1]$. Approximate $u(1)$ to three digits accuracy.
 
 ## TODO: Implement backward Euler for the case with a variable coefficient.
 
@@ -757,18 +754,18 @@ scatter!(x, 𝐮; label="forward")
 # We approximate it by the solution to the tridiagonal system:
 # $$
 # \underbrace{\begin{bmatrix}
-#     1 \\ 
+#     1 \\
 #     1/h^2 & -2/h^2 & 1/h \\
 #     & ⋱ & ⋱ & ⋱ \\
-#    && 1/h^2 & -2/h^2 & 1/h \\ 
+#    && 1/h^2 & -2/h^2 & 1/h \\
 #    &&&& 1 \end{bmatrix}}_A \underbrace{\begin{bmatrix}u_0\\u_1\\⋮\\u_n\end{bmatrix} }_{𝐮} = \underbrace{\begin{bmatrix}c\\ f(x_0)\\ f(x_1)\\ ⋮ \\ f(x_{n-1})\\ d\end{bmatrix} }_{𝐛}
 # $$
 # We first construct the matrix $A$ using `Tridiagonal`:
 n = 20
 x = range(0, 1; length = n + 1)
 h = step(x)
-A = Tridiagonal([fill(1/h^2, n-1); 0], 
-                [1; fill(-2/h^2, n-1); 1], 
+A = Tridiagonal([fill(1/h^2, n-1); 0],
+                [1; fill(-2/h^2, n-1); 1],
                 [0; fill(1/h^2, n-1)])
 
 # Thus we get an approximation to our (known) solution:

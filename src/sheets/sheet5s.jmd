@@ -135,29 +135,29 @@ even if you don't write down all 4 steps):
 
 (Step 1) Since we need to avoid going off the left in step 2 we start the ODE discretisation at $x_1$:
 $$
-\Vectt[u(x_0), u'(x_1), ⋮, u'(x_n)] = \underbrace{\Vectt[c, f(x_1),⋮,f(x_n)]}_{𝐛}
+\Vectt[u(x_0), u'(x_1) +  ω(x_1)u(x_1), ⋮, u'(x_n) +  ω(x_n)u(x_n)] = \underbrace{\Vectt[c, f(x_1),⋮,f(x_n)]}_{𝐛}
 $$
 
 (Step 2) Replace with divided differences:
 $$
-\Vectt[u(x_0), (u(x_1)-u(x_0))/h, ⋮, (u(x_n)-u(x_{n-1}))/h] ≈ 𝐛
+\Vectt[u(x_0), (u(x_1)-u(x_0))/h +  ω(x_1)u(x_1), ⋮, (u(x_n)-u(x_{n-1}))/h +  ω(x_n)u(x_n)] ≈ 𝐛
 $$
 
 (Step 3) Replace with discrete system with equality:
 $$
-\Vectt[u_0, (u_1-u_0)/h, ⋮, (u_n-u_{n-1}))/h] = 𝐛
+\Vectt[u_0, (u_1-u_0)/h +  ω(x_1)u_1, ⋮, (u_n-u_{n-1}))/h +  ω(x_n)u_n] = 𝐛
 $$
 
 (Step 4) Write as linear system:
 $$
 \begin{bmatrix}
 1 \\
--1/h & 1/h \\
+-1/h & 1/h + ω(x_1) \\
 & ⋱ & ⋱ \\
-&& -1/h & 1/h 
+&& -1/h & 1/h + ω(x_n)
 \end{bmatrix} \Vectt[u_0,⋮,u_n] = 𝐛
 $$
-This is the exact same matrix as Forward Euler but with a different right-hand side.
+
 
 **END**
 

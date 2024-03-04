@@ -11,7 +11,7 @@ Fourier series are also related to orthogonal polynomials, which can be used for
 ## Basics of Fourier series
 
 
-The most fundamental basis is (complex) Fourier: we have ${\rm e}^{{\rm i} k θ}$
+The most fundamental basis is (complex) Fourier: we have $\E^{\I k θ}$
 are orthogonal with respect to the inner product
 $$
 ⟨f, g ⟩ := {1 \over 2π} ∫_0^{2π} \bar f(θ) g(θ) {\rm d}θ,
@@ -23,11 +23,11 @@ We can (typically) expand functions in this basis:
 
 **Definition (Fourier)** A function $f$ has a Fourier expansion if
 $$
-f(θ) = ∑_{k = -∞}^∞ \hat f_k {\rm e}^{{\rm i} k θ}
+f(θ) = ∑_{k = -∞}^∞ \hat f_k \E^{\I k θ}
 $$
 where
 $$
-\hat f_k := ⟨{\rm e}^{{\rm i} k θ}, f⟩ = {1 \over 2π} ∫_0^{2π}  {\rm e}^{-{\rm i} k θ} f(θ) {\rm d}θ
+\hat f_k := ⟨\E^{\I k θ}, f⟩ = {1 \over 2π} ∫_0^{2π}  \E^{-\I k θ} f(θ) {\rm d}θ
 $$
 ∎
 
@@ -35,16 +35,16 @@ A basic observation is if a Fourier expansion has no negative terms it is equiva
 
 **Definition (Fourier-Taylor)** A function $f$ has a Fourier–Taylor expansion if
 $$
-f(θ) = ∑_{k = 0}^∞ \hat f_k {\rm e}^{{\rm i} k θ} = ∑_{k = 0}^∞ \hat f_k z^k
+f(θ) = ∑_{k = 0}^∞ \hat f_k \E^{\I k θ} = ∑_{k = 0}^∞ \hat f_k z^k
 $$
-where $\hat f_k := ⟨{\rm e}^{{\rm i} k θ}, f⟩$, and $z = {\rm e}^{{\rm i} θ}$.
+where $\hat f_k := ⟨\E^{\I k θ}, f⟩$, and $z = \E^{\I θ}$.
 ∎
 
 
 In numerical analysis we try to build on the analogy with linear algebra as much as possible.
 Therefore we  can write this this as:
 $$
-f(θ) = \underbrace{[1 | {\rm e}^{{\rm i}θ} | {\rm e}^{2{\rm i}θ} | ⋯]}_{T(θ)}
+f(θ) = \underbrace{[1 | \E^{\Iθ} | \E^{2\Iθ} | ⋯]}_{T(θ)}
 \underbrace{\begin{bmatrix} \hat f_0 \\ \hat f_1 \\ \hat f_2 \\ ⋮ \end{bmatrix}}_{\vchatf}.
 $$
 Essentially, expansions in bases are viewed as a way of turning _functions_ into (infinite) _vectors_.
@@ -80,25 +80,25 @@ This allows us to prove the following:
 **Theorem (Absolute converging Fourier series)**
 If $\vchatf ∈ ℓ^1$ then
 $$
-f(θ) = ∑_{k = -∞}^∞ \hat f_k {\rm e}^{{\rm i} k θ},
+f(θ) = ∑_{k = -∞}^∞ \hat f_k \E^{\I k θ},
 $$
 which converges uniformly.
 **Proof**
 
 Note that
 $$
-g_n(θ) := ∑_{k = -n}^n \hat f_k {\rm e}^{{\rm i} k θ}
+g_n(θ) := ∑_{k = -n}^n \hat f_k \E^{\I k θ}
 $$
 is uniformly-absolutely convergent as $n → ∞$, that is,
 $$
-∑_{k = -n}^n |\hat f_k {\rm e}^{{\rm i} k θ}| = ∑_{k = -n}^n |\hat f_k| → \|\vchatf\|_1.
+∑_{k = -n}^n |\hat f_k \E^{\I k θ}| = ∑_{k = -n}^n |\hat f_k| → \|\vchatf\|_1.
 $$
 This guarantees that $g_n(θ)$ converges uniformly to a continuous function $g(θ)$. We have for $n > k$,
 that the $k$-th Fourier coefficient of $g_n(θ)$ equals $\hat f_k$. Thus,
 by the properties of uniform convergence,
 $$
-\hat f_k = \lim_{n → ∞} \hat f_k =  \lim_{n → ∞} {1 \over 2π} ∫_0^{2π}  {\rm e}^{-{\rm i} k θ} g_n(θ) {\rm d}θ =
- {1 \over 2π} ∫_0^{2π}  {\rm e}^{-{\rm i} k θ} \lim_{n → ∞} g_n(θ) {\rm d}θ = \hat g_k.
+\hat f_k = \lim_{n → ∞} \hat f_k =  \lim_{n → ∞} {1 \over 2π} ∫_0^{2π}  \E^{-\I k θ} g_n(θ) {\rm d}θ =
+ {1 \over 2π} ∫_0^{2π}  \E^{-\I k θ} \lim_{n → ∞} g_n(θ) {\rm d}θ = \hat g_k.
 $$
 Since $f$ and $g$ are continuous and share the same Fourier coefficients, they are equal.
 
@@ -116,10 +116,10 @@ periodic differentiability of the function:
 Integrate by parts twice using the fact that $f(0) = f(2π)$, $f'(0) = f'(2π)$:
 $$
 \begin{align*}
-2π\hat f_k &= ∫_0^{2π} f(θ) {\rm e}^{-{\rm i} k θ} {\rm d}θ =
-[f(θ) {\rm e}^{-{\rm i} k θ}]_0^{2π} + {1 \over {\rm i} k} ∫_0^{2π} f'(θ) {\rm e}^{-{\rm i} k θ} {\rm d}θ \\
-&= {1 \over {\rm i} k} [f'(θ) {\rm e}^{-{\rm i} k θ}]_0^{2π} - {1 \over k^2} ∫_0^{2π} f''(θ) {\rm e}^{-{\rm i} k θ} {\rm d}θ \\
-&= - {1 \over k^2} ∫_0^{2π} f''(θ) {\rm e}^{-{\rm i} k θ} {\rm d}θ.
+2π\hat f_k &= ∫_0^{2π} f(θ) \E^{-\I k θ} {\rm d}θ =
+[f(θ) {\E^{-\I k θ} \over -\I k}]_0^{2π} + {1 \over \I k} ∫_0^{2π} f'(θ) \E^{-\I k θ} {\rm d}θ \\
+&=  [f'(θ) {\E^{-\I k θ} \over (-\I k)^2 }]_0^{2π} - {1 \over k^2} ∫_0^{2π} f''(θ) \E^{-\I k θ} {\rm d}θ \\
+&= - {1 \over k^2} ∫_0^{2π} f''(θ) \E^{-\I k θ} {\rm d}θ.
 \end{align*}
 $$
 Thus uniform boundedness of $f''$ guarantees $|\hat f_k| ≤ M |k|^{-2}$ for some $M$, and we have
@@ -144,7 +144,7 @@ problem sheet.
 
 
 
-**Definition (Trapezium Rule)** Let $θ_j = 2πj/n$ for $j = 0,1,…,n$ denote $n+1$ evenly spaced points over $[0,2π]$.
+**Definition (Periodic Trapezium Rule)** Let $θ_j = 2πj/n$ for $j = 0,1,…,n$ denote $n+1$ evenly spaced points over $[0,2π]$.
 Recall that the _Trapezium rule_ over $[0,2π]$ is the approximation:
 $$
 ∫_0^{2π} f(θ) {\rm d}θ ≈ {2 π \over n} \left[{f(0) \over 2} + ∑_{j=1}^{n-1} f(θ_j) + {f(2 π) \over 2} \right]
@@ -157,21 +157,21 @@ $$
 
 
 
-We know that ${\rm e}^{{\rm i} k θ}$ are orthogonal with respect to the continuous inner product.
+We know that $\E^{\I k θ}$ are orthogonal with respect to the continuous inner product.
 The following says that this property is maintained (up to “aliasing") when we replace the continuous
 integral with a trapezium rule approximation:
 
 **Lemma (Discrete orthogonality)**
 We have:
 $$
-∑_{j=0}^{n-1} {\rm e}^{{\rm i} k θ_j} =
+∑_{j=0}^{n-1} \E^{\I k θ_j} =
 \begin{cases} n & k = \ldots,-2n,-n,0,n,2n,\ldots  \cr
               0 & \hbox{otherwise}
 \end{cases}
 $$
 In other words,
 $$
-Σ_n[{\rm e}^{{\rm i} (k-ℓ) θ}] =
+Σ_n[\E^{\I (k-ℓ) θ}] =
 \begin{cases} 1 & k-ℓ = \ldots,-2n,-n,0,n,2n,\ldots  \cr
               0 & \hbox{otherwise}
 \end{cases}.
@@ -179,13 +179,13 @@ $$
 
 **Proof**
 
-Consider $ω := {\rm e}^{{\rm i} θ_1} = {\rm e}^{2 π {\rm i} \over n}$. This is an $n$-th root of unity: $ω^n = 1$.
-Note that ${\rm e}^{{\rm i} θ_j} ={\rm e}^{2 π {\rm i} j \over n}= ω^j$.
+Consider $ω := \E^{\I θ_1} = \E^{2 π \I \over n}$. This is an $n$-th root of unity: $ω^n = 1$.
+Note that $\E^{\I θ_j} =\E^{2 π \I j \over n}= ω^j$.
 
 (Case 1: $k = pn$ for an integer $p$)
 We have
 $$
-∑_{j=0}^{n-1} {\rm e}^{{\rm i} k θ_j} = ∑_{j=0}^{n-1} ω^{kj} = ∑_{j=0}^{n-1} ({ω^{pn}})^j =   ∑_{j=0}^{n-1} 1 = n
+∑_{j=0}^{n-1} \E^{\I k θ_j} = ∑_{j=0}^{n-1} ω^{kj} = ∑_{j=0}^{n-1} ({ω^{pn}})^j =   ∑_{j=0}^{n-1} 1 = n
 $$
 (Case 2: $k ≠ pn$ for an integer $p$)  Recall that (via a telescoping sum argument)
 $$
@@ -193,7 +193,7 @@ $$
 $$
 Then we have
 $$
-∑_{j=0}^{n-1} {\rm e}^{{\rm i} k θ_j} = ∑_{j=0}^{n-1} (ω^k)^j = {ω^{kn} -1 \over ω^k -1} = 0.
+∑_{j=0}^{n-1} \E^{\I k θ_j} = ∑_{j=0}^{n-1} (ω^k)^j = {ω^{kn} -1 \over ω^k -1} = 0.
 $$
 where we use the fact that $k$ is not a multiple of $n$ to guarantee that $ω^k ≠ 1$.
 
@@ -205,7 +205,7 @@ We will now use the Trapezium rule to approximate Fourier coefficients and expan
 
 **Definition (Discrete Fourier coefficients)** Define the Trapezium rule approximation to the Fourier coefficients by:
 $$
-\hat f_k^n := Σ_n[{\rm e}^{-i k θ} f(θ)]  = {1 \over n} ∑_{j=0}^{n-1} {\rm e}^{-i k θ_j} f(θ_j)
+\hat f_k^n := Σ_n[\E^{-i k θ} f(θ)]  = {1 \over n} ∑_{j=0}^{n-1} \E^{-i k θ_j} f(θ_j)
 $$
 ∎
 
@@ -221,7 +221,7 @@ $$
 **Proof**
 $$
 \begin{align*}
-\hat f_k^n &= Σ_n[f(θ) {\rm e}^{-{\rm i} k θ}] = ∑_{ℓ=-∞}^∞ \hat f_ℓ Σ_n[{\rm e}^{{\rm i} (ℓ-k) θ}] \\
+\hat f_k^n &= Σ_n[f(θ) \E^{-\I k θ}] = ∑_{ℓ=-∞}^∞ \hat f_ℓ Σ_n[\E^{\I (ℓ-k) θ}] \\
 &= ∑_{ℓ=-∞}^∞ \hat f_ℓ \begin{cases} 1 & ℓ-k = \ldots,-2n,-n,0,n,2n,\ldots  \cr
 0 & \hbox{otherwise}
 \end{cases}
@@ -232,9 +232,9 @@ $$
 
 **Example (Taylor coefficients via Geometric series)** Consider the function
 $$
-f(θ) = {2 \over 2 - {\rm e}^{{\rm i} θ}}
+f(θ) = {2 \over 2 - \E^{\I θ}}
 $$
-Under the change of variables $z = {\rm e}^{{\rm i} θ}$ we know for
+Under the change of variables $z = \E^{\I θ}$ we know for
 $z$ on the unit circle this becomes (using the geometric series with $z/2$)
 $$
 {2 \over 2-z} = ∑_{k=0}^∞ {z^k \over 2^k}
@@ -243,7 +243,7 @@ i.e., $\hat f_k = 1/2^k$ which is absolutely summable:
 $$
 ∑_{k=0}^∞ |\hat f_k| = f(0) = 2.
 $$
-If we use an $n$ point discretisation we get (using the geoemtric series with $2^{-n}$)
+If we use an $n$ point discretisation we get for $0 ≤ k ≤ n-1$ (using the geoemtric series with $2^{-n}$)
 $$
 \hat f_k^n = \hat f_k + \hat f_{k+n} + \hat f_{k+n} + ⋯ = ∑_{p=0}^∞ {1 \over 2^{k+pn}} = {2^{n-k} \over 2^n - 1}
 $$
@@ -306,7 +306,7 @@ coefficients are zero. That is, $\hat f_0^n, …, \hat f_{n-1}^n$ are approximat
 **Theorem (Approximate Fourier-Taylor expansions converge)**
 If $0 = \hat f_{-1} = \hat f_{-2} = ⋯$ and $\vchatf$ is absolutely convergent then
 $$
-f_n(θ) = ∑_{k=0}^{n-1} \hat f_k^n {\rm e}^{{\rm i} k θ}
+f_n(θ) = ∑_{k=0}^{n-1} \hat f_k^n \E^{\I k θ}
 $$
 converges uniformly to $f(θ)$.
 
@@ -314,8 +314,8 @@ converges uniformly to $f(θ)$.
 
 $$
 \begin{align*}
-|f(θ) - f_n(θ)| = |∑_{k=0}^{n-1} (\hat f_k - \hat f_k^n) {\rm e}^{{\rm i} k θ} + ∑_{k=n}^∞ \hat f_k {\rm e}^{{\rm i} k θ}|
-= |∑_{k=n}^∞ \hat f_k ({\rm e}^{{\rm i} k θ} - {\rm e}^{{\rm i} {\rm mod}(k,n) θ})|
+|f(θ) - f_n(θ)| = |∑_{k=0}^{n-1} (\hat f_k - \hat f_k^n) \E^{\I k θ} + ∑_{k=n}^∞ \hat f_k \E^{\I k θ}|
+= |∑_{k=n}^∞ \hat f_k (\E^{\I k θ} - \E^{\I {\rm mod}(k,n) θ})|
 ≤ 2 ∑_{k=n}^∞ |\hat f_k|
 \end{align*}
 $$
@@ -325,7 +325,7 @@ which goes to zero as $n → ∞$.
 For the general case we need to choose a range of coefficients that includes roughly an equal number of
 negative and positive coefficients (preferring negative over positive in a tie as a convention):
 $$
-f_n(θ) = ∑_{k=-⌈n/2⌉}^{⌊n/2⌋} \hat f_k {\rm e}^{{\rm i} k θ}
+f_n(θ) = ∑_{k=-⌈n/2⌉}^{⌊n/2⌋} \hat f_k \E^{\I k θ}
 $$
 In the problem sheet we will prove this converges provided the coefficients are absolutely convergent.
 
