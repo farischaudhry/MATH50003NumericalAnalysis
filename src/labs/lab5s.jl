@@ -831,10 +831,7 @@ x = range(0,1;length=n+1)
 h=step(x)
 A = Bidiagonal([1; fill(1/h, n)], fill(-1/h, n), :L)
 uf = A\[c; f.(x[2:end])]
-
-uf_int = uf[end]
-
-println(uf_int)
+## Gives the values uf u on the grid to at least 3 digits
 
 ## END
 
@@ -873,7 +870,7 @@ plot(x, sin.(x); label="sin(x)", legend=:bottomright)
 scatter!(x, 𝐮; label="average grid point")
 
 
-
+#
 
 
 ## Comparing the error to the midpoint method, we see that the errors are very similar:
@@ -964,25 +961,17 @@ scatter!(x, 𝐮; label="forward")
 ## SOLUTION
 
 function first_eq(n)
-    #this function takes n and returns the estimate of u(1) using n steps
-    #define the range of t
-    t = range(0, 1; length=n+1)
+    x = range(0, 1; length=n+1)
     #find the step-size h
-    h = step(t)
-
-    #preallocate memory
-    u = zeros(n+1)
-    #set initial condition
-    u[1] = 1
-    for k=1:n
-       u[k+1] = (1+h*cos(t[k]))*u[k] + h*t[k]
-    end
-    u[end]
+    h = step(x)
+    L = Bidiagonal([1; fill(1/h, n) - cos.(x[2:end])], fill(-1/h, n), :L)
+    L \ [1; x[2:end]]
 end
-ns = 2 .^ (1:13)
-println(first_eq.(ns)')
 
-## We see that $u(1) = 2.96$ to three digits.
+for n in 2 .^ (1:13)
+    println(first_eq(n)[end]) # print out final value
+end
+## We can guess that that $u(1) ≈ 2.96$ to three digits since those digits have stopped changing.
 
 ## END
 
