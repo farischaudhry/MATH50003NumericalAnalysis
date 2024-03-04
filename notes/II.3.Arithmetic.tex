@@ -2,7 +2,7 @@
 \section{Floating Point Arithmetic}
 Arithmetic operations on floating-point numbers are  \emph{exact up to rounding}. There are three basic rounding strategies: round up/down/nearest. Mathematically we introduce a function to capture the notion of rounding:
 
-\begin{definition}[rounding] ${\rm fl}^{\rm up}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number up to the nearest floating-point number that is greater or equal. ${\rm fl}^{\rm down}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number down to the nearest floating-point number that is greater or equal. ${\rm fl}^{\rm nearest}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number to the nearest floating-point number. In case of a tie, it returns the floating-point number whose least significant bit is equal to zero. We use the notation ${\rm fl}$ when $\ensuremath{\sigma},Q,S$ and the rounding mode are implied by context, with ${\rm fl}^{\rm nearest}$ being the default rounding mode. \end{definition}
+\begin{definition}[rounding] ${\rm fl}^{\rm up}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number up to the nearest floating-point number that is greater or equal. ${\rm fl}^{\rm down}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number down to the nearest floating-point number that is less or equal. ${\rm fl}^{\rm nearest}_{\ensuremath{\sigma},Q,S} : \mathbb R \rightarrow F_{\ensuremath{\sigma},Q,S}$ denotes the function that rounds a real number to the nearest floating-point number. In case of a tie, it returns the floating-point number whose least significant bit is equal to zero. We use the notation ${\rm fl}$ when $\ensuremath{\sigma},Q,S$ and the rounding mode are implied by context, with ${\rm fl}^{\rm nearest}$ being the default rounding mode. \end{definition}
 
 In more detail on the behaviour of nearest mode, if a positive number $x$ is between two normal floats $x_- \ensuremath{\leq} x \ensuremath{\leq} x_+$ we can write its expansion as
 \[
@@ -17,7 +17,7 @@ Write the half-way point as:
 \[
 x_{\rm h} := {x_+ + x_- \over 2} = x_- + 2^{\green{q}-\ensuremath{\sigma}-S-1} = 2^{\green{q}-\ensuremath{\sigma}} (1.\blue{b_1b_2\ensuremath{\ldots}b_S}\red{1})_2
 \]
-If $x_- \ensuremath{\leq} x < x_{\rm h}$ then ${\rm fl}(x) = x_-$ and if $x_{\rm h} < x \ensuremath{\leq} x_+$ then ${\rm fl}(x) = x_{\rm h}$. If $x = x_{\rm h}$ then it is exactly half-way between $x_-$ and $x_+$. The rule is if $b_S = 0$ then ${\rm fl}(x) = x_-$ and otherwise ${\rm fl}(x) = x_+$.
+If $x_- \ensuremath{\leq} x < x_{\rm h}$ then ${\rm fl}(x) = x_-$ and if $x_{\rm h} < x \ensuremath{\leq} x_+$ then ${\rm fl}(x) = x_+$. If $x = x_{\rm h}$ then it is exactly half-way between $x_-$ and $x_+$. The rule is if $b_S = 0$ then ${\rm fl}(x) = x_-$ and otherwise ${\rm fl}(x) = x_+$.
 
 In IEEE arithmetic, the arithmetic operations \texttt{+}, \texttt{-}, \texttt{*}, \texttt{/} are defined by the property that they are exact up to rounding.  Mathematically we denote these operations as $\ensuremath{\oplus}, \ensuremath{\ominus}, \ensuremath{\otimes}, \ensuremath{\oslash} : F_{\ensuremath{\sigma},Q,S} \ensuremath{\otimes} F_{\ensuremath{\sigma},Q,S} \ensuremath{\rightarrow} F_{\ensuremath{\sigma},Q,S}$ as follows:
 \begin{align*}
