@@ -17,26 +17,32 @@ compilenotes("II.4.Intervals")
 
 compilenotes("III.1.StructuredMatrices")
 compilenotes("III.2.DifferentialEquations")
+compilenotes("III.3.Cholesky")
+compilenotes("III.4.Regression")
+compilenotes("III.5.OrthogonalMatrices")
+compilenotes("III.6.QR")
+
 
 compilenotes("A.Asymptotics")
+compilenotes("A.Permutations")
 
 
 ####
 # Sheets
 ####
 
-for k = 1:5
+for k = 1:7
     compilesheet(k)
 end
 
-for k = 1:4
+for k = 1:5
     compilesheetsolution(k)
 end
 
 ####
 # Labs
 ####
-for k = 1:5
+for k = 1:7
     compilelab(k)
 end
 
@@ -45,6 +51,7 @@ compilelabsolution(1)
 compilelabsolution(2)
 compilelabsolution(3)
 compilelabsolution(4)
+compilelabsolution(5)
 
 
 

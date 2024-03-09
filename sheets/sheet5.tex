@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{xcolor}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.2ex}
 
@@ -123,6 +124,8 @@
 \def\endash{–}
 \def\bbD{ {\mathbb D} }
 \def\bbZ{ {\mathbb Z} }
+\def\bbR{ {\mathbb R} }
+\def\bbC{ {\mathbb C} }
 
 \def\x{ {\vc x} }
 \def\a{ {\vc a} }
@@ -130,6 +133,14 @@
 \def\e{ {\vc e} }
 \def\f{ {\vc f} }
 \def\u{ {\vc u} }
+\def\v{ {\vc v} }
+\def\y{ {\vc y} }
+\def\z{ {\vc z} }
+
+\def\red#1{ {\color{red} #1} }
+\def\blue#1{ {\color{blue} #1} }
+\def\green#1{ {\color{ForestGreen} #1} }
+\def\magenta#1{ {\color{magenta} #1} }
 
 \input{somacros}
 
@@ -153,9 +164,13 @@ x_1 \ensuremath{\oplus} \ensuremath{\cdots} \ensuremath{\oplus} x_n = x_1 +  \en
 \]
 where
 \[
-|\ensuremath{\sigma}_n| \ensuremath{\leq} \| \ensuremath{\bm{\x}} \|_\ensuremath{\infty} E_{n-1,\ensuremath{\epsilon}_{\rm m}/2},
+|\ensuremath{\sigma}_n| \ensuremath{\leq} \| \ensuremath{\bm{\x}} \|_1 E_{n-1,\ensuremath{\epsilon}_{\rm m}/2},
 \]
-assuming $n \ensuremath{\epsilon}_{\rm m} < 2$ and where $\|\ensuremath{\bm{\x}}\|_\ensuremath{\infty} := \max_k |x_k|$. Hint: use the previous part to first write
+assuming $n \ensuremath{\epsilon}_{\rm m} < 2$ and where
+\[
+\|\ensuremath{\bm{\x}}\|_1 := \ensuremath{\sum}_{k=1}^n |x_k|.
+\]
+Hint: use the previous part to first write
 \[
 x_1 \ensuremath{\oplus} \ensuremath{\cdots} \ensuremath{\oplus} x_n = x_1(1+\ensuremath{\theta}_{n-1}) + \ensuremath{\sum}_{j=2}^n x_j (1 + \ensuremath{\theta}_{n-j+1}).
 \]
@@ -186,7 +201,7 @@ to a lower triangular system by discretising on the grid $x_j = a + j h$ for $h 
 
 \textbf{Problem 3} Reduce a Schrödinger equation to a tridiagonal linear system by discretising on the grid $x_j = a + j h$ for $h = (b-a)/n$:
 \meeq{
-u(a) =  c, \qquad u''(x) + V(x) u(x) = f(x), \qquad u(b) = d.
+u(a) =  c,\qquad u''(x) + V(x) u(x) = f(x), \qquad u(b) = d.
 }
 
 
